@@ -9,5 +9,5 @@ test -L $0 || ( rm -rf $0 && ln -s $PREFIX/bin/team $0 )
 
 cmd="$PREFIX/bin/team-${1:-serf-event}"; shift
 [[ ! -f "$cmd" ]] && exit 1
-TEAM_LIB=$(dirname $0)/../lib $cmd $*
+TEAM_LIB=$(dirname $(readlink $0))/../lib $cmd $*
 exit $?
