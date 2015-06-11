@@ -7,7 +7,8 @@ PREFIX=${PREFIX:-/opt/lib/team}
 
 mkdir -p $(dirname $PREFIX)
 test -d $PREFIX/.git && (cd $PREFIX; git pull origin master >/dev/null) || git clone "$PROJECT_REPO" $PREFIX
-test -L $0 || ( rm -rf $0 && ln -s $PREFIX/bin/team $0 )
+
+[[ "$PREFIX/bin/team" = "$0" ]] || $PREFIX/bin/team $*
 
 cmd="$PREFIX/bin/team-${1:-serf-event}"; shift
 [[ ! -f "$cmd" ]] && exit 1
