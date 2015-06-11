@@ -12,5 +12,5 @@ test -d $PREFIX/.git && (cd $PREFIX; git pull origin master >/dev/null) || git c
 
 cmd="$PREFIX/bin/team-${1:-serf-event}"; shift
 [[ ! -f "$cmd" ]] && exit 1
-TEAM_LIB=$(dirname $(readlink $0))/../lib $cmd $*
+TEAM_LIB=$(dirname $(readlink $0|| echo $0))/../lib $cmd $*
 exit $?
