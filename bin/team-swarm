@@ -1,0 +1,28 @@
+#!/bin/sh
+set -x
+
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/network.lib
+. $TEAM_LIB/unit.lib
+
+case "$1" in
+  frontend)
+    echo "Create Frontend Unit"
+    cat<<EO_FRONTEND_UNIT
+[Unit]
+Description=Docker Swarm Cluster Frontend
+Requires=early-docker.service serf.service
+After=early-docker.service serf.service
+[Service]
+Environment=DOCKER_HOST=$early_docker
+ExecStartPre=/usr/bin/docker rm swarm
+ExecStart=/usr/bin/docker run --name=swarm --net=host swarm manage $($TEAM serf nodes -tag swarm=true)
+EO_FRONTEND_UNIT
+  ;;
+  discovery)
+    echo "Create Discovery Unit"
+  ;;
+  token)
+    echo "Pulling Discovery Token"
+  ;;
+esac

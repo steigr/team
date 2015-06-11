@@ -1,0 +1,16 @@
+. ./network.lib
+
+_ranch_default() {
+  echo "ranch"
+}
+
+_ranch_normalize() {
+  cat | sed -e 's:\.:_:g'
+}
+
+ranch() {
+  RANCH=${RANCH:-$(grep '^RANCH=' /etc/environment | cut -f2- -d'=')}
+  RANCH=${RANCH:-$(domainname)}
+  RANCH=${RANCH:-$(_ranch_default)}
+  echo $RANCH | _ranch_normalize
+}

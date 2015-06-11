@@ -1,0 +1,39 @@
+_excluded_interfaces() {
+  echo "lo|docker|flannel"
+}
+
+_ipv4_address_type_filter() {
+  FILTER="-v"
+  [[ "$1" = "public" ]]  && FILTER="-v"
+  [[ "$1" = "private" ]] && FILTER=""
+  cat | grep $FILTER -E '^(0?(10\.)|172\.0?(1[7-9]|2[0-9]|3[01])\.|192\.168\.)'
+}
+
+all_addresses() {
+  ip -f inet -4 -o addr \
+  | grep -v -E ": ($(_excluded_interfaces))" \
+  | awk "{print \$4}" \
+  | cut -f1 -d/
+}
+
+private_ipv4_addresses() {
+  all_addresses | _ipv4_address_type_filter private
+}
+
+private_ipv4_address() {
+  private_ipv4_addresses | head -1
+}
+
+public_ipv4_addresses() {
+  all_addresses | _ipv4_address_type_filter public
+}
+
+public_ipv4_address() {
+  public_ipv4_addresses | head -1
+}
+
+domainname() {
+  FROM_RESOLV=$(grep '^search ' /etc/resolv.conf | awk '{ print $2 }')
+  DOMAIN=${DOMAIN:-$d}
+  echo $DOMAIN
+}

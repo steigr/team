@@ -1,0 +1,12 @@
+#!/bin/sh
+set -x
+. $TEAM_LIB/serf.lib
+
+case "$1" in
+  nodes)
+    $(serf_bin) members -status=alive $* 2>/dev/null
+  ;;
+  install|update)
+    serf_install
+  ;;
+esac

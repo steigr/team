@@ -1,0 +1,3 @@
+platform() {
+  uname -s | tr '[:upper:]' '[:lower:]'
+}

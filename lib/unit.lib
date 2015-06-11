@@ -1,0 +1,5 @@
+UNIT_PATH="$(dirname $(dirname $0))/units"
+
+unit() {
+  echo $UNIT_PATH/$1
+}

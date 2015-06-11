@@ -1,0 +1,8 @@
+#!/bin/sh
+PROJECT_REPO=https://github.com/steigr/teamd-node
+PREFIX=${PREFIX:-/opt/lib/team-node}
+test -d $PREFIX/.git || git clone https://github.com/steigr/teamd-node $PREFIX
+cmd="$PREFIX/bin/team-${1:-serf-event}"; shift
+[[ ! -f "$cmd" ]] && exit 1
+TEAM_LIB=$(dirname $0)/../lib $cmd $*
+exit $?

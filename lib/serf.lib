@@ -1,0 +1,26 @@
+
+. $TEAM_LIB/platform.lib
+
+_default_serf_bin() {
+  echo $PREFIX/bin/serf
+}
+
+serf_version() {
+  echo "0.6.4"
+}
+
+serf_install() {
+  _serf_bin=$(_default_serf_bin)
+  _serf_dir=$(dirname $_serf_bin)
+  _serf_zip=/tmp/$$.zip
+  $(which curl) -SLfslko $_serf_zip  https://dl.bintray.com/mitchellh/serf/$(serf_version)_$(platform)_amd64.zip
+  unzip -o $_serf_zip -d $_serf_dir >/dev/null
+  rm $_serf_zip
+}
+
+serf_bin() {
+  test -x $(which serf) && _serf_bin=$(which serf)
+  test -x $(_default_serf_bin) && _serf_bin=$(_default_serf_bin)
+  test "x" = "x$_serf_bin" && serf_install
+  echo $_serf_bin
+}

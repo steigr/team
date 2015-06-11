@@ -1,0 +1,1 @@
+TEAM="$(dirname $(dirname $0))/bin/team"

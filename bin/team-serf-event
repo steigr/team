@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case "$SERF_EVENT" in
+  member-*)
+  ;;
+  user)
+  ;;
+  query)
+  ;;
+esac
