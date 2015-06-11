@@ -1,12 +1,50 @@
 #!/bin/sh
-set -x
+
 . $TEAM_LIB/serf.lib
+. $TEAM_LIB/network.lib
+. $TEAM_LIB/rancher.lib
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/coreos.lib
 
 case "$1" in
   nodes)
     $(serf_bin) members -status=alive $* 2>/dev/null
   ;;
+  command)
+    echo "$(serf_bin) agent -config-file=$(serf_config_file)"    
+  ;;
+  unit)
+    cat<<EO_UNIT
+[Unit]
+Description=Serf Cluster Discovery and Event Processing
+[Service]
+ExecStartPre=$0 config
+ExecStart=$($0 command)
+EO_UNIT
+  ;;
+  start)
+    $0 config
+    $0 unit
+    coreos_start serf.service
+  ;;
   install|update)
     serf_install
+  ;;
+  config)
+    cat<<EO_CONFIG > $(serf_config_file)
+{
+  "discover":"$(ranch)",
+  "tags":{
+    "coreos":"true"
+  },
+  "node_name":"$(hostname -s)",
+  "snapshot_path":"$(serf_snapshot)",
+  "rejoin_after_leave":true,
+  "disable_name_resolution":true,
+  "event_handlers":[
+    "$TEAM"
+  ]
+}
+EO_CONFIG
   ;;
 esac

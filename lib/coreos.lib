@@ -1,0 +1,15 @@
+coreos_unit() {
+  echo "/etc/systemd/system/$1"
+}
+
+coreos_start() {
+  systemctl start $1
+}
+
+coreos_stop() {
+  systemctl stop $1
+}
+
+coreos_restart() {
+  systemctl restart $1
+}

@@ -1,4 +1,4 @@
-. ./network.lib
+. $TEAM_LIB/network.lib
 
 _ranch_default() {
   echo "ranch"

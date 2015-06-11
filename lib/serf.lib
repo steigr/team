@@ -24,3 +24,14 @@ serf_bin() {
   test "x" = "x$_serf_bin" && serf_install
   echo $_serf_bin
 }
+
+serf_config_file() {
+  mkdir -p "$PREFIX/tmp"
+  echo "$PREFIX/tmp/serf.json"
+}
+
+serf_snapshot() {
+  local _snapshot="$PREFIX/var/lib/serf"
+  mkdir -p "$_snapshot"
+  echo "$_snapshot/snapshot"
+}
