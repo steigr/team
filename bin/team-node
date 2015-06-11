@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. $TEAM_LIB/team.lib
+
 case "$1" in
   boot)
     $TEAM serf start
