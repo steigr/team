@@ -16,6 +16,11 @@ case "$arg" in
   nodes)
     $(serf_bin) members -status=alive $* 2>/dev/null
   ;;
+  count-nodes)
+    test -z "$($(serf_bin) members -status=alive $* 2>/dev/null)" \
+    && echo 0 \
+    || $(serf_bin) members -status=alive $* 2>/dev/null | wc -l
+  ;;
   command)
     echo "$(serf_bin) agent -config-file=$(serf_config_file)"    
   ;;

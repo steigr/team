@@ -1,0 +1,25 @@
+swarm_write_frontend_unit() {
+  cat<<EO_FRONTEND_UNIT | tee $1
+[Unit]
+Description=Docker Swarm Cluster Frontend
+Requires=early-docker.service serf.service
+After=early-docker.service serf.service
+[Service]
+Environment=DOCKER_HOST=$early_docker
+ExecStartPre=/usr/bin/docker rm swarm
+ExecStart=/usr/bin/docker run --name=swarm --net=host swarm manage $($TEAM serf nodes -tag swarm=true)
+EO_FRONTEND_UNIT  
+}
+
+swarm_write_announcement_unit() {
+  cat<<EO_ANNOUNCEMENT_UNIT | tee $1
+[Unit]
+Description=Docker Swarm Cluster Announcement
+Requires=early-docker.service serf.service
+After=early-docker.service serf.service
+[Service]
+Environment=DOCKER_HOST=$early_docker
+ExecStartPre=/usr/bin/docker rm swarm
+ExecStart=/usr/bin/docker run --name=swarm --net=host swarm manage $($TEAM serf nodes -tag swarm=true)
+EO_ANNOUNCEMENT_UNIT  
+}
