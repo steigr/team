@@ -8,9 +8,18 @@ _ranch_normalize() {
   cat | sed -e 's:\.:_:g'
 }
 
+_del_ranch_from_environment() {
+  t=$(grep -v "^RANCH=" /etc/environment)
+  echo -e $t > /etc/environment
+}
 ranch() {
   RANCH=${RANCH:-$(grep '^RANCH=' /etc/environment | cut -f2- -d'=')}
   RANCH=${RANCH:-$(hostname -a | cut -f2- -d".")}
   RANCH=${RANCH:-$(_ranch_default)}
   echo $RANCH | _ranch_normalize
+}
+
+set_ranch() {
+  _del_ranch_from_environment
+  echo "RANCH=$(_ranch_normalize $1)" > /etc/environment
 }

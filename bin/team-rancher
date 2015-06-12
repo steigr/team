@@ -10,4 +10,11 @@ case "$arg" in
   ranch)
     echo $(ranch)
   ;;
+  set)
+    case "$1" in
+      ranch)
+        set_ranch $2
+      ;;
+    esac
+  ;;
 esac
