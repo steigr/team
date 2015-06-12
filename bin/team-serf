@@ -10,25 +10,25 @@ set -x
 
 case "$1" in
   nodes)
-    $(serf_bin) members -status=alive $* 2>/dev/null
+    shift; $(serf_bin) members -status=alive $* 2>/dev/null
   ;;
   command)
     echo "$(serf_bin) agent -config-file=$(serf_config_file)"    
   ;;
-  start)
-    $TEAM serf config
-    $TEAM serf unit
-    $TEAM coreos start serf.service
-  ;;
   install|update)
     serf_install
+  ;;
+  unit)
+    echo "Writing Serf Unit File $(coreos_unit service serf)"
+    serf_write_unit $(coreos_unit service serf)
   ;;
   config)
     echo "Writing Serf Configuration $(serf_config_file)"
     serf_write_config $(serf_config_file)
   ;;
-  unit)
-    echo "Writing Serf Unit File $(coreos_unit service serf)"
-    serf_write_unit $(coreos_unit service serf)
+  start)
+    $TEAM serf config
+    $TEAM serf unit
+    $TEAM coreos start serf.service
   ;;
 esac
