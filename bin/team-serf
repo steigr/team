@@ -6,9 +6,15 @@
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/coreos.lib
 
-case "$1" in
+arg=$1
+shift
+
+case "$arg" in
+  event)
+    $(serf_bin) event $*
+  ;;
   nodes)
-    shift; $(serf_bin) members -status=alive $* 2>/dev/null
+    $(serf_bin) members -status=alive $* 2>/dev/null
   ;;
   command)
     echo "$(serf_bin) agent -config-file=$(serf_config_file)"    

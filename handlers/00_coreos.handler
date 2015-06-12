@@ -5,6 +5,6 @@ set -x
 case "$SERF_EVENT" in
   member-join)
     echo "New Member is CoreOS-Cluster"
-    $TEAM serf event -tag coreos=true docker-bind-tcp
+    $TEAM serf event docker-bind-tcp
   ;;
 esac
