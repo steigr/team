@@ -9,6 +9,10 @@ serf_version() {
   echo "0.6.4"
 }
 
+serf_node_name() {
+  (hostname -a 2>/dev/null || hostname -f 2>/dev/null) | cut -f1 -d"."
+}
+
 serf_install() {
   _serf_bin=$(_default_serf_bin)
   _serf_dir=$(dirname $_serf_bin)
@@ -42,7 +46,7 @@ serf_write_config() {
   "tags":{
     "coreos":"true"
   },
-  "node_name":"$(hostname -s)",
+  "node_name":"$(serf_node_name)",
   "snapshot_path":"$(serf_snapshot)",
   "rejoin_after_leave":true,
   "disable_name_resolution":true,
