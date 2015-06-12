@@ -24,6 +24,7 @@ case "$1" in
     serf_install
   ;;
   config)
+    echo "Writing Serf Configuration $(serf_config_file)"
     cat<<EO_CONFIG | tee $(serf_config_file)
 {
   "discover":"$(ranch)",
@@ -41,12 +42,13 @@ case "$1" in
 EO_CONFIG
   ;;
   unit)
+    echo "Writing Serf Unit File $(coreos_unit service serf)"
     cat<<EO_UNIT | tee $(coreos_unit service serf)
 [Unit]
 Description=Serf Cluster Discovery and Event Processing
 [Service]
-ExecStartPre=$0 config
-ExecStart=$($0 command)
+ExecStartPre=$TEAM serf config
+ExecStart=$($TEAM serf command)
 EO_UNIT
   ;;
 esac
