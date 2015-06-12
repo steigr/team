@@ -10,6 +10,10 @@ shift
 
 case "$arg" in
   bind)
-    echo "Binding to $(docker_tcp_port)"
+    case "$1" in
+      tcp)
+        echo "Binding to $(docker_tcp_port)"
+      ;;
+    esac
   ;;
 esac
