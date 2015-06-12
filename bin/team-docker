@@ -20,6 +20,7 @@ case "$arg" in
   bound)
     case "$1" in
       tcp)
+        coreos_unit_present docker-tcp.socket || exit 1
         coreos_status docker-tcp.socket
         exit $?
       ;;

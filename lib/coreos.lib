@@ -38,3 +38,7 @@ coreos_socket() {
 coreos_status() {
   systemctl status $1 2>/dev/null >/dev/null
 }
+
+coreos_unit_present() {
+  test "$(systemctl list-unit-files | grep docker | grep $1)"
+}
