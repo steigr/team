@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 case "$SERF_EVENT" in
   user)
     case "$SERF_USER_EVENT" in
