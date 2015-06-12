@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -x
+
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/docker.lib
+
+arg=$1
+shift
+
+case "$arg" in
+  bind)
+    echo "Binding to $(docker_tcp_port)"
+  ;;
+esac
