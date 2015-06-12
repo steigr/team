@@ -9,10 +9,10 @@ prefix()      { make_prefix "${PREFIX:-/opt/lib/team}"; }
 has_git()     { test -d $(prefix)/.git; }
 git_update()  { (cd $(prefix); git pull origin master); }
 git_clone()   { (git clone "$PROJECT_REPO" $(prefix) ); }
-team_script() { echo "$(prefix)/bin/team" }
+team_script() { echo "$(prefix)/bin/team"; }
 abs_called()  { test "x$0" = "x$(team_script)"; }
 abs_call()    { $(team-script); }
-module_()     { echo "$(team-script)-${1:-serf-event}" }
+module()      { echo "$(team-script)-${1:-serf-event}"; }
 has_module()  { test -x "$1"; }
 team_lib()    { echo "$(prefix)/lib"; }
 
