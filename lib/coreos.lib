@@ -3,7 +3,7 @@ coreos_unit() {
     unit="${2}.${1}"
     case "$1" in
       socket)
-        sd_dir="/etc/systemd"
+        sd_dir="/etc/systemd/system"
       ;;
     esac
   else
