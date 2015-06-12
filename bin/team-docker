@@ -20,7 +20,7 @@ case "$arg" in
   bound)
     case "$1" in
       tcp)
-        exit $(coresos_status docker-tcp.socket)
+        exit $(coreos_status docker-tcp.socket)
       ;;
     esac
   ;;
