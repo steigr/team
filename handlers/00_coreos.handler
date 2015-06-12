@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -x
-
 case "$SERF_EVENT" in
   member-join)
     echo "New Member is CoreOS-Cluster"
