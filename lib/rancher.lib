@@ -21,5 +21,5 @@ ranch() {
 
 set_ranch() {
   _del_ranch_from_environment
-  echo "RANCH=$(_ranch_normalize $1)" | tee /etc/environment
+  echo "RANCH=$(echo $1 | _ranch_normalize)" | tee /etc/environment
 }
