@@ -21,20 +21,16 @@ case "$arg" in
     case "$1" in
       tcp)
         coreos_unit_present docker-tcp.socket || exit 1
-        coreos_status docker-tcp.socket
-        exit $?
+        coreos_unit_enabled docker-tcp.socket || exit 1
+        exit 0
       ;;
     esac
   ;;
   bind)
     case "$1" in
       tcp)
-        $TEAM docker bound tcp
-        if [[ $? -gt 0 ]]; then
-          echo "Binding to $(docker_tcp_port)"
-          $TEAM docker tcp-unit
-          $TEAM docker tcp-enable
-        fi
+        coreos_unit_present docker-tcp.socket || $TEAM docker tcp-unit
+        coreos_unit_enabled docker-tcp.socket || $TEAM docker tcp-enable
       ;;
     esac
   ;;

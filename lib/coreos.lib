@@ -40,5 +40,9 @@ coreos_status() {
 }
 
 coreos_unit_present() {
-  test "$(systemctl list-unit-files | grep docker | grep $1)"
+  test "$(systemctl list-unit-files | grep $1)"
+}
+
+coreos_unit_enabled() {
+  test "x$(systemctl list-unit-files | grep $1 | awk '{print $2}')" = "xenabled"
 }
