@@ -33,7 +33,7 @@ EO_UNIT
     serf_install
   ;;
   config)
-    cat<<EO_CONFIG > $(serf_config_file)
+    cat<<EO_CONFIG | tee $(serf_config_file)
 {
   "discover":"$(ranch)",
   "tags":{
