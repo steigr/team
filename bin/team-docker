@@ -28,9 +28,12 @@ case "$arg" in
   bind)
     case "$1" in
       tcp)
-        echo "Binding to $(docker_tcp_port)"
-        $TEAM docker tcp-unit
-        $TEAM docker tcp-enable
+        $TEAM docker bound tcp
+        if [[ $? -gt 0 ]]; then
+          echo "Binding to $(docker_tcp_port)"
+          $TEAM docker tcp-unit
+          $TEAM docker tcp-enable
+        fi
       ;;
     esac
   ;;
