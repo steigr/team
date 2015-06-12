@@ -4,4 +4,4 @@ set -x
 
 . $TEAM_LIB/team.lib
 
-$TEAM serf start
+$TEAM serf restart
