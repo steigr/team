@@ -3,10 +3,10 @@
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/serf-event.lib
 
-set -x
-
 serf_event_handlers | while read handler; do
   echo "Running $handler" >&2
   SERF_EVENT_ENVIRONMENT=$(serf_event_environment)
+  set -x
   /bin/sh -c "TEAM=\"$TEAM\" TEAM_LIB=\"$TEAM_LIB\" $SERF_EVENT_ENVIRONMENT $handler $*"
+  set +x
 done
