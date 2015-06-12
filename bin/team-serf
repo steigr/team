@@ -25,9 +25,9 @@ ExecStart=$($0 command)
 EO_UNIT
   ;;
   start)
-    $0 config
-    $0 unit
-    coreos_start serf.service
+    $TEAM serf config
+    $TEAM serf unit
+    $TEAM coreos start serf.service
   ;;
   install|update)
     serf_install
