@@ -1,0 +1,7 @@
+#!/bin/bash
+
+case "$SERF_EVENT" in
+  user)
+    test "$SERF_USER_EVENT" = "user:docker-bind-tcp" && $TEAM docker bind tcp
+  ;;
+esac
