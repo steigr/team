@@ -22,6 +22,7 @@ has_git    || git_clone
 is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
 abs_called || ( git_update; abs_call $*; exit $?; )
 
+echo $1
 cmd=$(module $*); shift
 has_module $cmd || exit 1
 echo "Running $cmd"
