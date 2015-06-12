@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -x
-
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/serf-event.lib
 
