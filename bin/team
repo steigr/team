@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 PROJECT_REPO=https://github.com/steigr/team
 
 make_prefix() { mkdir "$(dirname $1)" 2>/dev/null; echo "$1"; }
