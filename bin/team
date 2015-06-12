@@ -21,7 +21,7 @@ has_git    || git_clone
 is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
 if ! abs_called; then
   git_update
-  /bin/sh -c "$(team_script) $*; exit $?"
+  $(team_script) $*
   exit $?
 fi
 
