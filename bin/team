@@ -7,8 +7,8 @@ PROJECT_REPO=https://github.com/steigr/team
 make_prefix() { mkdir "$(dirname $1)" 2>/dev/null; echo "$1"; }
 prefix()      { make_prefix "${PREFIX:-/opt/lib/team}"; }
 has_git()     { test -d $(prefix)/.git; }
-git_update()  { (cd $(prefix); git pull origin master); }
-git_clone()   { (git clone "$PROJECT_REPO" $(prefix) ); }
+git_update()  { (cd $(prefix); git reset -q --hard; git pull -q origin master); }
+git_clone()   { (git clone -q "$PROJECT_REPO" $(prefix) ); }
 team_script() { echo "$(prefix)/bin/team"; }
 abs_called()  { test "x$0" = "x$(team_script)"; }
 abs_call()    { $(team_script); }
