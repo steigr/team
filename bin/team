@@ -25,4 +25,4 @@ abs_called || ( abs_call $*; exit $?; )
 
 cmd=$(module $*); shift
 has_module $cmd || exit 1
-TEAM_LIB=$(team_lib) $cmd $*; exit $?
+PREFIX=$(prefix) TEAM_LIB=$(team_lib) $cmd $*; exit $?
