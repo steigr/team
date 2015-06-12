@@ -11,7 +11,6 @@ git_update()  { (cd $(prefix); git reset -q --hard; git pull -q origin master); 
 git_clone()   { (git clone -q "$PROJECT_REPO" $(prefix) ); }
 team_script() { echo "$(prefix)/bin/team"; }
 abs_called()  { test "x$0" = "x$(team_script)"; }
-abs_call()    { $(team_script); }
 module()      { echo "$(team_script)-${1:-serf-event}"; }
 has_module()  { test -x "$1"; }
 team_lib()    { echo "$(prefix)/lib"; }
@@ -20,7 +19,7 @@ is_linked()   { test -L $(opt_script); }
 
 has_git    || git_clone
 is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
-abs_called || ( git_update; abs_call $*; exit $?; )
+abs_called || ( git_update; /bin/sh -c "$(team_script) $*; exit $?" )
 
 echo $1
 cmd=$(module $*); shift
