@@ -15,15 +15,6 @@ case "$1" in
   command)
     echo "$(serf_bin) agent -config-file=$(serf_config_file)"    
   ;;
-  unit)
-    cat<<EO_UNIT | tee $(coreos_unit service serf)
-[Unit]
-Description=Serf Cluster Discovery and Event Processing
-[Service]
-ExecStartPre=$0 config
-ExecStart=$($0 command)
-EO_UNIT
-  ;;
   start)
     $TEAM serf config
     $TEAM serf unit
@@ -48,5 +39,14 @@ EO_UNIT
   ]
 }
 EO_CONFIG
+  ;;
+  unit)
+    cat<<EO_UNIT | tee $(coreos_unit service serf)
+[Unit]
+Description=Serf Cluster Discovery and Event Processing
+[Service]
+ExecStartPre=$0 config
+ExecStart=$($0 command)
+EO_UNIT
   ;;
 esac
