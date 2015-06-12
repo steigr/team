@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 . $TEAM_LIB/serf-event.lib
 
 serf_event_handlers | while read handler; do
