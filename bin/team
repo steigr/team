@@ -15,8 +15,11 @@ abs_call()    { $(team-script); }
 module()      { echo "$(team-script)-${1:-serf-event}"; }
 has_module()  { test -x "$1"; }
 team_lib()    { echo "$(prefix)/lib"; }
+opt_script()  { echo "/opt/bin/team"; }
+is_linked()   { test -L $(opt_script); }
 
 has_git    || git_clone
+is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
 abs_called || git_update
 abs_called || ( abs_call $*; exit $?; )
 
