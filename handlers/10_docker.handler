@@ -5,7 +5,8 @@ set -x
 case "$SERF_EVENT" in
   user)
     case "$SERF_USER_EVENT" in
-      user:docker-bind-tcp)
+      docker-bind-tcp)
+        "Bind docker to tcp"
         $TEAM docker bind tcp
       ;;
     esac
