@@ -10,7 +10,7 @@ _ranch_normalize() {
 
 _del_ranch_from_environment() {
   t=$(grep -v "^RANCH=" /etc/environment)
-  echo -e $t > /etc/environment
+  echo -e $t | tee /etc/environment
 }
 ranch() {
   RANCH=${RANCH:-$(grep '^RANCH=' /etc/environment | cut -f2- -d'=')}
@@ -21,5 +21,5 @@ ranch() {
 
 set_ranch() {
   _del_ranch_from_environment
-  echo "RANCH=$(_ranch_normalize $1)" > /etc/environment
+  echo "RANCH=$(_ranch_normalize $1)" | tee /etc/environment
 }
