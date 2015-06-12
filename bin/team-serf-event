@@ -3,5 +3,6 @@
 . $TEAM_LIB/serf.lib
 
 serf_handlers | while read handler; do
+  echo "Running $handler" >2
   $handler $*
 done
