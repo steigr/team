@@ -34,3 +34,7 @@ coreos_init() {
 coreos_socket() {
   systemctl enable $1.socket
 }
+
+coreos_status() {
+  systemctl status $1 2>/dev/null >/dev/null
+}

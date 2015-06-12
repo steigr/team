@@ -17,6 +17,13 @@ case "$arg" in
     coreos_stop docker
     coreos_socket docker-tcp
   ;;
+  bound)
+    case "$1" in
+      tcp)
+        exit $(coresos_status docker-tcp.socket)
+      ;;
+    esac
+  ;;
   bind)
     case "$1" in
       tcp)

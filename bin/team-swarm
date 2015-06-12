@@ -14,7 +14,12 @@ case "$1" in
   ;;
   token)
     echo "Pulling Discovery Token"
-    $TEAM serf count-nodes -tag swarm-token=true
+    token=$(swarm_receive_token)
+    [[ -z "$token" ]] && token=$(swarm_create_token)
+    if [[ 0 -eq $($TEAM serf count-nodes -tag swarm-token=true) ]]
     $TEAM serf query -tags swarm-token=true swarm-token
+  ;;
+  create-token)
+    [[ "$($TEAM docker bound tcp)" ]] || $TEAM docker bind tcp
   ;;
 esac
