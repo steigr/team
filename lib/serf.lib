@@ -52,7 +52,8 @@ serf_write_config() {
   "disable_name_resolution":true,
   "event_handlers":[
     "$TEAM"
-  ]
+  ],
+  "log_level":"debug"
 }
 EO_CONFIG
 }
