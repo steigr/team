@@ -2,8 +2,8 @@
 
 set -x
 
-. $TEAM_LIB/serf-event.lib
 . $TEAM_LIB/team.lib
+. $TEAM_LIB/serf-event.lib
 
 serf_event_handlers | while read handler; do
   echo "Running $handler" >2
