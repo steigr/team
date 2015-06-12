@@ -8,5 +8,5 @@ serf_event_register_handler() {
 }
 
 serf_event_environment() {
- export | sed -e "s:^export ::g" | grep "^SERF_" | sed -e 's:\\n:;:g'
+ export | sed -e "s:^export ::g" | grep "^SERF_" | sed -e 's:\\n:; :g'
 }
