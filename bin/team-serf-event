@@ -7,6 +7,5 @@ set -x
 
 serf_event_handlers | while read handler; do
   echo "Running $handler" >2
-  x=$(set)
-  /bin/bash -c "$x; $handler $*"
+  /bin/bash -l -c "$x; $handler $*"
 done
