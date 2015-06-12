@@ -4,7 +4,7 @@ set -x
 
 PROJECT_REPO=https://github.com/steigr/team
 
-make_prefix() { mkdir "$(dirname $1)"; echo "$1"; }
+make_prefix() { mkdir "$(dirname $1)" 2>/dev/null; echo "$1"; }
 prefix()      { make_prefix "${PREFIX:-/opt/lib/team}"; }
 has_git()     { test -d $(prefix)/.git; }
 git_update()  { (cd $(prefix); git pull origin master); }
