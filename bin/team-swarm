@@ -20,6 +20,7 @@ case "$1" in
     $TEAM serf query -tags swarm-token=true swarm-token
   ;;
   create-token)
-    [[ "$($TEAM docker bound tcp)" ]] || $TEAM docker bind tcp
+    $TEAM docker bind tcp
+    token=$(docker run --net=host swarm create)
   ;;
 esac
