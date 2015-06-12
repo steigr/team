@@ -10,7 +10,7 @@ _ranch_normalize() {
 
 ranch() {
   RANCH=${RANCH:-$(grep '^RANCH=' /etc/environment | cut -f2- -d'=')}
-  RANCH=${RANCH:-$(domainname)}
+  RANCH=${RANCH:-$(hostname -a | cut -f2- -d".")}
   RANCH=${RANCH:-$(_ranch_default)}
   echo $RANCH | _ranch_normalize
 }
