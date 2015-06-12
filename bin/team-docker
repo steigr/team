@@ -4,15 +4,25 @@ set -x
 
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/docker.lib
+. $TEAM_LIB/coreos.lib
 
 arg=$1
 shift
 
 case "$arg" in
+  tcp-unit)
+    docker_write_tcp_unit $(coreos_unit socket docker-tcp)
+  ;;
+  tcp-enable)
+    coreos_stop docker
+    coreos_socket docker-tcp
+  ;;
   bind)
     case "$1" in
       tcp)
         echo "Binding to $(docker_tcp_port)"
+        $TEAM docker tcp-unit
+        $TEAM docker tcp-enable
       ;;
     esac
   ;;

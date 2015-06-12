@@ -1,4 +1,21 @@
 
+. $TEAM_LIB/coreos.lib
+
 docker_tcp_port() {
   echo "4375"
+}
+
+docker_write_tcp_unit() {
+  cat <<EO_DOCKER_UNIT | tee $1
+[Unit]
+Description=Docker Socket for the API
+
+[Socket]
+ListenStream=$(docker_tcp_port)
+BindIPv6Only=both
+Service=docker.service
+
+[Install]
+WantedBy=sockets.target
+EO_DOCKER_UNIT
 }

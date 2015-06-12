@@ -30,3 +30,7 @@ coreos_init() {
     ;;
   esac
 }
+
+coreos_socket() {
+  systemctl enable $1.socket
+}
