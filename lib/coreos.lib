@@ -1,5 +1,15 @@
 coreos_unit() {
-  echo "/etc/systemd/system/$1"
+  if [[ $# -gt 2 ]]; then
+    unit="${2}.${1}"
+    case "$1" in
+      socket)
+        sd_dir="/etc/systemd"
+      ;;
+    esac
+  else
+    unit="${1}.service"
+  fi
+  echo "${sd_dir:-/etc/systemd/system}/${unit}"
 }
 
 coreos_start() {

@@ -16,7 +16,7 @@ case "$1" in
     echo "$(serf_bin) agent -config-file=$(serf_config_file)"    
   ;;
   unit)
-    cat<<EO_UNIT
+    cat<<EO_UNIT | tee $(coreos_unit service serf)
 [Unit]
 Description=Serf Cluster Discovery and Event Processing
 [Service]
