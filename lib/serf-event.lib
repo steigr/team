@@ -1,0 +1,8 @@
+
+serf_event_handlers() {
+  find /opt/lib/team/lib/../handlers -type f -name '*.handler' | sort
+}
+
+serf_event_register_handler() {
+  $SERF_HANDLERS="$1;$2;$3"
+}

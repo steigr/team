@@ -1,8 +1,8 @@
 #!/bin/sh
 
-. $TEAM_LIB/serf.lib
+. $TEAM_LIB/serf-event.lib
 
-serf_handlers | while read handler; do
+serf_event_handlers | while read handler; do
   echo "Running $handler" >2
   $handler $*
 done

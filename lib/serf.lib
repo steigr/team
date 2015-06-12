@@ -68,7 +68,3 @@ ExecStart=$($TEAM serf command)
 EO_UNIT
   coreos_init reload
 }
-
-serf_handlers() {
-  find /opt/lib/team/lib/../handlers -type f -name '*.handler' | sort
-}

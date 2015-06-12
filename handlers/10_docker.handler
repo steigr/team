@@ -2,6 +2,10 @@
 
 case "$SERF_EVENT" in
   user)
-    test "$SERF_USER_EVENT" = "user:docker-bind-tcp" && $TEAM docker bind tcp
+    case "$SERF_USER_EVENT" in
+      user:docker-bind-tcp)
+        $TEAM docker bind tcp
+      ;;
+    esac
   ;;
 esac
