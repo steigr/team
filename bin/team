@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -x
+
 PROJECT_REPO=https://github.com/steigr/team
 
 make_prefix() { mkdir "$(dirname $1)" 2>/dev/null; echo "$1"; }
@@ -19,7 +20,7 @@ is_linked()   { test -L $(opt_script); }
 
 has_git    || git_clone
 is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
-abs_called || ( git_update; abs_call $*; exit $?; )
+abs_called || ( git_update; echo "$(abs_call); abs_call $*; exit $?; )
 
 cmd=$(module $*); shift
 has_module $cmd || exit 1
