@@ -1,16 +1,25 @@
-#!/bin/sh
+#!/bin/bash
 
 set -x
 
 PROJECT_REPO=https://github.com/steigr/team
-PREFIX=${PREFIX:-/opt/lib/team}
 
-mkdir -p $(dirname $PREFIX)
-test -d $PREFIX/.git && (cd $PREFIX; git pull origin master >/dev/null) || git clone "$PROJECT_REPO" $PREFIX
+make_prefix() { mkdir "$(dirname $1)"; echo "$1"; }
+prefix()      { make_prefix "${PREFIX:-/opt/lib/team}"; }
+has_git()     { test -d $(prefix)/.git; }
+git_update()  { (cd $(prefix); git pull origin master); }
+git_clone()   { (git clone "$PROJECT_REPO" $(prefix) ); }
+team_script() { echo "$(prefix)/bin/team" }
+abs_called()  { test "x$0" = "x$(team_script)"; }
+abs_call()    { $(team-script); }
+module_()     { echo "$(team-script)-${1:-serf-event}" }
+has_module()  { test -x "$1"; }
+team_lib()    { echo "$(prefix)/lib"; }
 
-[[ "$PREFIX/bin/team" = "$0" ]] || $PREFIX/bin/team $*
+has_git    || git_clone
+abs_called || git_update
+abs_called || ( abs_call $*; exit $?; )
 
-cmd="$PREFIX/bin/team-${1:-serf-event}"; shift
-[[ ! -f "$cmd" ]] && exit 1
-TEAM_LIB=$(dirname $(readlink $0|| echo $0))/../lib $cmd $*
-exit $?
+cmd=$(module $*); shift
+has_module $cmd || exit 1
+TEAM_LIB=$(team_lib) $cmd $*; exit $?

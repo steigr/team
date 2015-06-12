@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -x
+
+. $TEAM_LIB/team.lib
+
+$TEAM serf start
