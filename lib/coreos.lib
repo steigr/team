@@ -1,5 +1,5 @@
 coreos_unit() {
-  if [[ $# -gt 2 ]]; then
+  if [[ $# -ge 2 ]]; then
     unit="${2}.${1}"
     case "$1" in
       socket)
