@@ -19,7 +19,11 @@ is_linked()   { test -L $(opt_script); }
 
 has_git    || git_clone
 is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
-abs_called || ( git_update; /bin/sh -c "$(team_script) $*; exit $?"; exit $? )
+if ! abs_called; then
+  git_update
+  /bin/sh -c "$(team_script) $*; exit $?"
+  exit $?
+fi
 
 cmd=$(module $*); shift
 has_module $cmd || exit 1
