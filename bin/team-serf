@@ -50,5 +50,6 @@ Description=Serf Cluster Discovery and Event Processing
 ExecStartPre=$TEAM serf config
 ExecStart=$($TEAM serf command)
 EO_UNIT
+    coreos_init reload
   ;;
 esac
