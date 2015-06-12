@@ -35,3 +35,31 @@ serf_snapshot() {
   mkdir -p "$_snapshot"
   echo "$_snapshot/snapshot"
 }
+serf_write_config() {
+    cat<<EO_CONFIG | tee $1
+{
+  "discover":"$(ranch)",
+  "tags":{
+    "coreos":"true"
+  },
+  "node_name":"$(hostname -s)",
+  "snapshot_path":"$(serf_snapshot)",
+  "rejoin_after_leave":true,
+  "disable_name_resolution":true,
+  "event_handlers":[
+    "$TEAM"
+  ]
+}
+EO_CONFIG
+}
+
+serf_write_unit() {
+  cat<<EO_UNIT | tee $1
+[Unit]
+Description=Serf Cluster Discovery and Event Processing
+[Service]
+ExecStartPre=$TEAM serf config
+ExecStart=$($TEAM serf command)
+EO_UNIT
+  coreos_init reload
+}
