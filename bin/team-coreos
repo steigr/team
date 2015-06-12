@@ -15,4 +15,7 @@ case "$arg" in
   start)
     systemctl start $1
   ;;
+  stop)
+    systemctl stop $1
+  ;;
 esac

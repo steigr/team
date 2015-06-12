@@ -27,8 +27,11 @@ case "$1" in
     serf_write_config $(serf_config_file)
   ;;
   start)
-    $TEAM serf config
     $TEAM serf unit
     $TEAM coreos start serf.service
+  ;;
+  restart)
+    $TEAM coreos stop serf.service
+    $TEAM serf start
   ;;
 esac
