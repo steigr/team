@@ -19,7 +19,7 @@ serf_install() {
 }
 
 serf_bin() {
-  test -x $(which serf) && _serf_bin=$(which serf)
+  test -x $(which serf) >/dev/null 2>/dev/null && _serf_bin=$(which serf)
   test -x $(_default_serf_bin) && _serf_bin=$(_default_serf_bin)
   test "x" = "x$_serf_bin" && serf_install
   echo $_serf_bin
