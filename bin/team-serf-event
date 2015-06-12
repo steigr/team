@@ -7,5 +7,8 @@ set -x
 
 serf_event_handlers | while read handler; do
   echo "Running $handler" >2
-  /bin/bash -l -c "$handler $*"
+  SERF_EVENT_ENVIRONMENT=$(serf_event_environment)
+  TEAM=$TEAM \
+  TEAM_LIB=$TEAM_LIB \
+  /bin/bash -c "$SERF_EVENT_ENVIRONMENT; $handler $*"
 done
