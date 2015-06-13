@@ -62,8 +62,8 @@ _dokku_base_container() {
 
 _dokku_build_container() {
   cnt=$(_dokku_container_name)
-  /usr/bin/docker stop -t10 $cnt
-  /usr/bin/docker rm $cnt
+  /usr/bin/docker stop -t10 $cnt >/dev/null
+  /usr/bin/docker rm $cnt >/dev/null
   docker images | grep "^dokku " && base_image=dokku
   base_image=${base_image:-ubuntu:latest}
   /usr/bin/docker run -d -t --privileged --name $cnt -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $base_image /bin/sh
@@ -72,10 +72,10 @@ _dokku_build_container() {
     docker exec -t $cnt /bin/sh -l -c "$cmd"
   done
   set +e
-  /usr/bin/docker stop -t2 $cnt
+  /usr/bin/docker stop -t2 $cnt >/dev/null
   id=$(/usr/bin/docker commit -f $cnt)
-  /usr/bin/docker tag $id dokku
-  /usr/bin/docker rm $cnt
+  /usr/bin/docker tag $id dokku >/dev/null
+  /usr/bin/docker rm $cnt >/dev/null
 }
 
 _dokku_unit_write() {
