@@ -1,0 +1,7 @@
+find $TEAM_LIB -type f -name '*.lib' | while read lib;
+  . $lib
+done
+
+debug_function() {
+  $*
+}
