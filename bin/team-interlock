@@ -26,7 +26,7 @@ case "$arg" in
     coreos_stop interlock.service
   ;;
   environment)
-    env_file=${1:-/run/interlock/env}
+    env_file=${1:-$(interlock_environment_file)}
     interlock_write_environment $env_file
     cat $env_file
   ;;
