@@ -9,6 +9,10 @@ $TEAM serf      restart
 
 $TEAM bee       install
 $TEAM swarm     install
+
+$TEAM etcd      configure
+$TEAM flanneld  configure
+
 $TEAM interlock install
 $TEAM registry  install
 
