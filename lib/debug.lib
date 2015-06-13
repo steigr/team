@@ -1,4 +1,4 @@
-find $TEAM_LIB -type f -name '*.lib' | while read lib; do
+for lib in $(ls $TEAM_LIB/*.lib); do
   echo "Loading $lib"
   require $lib
 done
