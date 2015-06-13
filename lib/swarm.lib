@@ -38,7 +38,7 @@ swarm_local-token() {
 }
 
 swarm_environment() {
-  env_file={$1:-$(_swarm_environment_file)}
+  env_file=${1:-$(_swarm_environment_file)}
   mkdir -p $(dirname $env_file)
   token=$(swarm_token)
   test -z $token && token=$(swarm_local-token)
