@@ -3,6 +3,7 @@
 . $TEAM_LIB/dokku.lib
 
 ssl_populate-interlock() {
+  mkdir -p "$(_interlock_ssl_dir)"
   _dokku_apps | while read appname; do
     CERT=$(find /home/dokku/$appname/tls -type f -name server.crt)
     KEY=$(find /home/dokku/$appname/tls -type f -name server.key)
