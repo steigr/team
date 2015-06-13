@@ -50,17 +50,21 @@ ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
 ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=/bin/sh -c ". $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_ARGS"
+ExecStart=/bin/sh -c "$TEAM interlock docker-command"
 ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
+}
+
+interlock_docker-command() {
+  INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375
+  INTERLOCK_PLUGIN=$(_interlock_plugin_name)
+  INTERLOCK_PLUGIN_ARGS=$(_interlock_plugin_args)
+  echo "/usr/bin/docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url $INTERLOCK_SWARM_URL --plugin $INTERLOCK_PLUGIN start $INTERLOCK_PLUGIN_ARGS"
 }
 
 _interlock_write_environment() {
   mkdir -p $(dirname $1)
   cat<<EO_INTERLOCK_ENV | tee $1
-INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375
-INTERLOCK_PLUGIN=$(_interlock_plugin_name)
-INTERLOCK_PLUGIN_ARGS=$(_interlock_plugin_args)
 HAPROXY_SSL_CERT=$(_interlock_balancer_cert)
 HAPROXY_SSL_OPTS=crt /ssl no-sslv3 ciphers EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS
 EO_INTERLOCK_ENV
