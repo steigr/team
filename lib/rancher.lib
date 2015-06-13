@@ -1,5 +1,4 @@
-_RANCHER_LIB=true
-. $TEAM_LIB/network.lib
+require network
 
 _ranch_default() {
   echo "ranch"

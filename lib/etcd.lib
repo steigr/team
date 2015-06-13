@@ -1,8 +1,6 @@
-_ETCD_LIB=true
-
-. $TEAM_LIB/serf.lib
-. $TEAM_LIB/network.lib
-. $TEAM_LIB/coreos.lib
+require serf
+require network
+require coreos
 
 etcd_update() {
   etcd_stop

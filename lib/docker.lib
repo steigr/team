@@ -1,5 +1,4 @@
-_DOCKER_LIB=true
-. $TEAM_LIB/coreos.lib
+require coreos
 
 _docker_tcp_port() {
   echo "4375"

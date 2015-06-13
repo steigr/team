@@ -1,6 +1,4 @@
-_SERF_LIB=true
-
-. $TEAM_LIB/platform.lib
+require platform
 
 _default_serf_bin() {
   echo $PREFIX/bin/serf

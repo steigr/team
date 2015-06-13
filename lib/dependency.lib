@@ -1,5 +1,3 @@
-_DEPENDENCY_LIB=true
-
 _lib_var() {
   echo "_$(echo $1 | tr "[:lower:]" "[:upper:]")_LIB"
 }

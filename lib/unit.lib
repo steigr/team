@@ -1,5 +1,3 @@
-_UNIT_LIB=true
-
 UNIT_PATH="$(dirname $(dirname $0))/units"
 
 unit() {

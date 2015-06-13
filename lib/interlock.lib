@@ -1,7 +1,6 @@
-_INTERLOCK_LIB=true
-[[ -z "$_TEAM_LIB" ]]    && . $TEAM_LIB/team.lib
-[[ -z "$_COREOS_LIB" ]]  && . $TEAM_LIB/coreos.lib
-[[ -z "$_NETWORK_LIB" ]] && . $TEAM_LIB/network.lib
+require team
+require coreos
+require network
 
 interlock_install() {
   _interlock_write_unit $(coreos_unit interlock)

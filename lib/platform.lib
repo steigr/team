@@ -1,5 +1,3 @@
-_PLATFORM_LIB=true
-
 platform() {
   uname -s | tr '[:upper:]' '[:lower:]'
 }

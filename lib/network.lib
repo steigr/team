@@ -1,4 +1,3 @@
-_NETWORK_LIB=true
 _excluded_interfaces() {
   echo "lo|docker|flannel"
 }

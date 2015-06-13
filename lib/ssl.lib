@@ -1,8 +1,6 @@
-_SSL_LIB=true
-
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/interlock.lib
-. $TEAM_LIB/dokku.lib
+require team
+require interlock
+require dokku
 
 ssl_populate-interlock() {
   test -f "$(_interlock_host_balancer_cert)" || ssl_snakeoil "$(_interlock_host_balancer_cert)"

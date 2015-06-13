@@ -1,9 +1,7 @@
-_REGISTRY_LIB=true
-
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/serf.lib
-. $TEAM_LIB/network.lib
-. $TEAM_LIB/coreos.lib
+require team
+require serf
+require network
+require coreos
 
 registry_install() {
   registry_stop

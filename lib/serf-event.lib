@@ -1,5 +1,3 @@
-_SERF_EVENT_LIB=true
-
 serf_event_handlers() {
   find /opt/lib/team/lib/../handlers -type f -name '*.handler' | sort
 }

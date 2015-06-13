@@ -1,6 +1,4 @@
-_SSH_LIB=true
-
-. $TEAM_LIB/coreos.lib
+require coreos
 
 ssh_rebind() {
   ssh_stop
