@@ -1,0 +1,45 @@
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/coreos.lib
+. $TEAM_LIB/docker.lib
+
+zookeeper_update() {
+  zookeeper_stop
+  zookeeper_install
+}
+
+zookeeper_install() {
+  _zookeeper_write_unit $(coreos_unit zookeeper)
+}
+
+zookeeper_start() {
+  coreos_start zookeeper
+}
+
+zookeeper_stop() {
+  coreos_stop zookeeper
+}
+
+zookeeper_id() {
+  _docker_ids_by_image "steigr/zookeeper" | head -1
+}
+
+zookeeper_ip() {
+  _docker_ip $(zookeeper_id)
+}
+
+_zookeeper_write_unit() {
+  cat <<EO_ZOOKEEPER_UNIT | tee $1 >/dev/null
+[Unit]
+Description=Apache Zookeeper Distributed Key-Value-Store
+[Service]
+ExecStart=/usr/bin/docker run -v$(_zookeeper_config_file):/app/conf/zoo.cfg -v $(_zookeeper_data_dir):/app/data --rm steigr/zookeeper
+EO_ZOOKEEPER_UNIT
+}
+
+_zookeeper_config_file() {
+  echo "/run/zookeeper/config"
+}
+
+_zookeeper_data_dir() {
+  echo "/var/lib/zookeeper"
+}

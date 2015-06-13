@@ -19,3 +19,21 @@ Service=docker.service
 WantedBy=sockets.target
 EO_DOCKER_UNIT
 }
+
+_docker_id_by_name() {
+  docker inspect --format '{{ .Id }}' $1
+}
+
+_docker_ids_by_image() {
+  if [[ $# -eq 2 ]]; then
+    op=$1
+    image=$2
+  else
+    image=$1
+  fi
+  docker ps $op | awk '{print $1 "  " $2}' | grep " $image" | awk '{print $1}'
+}
+
+_docker_ip() {
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $1
+}
