@@ -48,6 +48,14 @@ registry_halt() {
   done
 }
 
+registry_remove() {
+  while : ; do
+    id=$(_registry_id -a)
+    [[ -z "$id" ]] && exit 0
+    /usr/bin/docker rm $id
+  done
+}
+
 _registry_container_name() {
   echo "registry"
 }
@@ -57,7 +65,7 @@ _registry_write_unit() {
 [Unit]
 Description=Docker Distribution Registry
 [Service]
-ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
+ExecStartPre=-$TEAM registry remove
 ExecStartPre=$TEAM registry env
 ExecStart=/usr/bin/docker run -d -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_container_name).$(domainname) registry:2
 ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
