@@ -62,7 +62,7 @@ _dokku_base_container() {
 
 _dokku_build_container() {
   cnt=$(_dokku_container_name)
-  /usr/bin/docker stop -t10 $cnt >/dev/null
+  /usr/bin/docker stop -t 10 $cnt >/dev/null
   /usr/bin/docker rm $cnt >/dev/null
   docker images | grep "^dokku " && base_image=dokku
   base_image=${base_image:-ubuntu:latest}
@@ -72,7 +72,7 @@ _dokku_build_container() {
     docker exec -t $cnt /bin/sh -l -c "$cmd"
   done
   set +e
-  /usr/bin/docker stop -t2 $cnt >/dev/null
+  /usr/bin/docker stop -t 2 $cnt >/dev/null
   id=$(/usr/bin/docker commit -f $cnt)
   /usr/bin/docker tag $id dokku >/dev/null
   /usr/bin/docker rm $cnt >/dev/null
