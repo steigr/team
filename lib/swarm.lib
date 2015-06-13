@@ -34,7 +34,7 @@ swarm_create-token() {
 }
 
 swarm_local-token() {
-  cat $(_swarm_token_file)
+  echo "$(_swarm_token_var)$(cat $(_swarm_token_file))"
 }
 
 swarm_environment() {
