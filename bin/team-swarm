@@ -22,10 +22,7 @@ case "$arg" in
     echo "Pulling Discovery Token"
     token=$(swarm_token_read)
     token=${token:-$(swarm_token_receive)}
-    # token=$(swarm_receive_token)
-    # [[ -z "$token" ]] && token=$(swarm_create_token)
-    # if [[ 0 -eq $($TEAM serf count-nodes -tag swarm-token=true) ]]
-    # $TEAM serf query -tags swarm-token=true swarm-token
+    echo $token
   ;;
   create-token)
     $TEAM docker bind tcp
