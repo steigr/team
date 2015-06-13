@@ -3,8 +3,6 @@ require coreos
 require serf
 require docker
 
-set -x
-
 dokku_start() {
   _dokku_start_container
 }
