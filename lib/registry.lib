@@ -36,6 +36,7 @@ registry_cluster-ip() {
 registry_env() {
   mkdir -p $(dirname $(_registry_env_file)) >/dev/null
   cat<<EO_REGISTRY_ENVIRONMENT | tee $(_registry_env_file) >/dev/null
+INTERLOCK_DATA='{"ssl":true,ssl_only":true}'
 REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=$(_registry_store)
 EO_REGISTRY_ENVIRONMENT
 }
