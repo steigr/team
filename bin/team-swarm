@@ -38,4 +38,10 @@ case "$arg" in
     $TEAM swarm frontend-unit
     $TEAM swarm annoucement-unit
   ;;
+  local-token)
+    swarm_token_read
+  ;;
+  *)
+    DOCKER_HOST=tcp://$(private_ipv4_address) docker $*
+  ;;
 esac
