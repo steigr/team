@@ -4,7 +4,7 @@
 
 $TEAM ssh       rebind
 $TEAM serf      restart
-
+$TEAM zookeeper install
 $TEAM interlock install
 $TEAM dokku     install
 $TEAM registry  install
