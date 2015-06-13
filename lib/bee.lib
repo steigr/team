@@ -3,6 +3,8 @@
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
 
+set -x
+
 bee_update() {
   bee_stop
   bee_install
