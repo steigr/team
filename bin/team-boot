@@ -10,4 +10,6 @@ $TEAM interlock install
 $TEAM registry  install
 
 $TEAM zookeeper install
+
 $TEAM dokku     install
+$TEAM dokku     nerve

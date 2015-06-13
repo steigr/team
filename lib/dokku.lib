@@ -2,7 +2,7 @@
 . $TEAM_LIB/coreos.lib
 . $TEAM_LIB/serf.lib
 
-_dokku_test() { true; }
+set -x
 
 dokku_start() {
   _dokku_start_container
@@ -159,7 +159,7 @@ _dokku_nerve_ssh_path() {
 }
 
 _dokku_nerve_json() {
-  echo "{'instance_id':'$(serf_node_name)','services':{'ssh':{'host': '1.2.3.4','port':22,'reporter_type':'zookeeper','zk_hosts': ['$($TEAM zookeeper ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
+  echo "{'instance_id':'$(serf_node_name)','services':{'ssh':{'host': '$(_docker_ip $(_dokku_container_name))','port':22,'reporter_type':'zookeeper','zk_hosts': ['$($TEAM zookeeper ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
   sed -e "s:':\":g" | tee $(_dokku_nerve_config) > /dev/null
 }
 
