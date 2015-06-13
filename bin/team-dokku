@@ -4,6 +4,8 @@
 
 _dokku_test 2>/dev/null
 
+set -x
+
 arg=$1
 shift
 
