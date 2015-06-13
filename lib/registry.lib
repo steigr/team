@@ -38,7 +38,7 @@ _registry_container_name() {
 }
 
 _registry_write_unit() {
-  cat<<EO_REGISTRY_UNIT
+  cat<<EO_REGISTRY_UNIT | tee $1 >/dev/null
 [Unit]
 Description=Docker Distribution Registry
 [Service]
@@ -47,6 +47,7 @@ ExecStart=/usr/bin/docker run -d -P -e INTERLOCK_DATA='{"ssl_only":true}' -v $(_
 ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
 ExecStop=-/usr/bin/docker stop $(_registry_container_name)
 EO_REGISTRY_UNIT
+  coreos_init reload
 }
 
 _registry_ip_file() {
