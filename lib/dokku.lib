@@ -104,6 +104,7 @@ Requires=dokku.service
 After=dokku.service
 [Service]
 Restart=always
+Environment=$(coreos_early_docker_env)
 ExecStartPre=$TEAM dokku nerve-config
 ExecStart=/usr/bin/docker exec $(_dokku_container_name) nerve -c /etc/nerve.json
 EO_DOKKU_NERVE_UNIT

@@ -2,7 +2,7 @@
 
 ssh_rebind() {
   ssh_stop
-  _ssh_unit $(coreos_unit socket sshd)
+  ssh_unit
   ssh_start
 }
 
@@ -24,14 +24,13 @@ ssh_port() {
 }
 
 ssh_unit() {
-  _ssh_unit $(coreos_unit socket sshd)
+  _ssh_unit
 }
 
 _ssh_unit() {
-  cat<<EO_SSH_SOCKET_UNIT | tee $1
+  _coreos_write_unit $(coreos_unit socket sshd) <<EO_SSH_SOCKET_UNIT
 [Socket]
 ListenStream=$(ssh_port)
 Accept=yes
 EO_SSH_SOCKET_UNIT
-  coreos_init reload
 }
