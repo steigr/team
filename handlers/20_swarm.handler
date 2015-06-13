@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. $TEAM_LIB/swarm.lib
-
 case "$SERF_EVENT" in
   query)
     case "$SERF_QUERY_NAME" in
