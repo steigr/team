@@ -89,7 +89,7 @@ _dokku_build_container() {
 }
 
 _dokku_unit_write() {
-  coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
+  _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
 [Unit]
 Description=Dokku PaaS
 Requires=early-docker.service
