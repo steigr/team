@@ -13,7 +13,7 @@ _dokku_container_name() {
 }
 
 _dokku_start_container() {
-  $coreos_early_docker run -d --privileged --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container)
+  coreos_early_docker run -d --privileged --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container)
 }
 
 _dokku_authorized_keys() {
@@ -33,7 +33,7 @@ _dokku_base_container() {
 }
 
 _dokku_install_core() {
-  $coreos_early_docker exec $(_dokku_container_name) "$(_dokku_core_install_command)"
+  coreos_early_docker exec $(_dokku_container_name) "$(_dokku_core_install_command)"
 }
 
 _dokku_core_install_command() {
