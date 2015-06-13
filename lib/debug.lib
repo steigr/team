@@ -1,4 +1,4 @@
-find $TEAM_LIB -type f -name '*.lib' | while read lib;
+find $TEAM_LIB -type f -name '*.lib' | while read lib; do
   . $lib
 done
 
