@@ -5,12 +5,13 @@ interlock_write_unit() {
   cat<<EO_INTERLOCK_UNIT | tee $1
 [Unit]
 Description=Interlock Load-Balancer
-Requires=docker.service swarm.service
-After=docker.service swarm.service
+Requires=early-docker.service
+After=early-docker.service
 [Service]
+Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm interlock
 ExecStartPre=$TEAM interlock environment $(interlock_environment_file)
-ExecStart=/bin/sh -c '. $(interlock_environment_file); docker run --rm -p \$INTERLOCK_HTTP_BIND -p \$INTERLOCK_HTTPS_BIND --name=interlock ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_OPTIONS'
+ExecStart=/bin/sh -c '. $(interlock_environment_file); docker run --env-file=$(interlock_environment_file) --net=host --rm --name=interlock ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_OPTIONS'
 ExecStop=-/usr/bin/docker stop interlock
 EO_INTERLOCK_UNIT
   coreos_init reload
@@ -19,11 +20,13 @@ EO_INTERLOCK_UNIT
 interlock_write_environment() {
   mkdir -p $(dirname $1)
   echo -n > $1
-  echo "INTERLOCK_HTTP_BIND=$(public_ipv4_address):80:80" >> $1
-  echo "INTERLOCK_HTTPS_BIND=$(public_ipv4_address):443:443" >> $1
+  # echo "INTERLOCK_HTTP_BIND=$(public_ipv4_address):80:80" >> $1
+  # echo "INTERLOCK_HTTPS_BIND=$(public_ipv4_address):443:443" >> $1
   echo "INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375" >> $1
   echo "INTERLOCK_PLUGIN=$(interlock_plugin_name)" >> $1
   echo "INTERLOCK_PLUGIN_OPTIONS=$(interlock_plugin_options)" >> $1
+  echo "HAPROXY_PORT=80" >> $1
+  echo "HAPROXY_SSL_PORT=443" >> $1
 }
 
 interlock_plugin_name() {
