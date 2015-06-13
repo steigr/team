@@ -4,7 +4,8 @@
 . $TEAM_LIB/coreos.lib
 
 _registry_test() {
-  [[ -z "$(_serf_query registry-ip)" ]] || exit 1
+  true
+  # [[ -z "$(TIMEOUT=6s _serf_query registry-ip | grep ^REGISTRY_IP= )" ]] || exit 1
 }
 
 registry_install() {
