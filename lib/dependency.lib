@@ -1,5 +1,5 @@
 _lib_var_name() {
-  echo "_$(echo $1 | tr "[:lower:]" "[:upper:]")_LIB"
+  echo "_$(echo $1 | tr "[:lower:]" "[:upper:]" | sed -e 's:-:_:g')_LIB"
 }
 
 _lib_var() {
