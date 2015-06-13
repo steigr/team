@@ -71,7 +71,7 @@ _dokku_build_container() {
   done
   set +e
   /usr/bin/docker stop $cnt
-  id=$(/usr/bin/docker commit $cnt)
+  id=$(/usr/bin/docker commit -f $cnt)
   /usr/bin/docker tag $id dokku
   /usr/bin/docker rm $cnt
 }
