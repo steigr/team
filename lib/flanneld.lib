@@ -21,11 +21,11 @@ flanneld_stop() {
 }
 
 _flanneld_config_present() {
-  test -z "$(_etcd_get $(_flanneld_etcd_path))"
+  test -z "$(_etcd_get "$(_flanneld_etcd_path)")"
 }
 
 _flanneld_write_config() {
-  _etcd_set $(_flanneld_etcd_path) $(_flanneld_json)
+  _etcd_set "$(_flanneld_etcd_path)" "$(_flanneld_json)"
 }
 
 _flanneld_etcd_path() {
