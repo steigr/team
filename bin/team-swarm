@@ -36,4 +36,8 @@ case "$arg" in
     echo "SWARM_ADDR=tcp://$(private_ipv4_address):$(docker_tcp_port)" >> /run/swarm/env
     echo "SWARM_DISCOVERY=$($TEAM swarm token)" >> /run/swarm/env
   ;;
+  install|update)
+    $TEAM frontend-unit
+    $TEAM annoucement-unit
+  ;;
 esac
