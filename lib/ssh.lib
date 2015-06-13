@@ -11,7 +11,7 @@ ssh_stop() {
 }
 
 ssh_start() {
-  coreos_stop sshd 
+  coreos_start sshd 
 }
 
 ssh_reload() {
