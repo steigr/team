@@ -50,7 +50,7 @@ ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
 ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=/bin/sh -c "$TEAM interlock docker-command"
+ExecStart=/bin/sh -c "\$($TEAM interlock docker-command)"
 ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
 }
