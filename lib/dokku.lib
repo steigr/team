@@ -133,7 +133,7 @@ echo dokku dokku/hostname string dokku.me | debconf-set-selections
 echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
-gem install nerve
+gem install nerve --no-ri --no-rdoc
 DOKKU_INSTALL_CORE_COMMANDS
 }
 
