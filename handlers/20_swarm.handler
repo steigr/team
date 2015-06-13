@@ -1,12 +1,5 @@
 #!/bin/bash
 
-case "$SERF_EVENT" in
-  query)
-    case "$SERF_QUERY_NAME" in
-      swarm-token)
-        $TEAM swarm token
-        exit 0
-      ;;
-    esac
-  ;;
-esac
+. $TEAM_LIB/serf-event.lib
+
+serf_event_is query swarm-token && $TEAM swarm token

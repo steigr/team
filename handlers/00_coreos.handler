@@ -1,8 +1,5 @@
 #!/bin/sh
 
-case "$SERF_EVENT" in
-  member-join)
-    echo "New Member is CoreOS-Cluster"
-    $TEAM serf event docker-bind-tcp
-  ;;
-esac
+. $TEAM_LIB/serf-event.lib
+
+serf_event_is member-join && $TEAM serf event docker-bind-tcp
