@@ -43,7 +43,7 @@ _registry_write_unit() {
 Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
-ExecStart=/usr/bin/docker run -d -P -e INTERLOCK_DATA='{"ssl_only":true}' --hostname=$(_registry_container_name).$(domainname) registry:2)
+ExecStart=/usr/bin/docker run -d -P -e INTERLOCK_DATA='{"ssl_only":true}' -v $(_registry_store):$(_registry_store) --hostname=$(_registry_container_name).$(domainname) registry:2)
 ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
 ExecStop=-/usr/bin/docker stop $(_registry_container_name)
 EO_REGISTRY_UNIT
@@ -55,4 +55,8 @@ _registry_ip_file() {
 
 _registry_ip_var() {
   echo "REGISTRY_IP="
+}
+
+_registry_store() {
+  echo "/var/lib/registry"
 }
