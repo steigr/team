@@ -29,7 +29,7 @@ registry_ip() {
 }
 
 registry_clusterip() {
-  TIMEOUT=6s _serf_query registry-ip | grep ^REGISTRY_IP=
+  TIMEOUT=3s _serf_query registry-ip | grep ^REGISTRY_IP=
 }
 
 _registry_container_name() {
