@@ -70,11 +70,11 @@ _dokku_build_container() {
   set -e
   _dokku_core_install_command | while read cmd; do
     docker exec -t $cnt /bin/sh -l -c "$cmd"
-    /usr/bin/docker commit --pause -f $cnt
+    /usr/bin/docker commit --pause $cnt
   done
   set +e
   /usr/bin/docker stop -t 2 $cnt >/dev/null
-  id=$(/usr/bin/docker commit -f $cnt)
+  id=$(/usr/bin/docker commit $cnt)
   /usr/bin/docker tag $id dokku >/dev/null
   /usr/bin/docker rm $cnt >/dev/null
 }
