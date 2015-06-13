@@ -49,6 +49,6 @@ case "$arg" in
     done
   ;;
   query)
-    $(serf_bin) query -timeout=${TIMEOUT:1s} $* | grep "^Response: " 
+    $(serf_bin) query -timeout=${TIMEOUT:-1s} $* | grep "^Response: " 
   ;;
 esac
