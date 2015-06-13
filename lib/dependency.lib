@@ -16,7 +16,7 @@ _loaded() {
 _load() {
   if [[ "x$(_lib_var $1)" != "xtrue" ]]; then
     _loaded $1
-    $TEAM_LIB/$1.lib
+    . $TEAM_LIB/$1.lib
   fi
 }
 
