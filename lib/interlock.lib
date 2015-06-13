@@ -5,7 +5,7 @@ interlock_write_unit() {
   cat<<EO_INTERLOCK_UNIT | tee $1
 [Unit]
 Description=Interlock Load-Balancer
-Requires=docker.service swarm.services
+Requires=docker.service swarm.service
 After=docker.service swarm.service
 [Service]
 ExecStartPre=-/usr/bin/docker rm interlock
