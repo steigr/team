@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. $TEAM_LIB/ssh.lib
+
+arg=$1
+shift
+
+ssh_$1 $*

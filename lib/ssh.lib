@@ -1,0 +1,33 @@
+. $TEAM_LIB/coreos.lib
+
+ssh_rebind() {
+  ssh_stop
+  _ssh_unit $(coreos_unit socket sshd)
+  ssh_start
+}
+
+ssh_stop() {
+  coreos_stop sshd
+}
+
+ssh_start() {
+  coreos_stop sshd 
+}
+
+ssh_reload() {
+  ssh_stop
+  ssh_start
+}
+
+ssh_port() {
+  echo "2220"
+}
+
+_ssh_unit() {
+  cat<<EO_SSH_SOCKET_UNIT | tee $1
+[Socket]
+ListenStream=$(ssh_port)
+Accept=yes
+EO_SSH_SOCKET_UNIT
+  coreos_init reload
+}
