@@ -2,8 +2,6 @@
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/coreos.lib
 
-set -x
-
 etcd_update() {
   etcd_stop
   etcd_install
