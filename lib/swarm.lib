@@ -14,7 +14,7 @@ After=early-docker.service
 Environment=$(coreos_early_docker)
 ExecStartPre=-/usr/bin/docker rm swarm
 ExecStartPre=$TEAM swarm environment /run/swarm/env
-ExecStart=/usr/bin/docker run --name=swarm --env-file=/run/swarm/env --net=host swarm manage $(_swarm_discovery)
+ExecStart=/usr/bin/docker run --name=swarm --env-file=/run/swarm/env --net=host swarm manage
 ExecStop=/usr/bin/docker stop swarm
 EO_FRONTEND_UNIT  
 }
@@ -29,7 +29,7 @@ After=early-docker.service
 Environment=$(coreos_early_docker)
 ExecStartPre=-/usr/bin/docker rm bee
 ExecStartPre=$TEAM swarm environment /run/swarm/env
-ExecStart=/usr/bin/docker run --name=bee --env-file=/run/swarm/env --net=host swarm join $(_swarm_discovery)
+ExecStart=/usr/bin/docker run --name=bee --env-file=/run/swarm/env --net=host swarm join
 ExecStop=/usr/bin/docker stop bee
 EO_ANNOUNCEMENT_UNIT  
 }
