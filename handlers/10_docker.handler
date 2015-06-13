@@ -2,4 +2,4 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is user docker-bind-tcp && $TEAM docker bind tcp
+serf_event_is user docker-bind-tcp && $TEAM docker bind tcp &>/dev/null &

@@ -2,4 +2,4 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is user interlock-update && $TEAM interlock update
+serf_event_is user interlock-update && $TEAM interlock update &>/dev/null &
