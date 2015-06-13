@@ -8,7 +8,17 @@ _registry_test() {
 }
 
 registry_install() {
+  registry_stop
   _registry_write_unit $(coreos_unit registry)
+  registry_start
+}
+
+registry_start() {
+  coreos_start registry 
+}
+
+registry_stop() {
+  coreos_stop registry 
 }
 
 registry_ip() {
