@@ -3,6 +3,7 @@
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/docker.lib
+. $TEAM_LIB/swarm.lib
 
 set -x
 
@@ -27,8 +28,14 @@ bee_stop() {
 bee_environment() {
   env_file={$1:-$(_bee_environment_file)}
   mkdir -p $(dirname $env_file)
+  token=$(swarm_token)
+  test -z $token && token=$(swarm_local-token)
+  test -z $token && token=$(swarm_create-token)
   echo "SWARM_ADDR=$(private_ipv4_address):$(_docker_tcp_port)" > $env_file
+  echo "SWARM_DISCOVERY=$token" >> $env_file
 }
+
+
 
 _bee_write_unit() {
   _coreos_write_unit $(coreos_unit bee) <<EO_BEE_UNIT
