@@ -25,6 +25,14 @@ registry_cluster-ip() {
   TIMEOUT=2s _serf_query registry-ip | grep $(_registry_ip_var) | head -n1 | awk -F$(_registry_ip_var) '{print $2}' | awk '{print $1}'
 }
 
+registry_env() {
+  mkdir -p $(dirname $(_registry_env_file)) >/dev/null
+  cat<<EO_REGISTRY_ENVIRONMENT | tee $(_registry_env_file) >/dev/null
+REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=$(_registry_store)
+INTERLOCK_DATA='{"ssl_only":true}'
+EO_REGISTRY_ENVIRONMENT
+}
+
 _registry_write_ip() {
   out=${1:-$(_registry_ip_file)}
   mkdir -p $(dirname $out)
@@ -43,12 +51,15 @@ _registry_write_unit() {
 Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
-ExecStart=/usr/bin/docker run -d -P -e INTERLOCK_DATA='{"ssl_only":true}' -v $(_registry_store):$(_registry_store) --hostname=$(_registry_container_name).$(domainname) registry:2
+ExecStartPre=$TEAM registry env
+ExecStart=/usr/bin/docker run -d -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_container_name).$(domainname) registry:2
 ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
 ExecStop=-/usr/bin/docker stop $(_registry_container_name)
 EO_REGISTRY_UNIT
   coreos_init reload
 }
+
+
 
 _registry_ip_file() {
   echo "/run/registry/ip"
@@ -60,4 +71,8 @@ _registry_ip_var() {
 
 _registry_store() {
   echo "/var/lib/registry"
+}
+
+_registry_env_file() {
+  echo "/run/registry/env"
 }

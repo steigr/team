@@ -2,4 +2,5 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query registry-ip && $TEAM registry ip
+serf_event_is query registry-ip  && $TEAM registry ip
+serf_event_is query registry-run && $TEAM registry install
