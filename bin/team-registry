@@ -1,5 +1,5 @@
 #!/bin/sh
-MODULE=ssh
+MODULE=registry
 
 . $TEAM_LIB/$MODULE.lib
 _${MODULE}_test 2>/dev/null

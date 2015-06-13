@@ -1,12 +1,10 @@
 #!/bin/sh
+MODULE=dokku
 
-. $TEAM_LIB/dokku.lib
-
-_dokku_test 2>/dev/null
-
-set -x
+. $TEAM_LIB/$MODULE.lib
+_${MODULE}_test 2>/dev/null
 
 arg=$1
 shift
 
-dokku_$arg $*
+${MODULE}_$arg $*

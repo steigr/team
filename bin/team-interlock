@@ -1,10 +1,10 @@
 #!/bin/sh
+MODULE=interlock
 
-. $TEAM_LIB/interlock.lib
-
-_interlock_test
+. $TEAM_LIB/$MODULE.lib
+_${MODULE}_test 2>/dev/null
 
 arg=$1
 shift
 
-interlock_$arg $*
+${MODULE}_$arg $*

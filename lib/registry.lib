@@ -1,0 +1,17 @@
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/serf.lib
+. $TEAM_LIB/network.lib
+
+_registry_test() {
+  [[ -z "$(_serf_query docker-registry-ip)" ]] || exit 1
+}
+
+_registry_write_unit() {
+  cat<<EO_REGISTRY_UNIT
+[Unit]
+Description=Docker Distribution Registry
+[Service]
+ExecStart=/usr/bin/docker run -d -P --hostname=registry.$(domainname) registry:2
+EO_REGISTRY_UNIT
+}
+
