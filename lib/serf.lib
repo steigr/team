@@ -68,3 +68,7 @@ ExecStart=$($TEAM serf command)
 EO_UNIT
   coreos_init reload
 }
+
+serf_check() {
+  [[ "x" = "x$($TEAM $1)" ]] && $TEAM serf unset $2 || $TEAM serf set $2=true
+}

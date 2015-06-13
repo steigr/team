@@ -57,7 +57,8 @@ case "$arg" in
     $(serf_bin) query -timeout=${TIMEOUT:-1s} $* | grep "^Response: " 
   ;;
   check)
-    [[ "x" = "x$($TEAM swarm local-token)"     ]] && $TEAM serf unset swarm-token || $TEAM serf set swarm-token=true
-    [[ "x" = "x$($TEAM swarm info 2>/dev/null)" ]] && $TEAM serf unset swarm       || $TEAM serf set swarm=true
+    set -x
+    serf_check "swarm local-token" swarm-token 
+    serf_check "swarm info 2>/dev/null" swarm
   ;;
 esac
