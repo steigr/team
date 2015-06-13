@@ -65,7 +65,7 @@ _dokku_build_container() {
 _dokku_unit_write() {
   cat<<EO_DOKKU_UNIT | tee $1
 [Unit]
-Desccription=Dokku PaaS
+Description=Dokku PaaS
 Requires=early-docker.service
 After=early-docker.service
 [Service]
