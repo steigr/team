@@ -33,7 +33,7 @@ etcd_token() {
 }
 
 _etcd_write_unit_dropin() {
-  dropin_file=$(_etcd_write_unit_dropin)
+  dropin_file=$(_etcd_unit_dropin_file)
   mkdir -p $(dirname $dropin_file)
   _coreos_write_unit $dropin_file <<EO_ETCD_UNIT_DROPIN
 [Service]
