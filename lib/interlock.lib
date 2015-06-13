@@ -28,7 +28,6 @@ interlock_environment() {
 }
 
 interlock_id() {
-  set -x
   coreos_early_docker inspect --format \"{{ .Id }}\" $(_interlock_container_name)
 }
 
