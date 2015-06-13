@@ -4,7 +4,7 @@
 _dokku_test() { true; }
 
 dokku_install() {
-  _dokku_remove_container
+  # _dokku_remove_container
   _dokku_start_container
   _dokku_install_core
 }
