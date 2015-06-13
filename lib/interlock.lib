@@ -27,6 +27,10 @@ interlock_environment() {
   cat $env_file
 }
 
+interlock_id() {
+  coreos_early_docker inspect --format '{{ .Id }}' $(_interlock_container_name)
+}
+
 _interlock_test() {
   [[ -z "$(public_ipv4_address)" ]] && exit 1 
 }
