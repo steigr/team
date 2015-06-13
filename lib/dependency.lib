@@ -9,7 +9,7 @@ _loaded() {
 }
 
 _load() {
-  [[ "x$(_lib_var $1)" = "xtrue" ]] || . $TEAM_LIB/$1.lib
+  [[ "x${!(_lib_var $1)}" = "xtrue" ]] || . $TEAM_LIB/$1.lib
   _loaded $1
 }
 
