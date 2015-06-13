@@ -26,6 +26,10 @@ registry_ip() {
   echo REGISTRY_IP="$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_container_name))"
 }
 
+registry_clusterip() {
+  TIMEOUT=6s _serf_query registry-ip | grep ^REGISTRY_IP=
+}
+
 _registry_container_name() {
   echo "registry"
 }
