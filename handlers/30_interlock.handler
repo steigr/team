@@ -1,11 +1,5 @@
 #!/bin/bash
 
-case "$SERF_EVENT" in
-  event)
-    case "$SERF_USER_EVENT" in
-      interlock-update)
-        $TEAM interlock update
-      ;;
-    esac
-  ;;
-esac
+. $TEAM_LIB/serf-event.lib
+
+serf_event_is user interlock-update && $TEAM interlock update

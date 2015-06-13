@@ -10,3 +10,20 @@ serf_event_register_handler() {
 serf_event_environment() {
  echo $(export | sed -e 's:^export ::g' -e 's:^declare -x ::g' | grep '^SERF_' )
 }
+
+serf_event_is() {
+  set -x
+  test "x$SERF_EVENT" = "x$1" || return /bin/false
+  case "$1" in
+    user)
+      test "x$SERF_USER_EVENT" = "x$2" && return /bin/true
+    ;;
+    query)
+      test "x$SERF_QUERY_NAME" = "x$2" && return /bin/true
+    ;;
+    member-*)
+      return /bin/true
+    ;;
+  esac
+  /bin/false
+}
