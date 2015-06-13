@@ -7,6 +7,7 @@ $TEAM docker    bind tcp
 
 $TEAM serf      restart
 
+$TEAM bee       install
 $TEAM swarm     install
 $TEAM interlock install
 $TEAM registry  install

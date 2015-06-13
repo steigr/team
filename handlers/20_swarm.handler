@@ -2,4 +2,4 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query swarm-token && $TEAM swarm token
+serf_event_is query swarm-token && $TEAM swarm local-token

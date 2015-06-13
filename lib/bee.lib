@@ -1,0 +1,48 @@
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/coreos.lib
+. $TEAM_LIB/serf.lib
+. $TEAM_LIB/network.lib
+
+bee_update() {
+  bee_stop
+  bee_install
+}
+
+bee_install() {
+  _bee_write_unit
+  bee_start
+}
+
+bee_start() {
+  coreos_start bee
+}
+
+bee_stop() {
+  coreos_stop bee
+}
+
+bee_environment() {
+  env_file={$1:-$(_bee_environment_file)}
+  mkdir -p $(dirname $env_file)
+  echo "SWARM_ADDR=$(private_ipv4_address):$(docker_tcp_port)" > $env_file
+}
+
+_bee_write_unit() {
+  _coreos_write_unit $(coreos_unit bee) <<EO_BEE_UNIT
+[Unit]
+Description=Docker Swarm Cluster Announcement
+Requires=early-docker.service
+After=early-docker.service
+[Service]
+Restart=always
+Environment=$(coreos_early_docker_env)
+ExecStartPre=-/usr/bin/docker rm bee
+ExecStartPre=$TEAM bee environment $(_bee_environment_file)
+ExecStart=/usr/bin/docker run --name=bee --env-file=$(_bee_environment_file) --net=host swarm join
+ExecStop=-/usr/bin/docker stop bee
+EO_BEE_UNIT
+}
+
+_bee_environment_file() {
+  echo "/run/swarm/env"
+}

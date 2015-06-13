@@ -1,12 +1,63 @@
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/coreos.lib
+. $TEAM_LIB/serf.lib
+. $TEAM_LIB/network.lib
 
-_swarm_discovery() {
-  $TEAM swarm token
+swarm_update() {
+  swarm_stop
+  swarm_install
 }
 
-swarm_write_frontend_unit() {
-  cat<<EO_SWARM_UNIT | tee $1
+swarm_install() {
+  _swarm_write_unit
+  swarm_start
+}
+
+swarm_start() {
+  coreos_start bee
+}
+
+swarm_stop() {
+  coreos_stop bee
+}
+
+swarm_token() {
+  _serf_query swarm-token | _serf_query_filter $(_swarm_token_var) | head -n1
+}
+
+swarm_create-token() {
+  token=$(coreos_early_docker run --net=host swarm create)
+  _swarm_write_token $token
+}
+
+swarm_local-token() {
+  cat $(_swarm_token_file)
+}
+
+swarm_environment() {
+  env_file={$1:-$(_swarm_environment_file)}
+  mkdir -p $(dirname $env_file)
+  token=$(swarm_token)
+  test -z $token && token=$(swarm_local-token)
+  test -z $token && token=$(swarm_create-token)
+  echo "SWARM_ADDR=$(private_ipv4_address):$(docker_tcp_port)" > $env_file
+  echo "SWARM_DISCOVERY=$token" >> $env_file
+}
+
+swarm_() {
+  DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $*
+}
+
+_swarm_environment_file() {
+  echo "/run/swarm/env"
+}
+
+_swarm_token_file() {
+  echo "/run/swarm/token"
+}
+
+_swarm_write_unit() {
+  _coreos_write_unit $(coreos_unit swarm) << EO_SWARM_UNIT
 [Unit]
 Description=Docker Swarm Cluster Frontend
 Requires=early-docker.service
@@ -15,39 +66,16 @@ After=early-docker.service
 Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm swarm
-ExecStartPre=$TEAM swarm environment /run/swarm/env
-ExecStart=/usr/bin/docker run --name=swarm --env-file=/run/swarm/env --net=host swarm manage
+ExecStartPre=$TEAM swarm environment $(_swarm_environment_file)
+ExecStart=/usr/bin/docker run --name=swarm --env-file=$(_swarm_environment_file) --net=host swarm manage
 ExecStop=-/usr/bin/docker stop swarm
 EO_SWARM_UNIT
-  coreos_init reload
 }
 
-swarm_write_announcement_unit() {
-  cat<<EO_BEE_UNIT | tee $1
-[Unit]
-Description=Docker Swarm Cluster Announcement
-Requires=early-docker.service
-After=early-docker.service
-[Service]
-Restart=always
-Environment=$(coreos_early_docker_env)
-ExecStartPre=-/usr/bin/docker rm bee
-ExecStartPre=$TEAM swarm environment /run/swarm/env
-ExecStart=/usr/bin/docker run --name=bee --env-file=/run/swarm/env --net=host swarm join
-ExecStop=-/usr/bin/docker stop bee
-EO_BEE_UNIT
-  coreos_init reload
+_swarm_token_var() {
+  echo "SWARM_TOKEN="
 }
 
-swarm_token_write() {
-  echo "$1" > /run/swarm/token
-  $TEAM serf set swarm-token=true >/dev/null
-}
-
-swarm_token_read() {
-  cat /run/swarm/token 2>/dev/null
-}
-
-swarm_token_receive() {
-  $TEAM serf query -tags swarm-token=true swarm-token
+_swarm_write_token() {
+  echo "token://$1" | tee $(_swarm_token_file)
 }
