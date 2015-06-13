@@ -3,12 +3,9 @@
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/coreos.lib
 
-set -x
-
-_registry_test() {
-  true
-  # [[ -z "$(TIMEOUT=6s _serf_query registry-ip | grep ^REGISTRY_IP= )" ]] || exit 1
-}
+# _registry_test() {
+#   true
+# }
 
 registry_install() {
   registry_stop
