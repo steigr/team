@@ -9,6 +9,14 @@ dokku_install() {
   _dokku_start_container
 }
 
+dokku_start() {
+  coreos_start $(_dokku_container_name)
+}
+
+dokku_stop() {
+  coreos_stop $(_dokku_container_name)
+}
+
 _dokku_container_name() {
   echo "dokku"
 }
@@ -19,7 +27,7 @@ _dokku_stop_container() {
 
 _dokku_start_container() {
   _dokku_unit_write $(coreos_unit dokku)
-  coreos_stop $(_dokku_container_name)
+  coreos_start $(_dokku_container_name)
 }
 
 _dokku_authorized_keys() {
