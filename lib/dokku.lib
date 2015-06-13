@@ -3,18 +3,18 @@
 
 _dokku_test() { true; }
 
-dokku_install() {
-  _dokku_stop_container
-  _dokku_build_container
+dokku_start() {
   _dokku_start_container
 }
 
-dokku_start() {
-  coreos_start $(_dokku_container_name)
+dokku_stop() {
+  _dokku_stop_container
 }
 
-dokku_stop() {
-  coreos_stop $(_dokku_container_name)
+dokku_install() {
+  dokku_stop
+  _dokku_build_container
+  dokku_start
 }
 
 _dokku_container_name() {
