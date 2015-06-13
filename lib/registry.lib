@@ -37,7 +37,7 @@ registry_write-ip() {
   out=${1:-$(_registry_ip_file)}
   mkdir -p $(dirname $out)
   echo -n $(_registry_ip_var) > $out
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_id) >> $out
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_id -a | head -1) >> $out
 }
 
 registry_halt() {
