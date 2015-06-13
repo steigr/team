@@ -41,17 +41,13 @@ registry_write-ip() {
 }
 
 registry_halt() {
-  while : ; do
-    id=$(_registry_id)
-    [[ -z "$id" ]] && exit 0
+  for id in $(_registry_id); do
     /usr/bin/docker stop $id
   done
 }
 
 registry_remove() {
-  while : ; do
-    id=$(_registry_id -a)
-    [[ -z "$id" ]] && exit 0
+  for id in $(_registry_id -a); do
     /usr/bin/docker rm $id
   done
 }
@@ -91,5 +87,5 @@ _registry_env_file() {
 }
 
 _registry_id() {
-  docker ps ${1} | awk '{print $1 "  " $2}' | grep " registry:2" | head -1 | awk '{print $1}'
+  docker ps ${1} | awk '{print $1 "  " $2}' | grep " registry:2" | awk '{print $1}'
 }
