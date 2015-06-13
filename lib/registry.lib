@@ -18,7 +18,7 @@ registry_stop() {
 }
 
 registry_ip() {
-  cat _registry_ip_file
+  cat $(_registry_ip_file)
 }
 
 registry_clusterip() {
