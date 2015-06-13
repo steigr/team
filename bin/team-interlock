@@ -15,6 +15,7 @@ case "$arg" in
     $TEAM interlock stop
     $TEAM interlock install
     $TEAM interlock start
+  ;;
   start)
     coreos_start interlock.service
   ;;
