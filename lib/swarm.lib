@@ -3,6 +3,8 @@
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
 
+set -x
+
 swarm_update() {
   swarm_stop
   swarm_install
