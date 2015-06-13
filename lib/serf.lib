@@ -63,6 +63,7 @@ serf_write_unit() {
 [Unit]
 Description=Serf Cluster Discovery and Event Processing
 [Service]
+Restart=always
 ExecStartPre=$TEAM serf config
 ExecStart=$($TEAM serf command)
 EO_UNIT
