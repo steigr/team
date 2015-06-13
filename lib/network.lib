@@ -32,6 +32,22 @@ public_ipv4_address() {
   public_ipv4_addresses | head -1
 }
 
+private_interfaces() {
+  private_ipv4_addresses | while read address; do
+    interface_of $address
+  done
+}
+
+public_interfaces() {
+  public_ipv4_addresses | while read address; do
+    interface_of $address
+  done
+}
+
+interface_of() {
+  ip -f inet -4 -o addr | awk '{print $2" " $4 }' | rev | cut -f2- -d/ | rev | grep $1 | awk '{print $1}'
+}
+
 domainname() {
   DOMAIN=${DOMAIN:-$(hostname -a | cut -f2- -d".")}
   DOMAIN=${DOMAIN:-$(grep '^search ' /etc/resolv.conf | awk '{ print $2 }')}
