@@ -46,7 +46,7 @@ _dokku_base_container() {
   _dokku_container_name
 }
 
-_dokku_install() {
+_dokku_build_container() {
   export $(coreos_early_docker_env)
   cnt=$(_dokku_container_name)
   /usr/bin/docker rm $cnt
