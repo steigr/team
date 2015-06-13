@@ -79,3 +79,11 @@ _etcd_token() {
   test -z $token && token=$(etcd_create-token)
   echo $token
 }
+
+_etcd_set() {
+  etcdctl set $1 $2
+}
+
+_etcd_get() {
+  etcdctl get $1
+}

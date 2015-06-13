@@ -13,11 +13,11 @@ coreos_unit() {
 }
 
 coreos_start() {
-  systemctl start $1
+  _coreos_start $*
 }
 
 coreos_stop() {
-  systemctl stop $1
+  _coreos_stop $*
 }
 
 coreos_restart() {
@@ -58,4 +58,12 @@ coreos_early_docker() {
 _coreos_write_unit() {
   cat | tee $1 >/dev/null
   systemctl daemon-reload
+}
+
+_coreos_start() {
+  systemctl start $1
+}
+
+_coreos_stop() {
+  systemctl stop $1
 }

@@ -1,0 +1,70 @@
+require network
+require etcd
+require coreos
+
+flanneld_update() {
+  flanneld_stop
+  flanneld_install
+}
+
+flanneld_install() {
+  _flannel_config_present || _flannel_write_config
+  flanneld_start
+}
+
+flanneld_start() {
+  _coreos_start flanneld
+}
+
+flanneld_stop() {
+  _coreos_stop flanneld
+}
+
+_flanneld_config_present() {
+  test -z "$(_etcd_get $(_flanneld_etcd_path))"
+}
+
+_flanneld_write_config() {
+  _etcd_set $(_flanneld_etcd_path) $(_flanneld_json)
+}
+
+_flanneld_etcd_path() {
+  echo "/coreos.com/network/config"
+}
+
+_flanneld_json() {
+  echo "{'Network':'$(_flanneld_network)','SubnetLen': $(_flanneld_subnet_len),'SubnetMin': '$(_flanneld_subnet_min)','SubnetMax': '$(_flanneld_subnet_max)','Backend': {'Type': '$(_flanneld_backend_type)','Port': $(_flanneld_vxlan_backend_vni)}}" \
+  | sed -e "s:':\":g"
+}
+
+_flanneld_interface() {
+  private_interfaces | head -1
+}
+
+_flanneld_network() {
+  echo "10.255.0.0/16"
+}
+
+_flanneld_subnet_len() {
+  echo "24"
+}
+
+_flanneld_subnet_min() {
+  echo "10.255.10.0"
+}
+
+_flanneld_subnet_max() {
+  echo "10.255.250.0"
+}
+
+_flanneld_backend_type() {
+  echo "vxlan"
+}
+
+_flanneld_udp_backend_port() {
+  echo "7890"
+}
+
+_flanneld_vxlan_backend_vni() {
+  echo "1"
+}

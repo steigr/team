@@ -1,5 +1,5 @@
 #!/bin/bash
-MODULE=bee
+MODULE=flanneld
 
 . $TEAM_LIB/dependency.lib
 require $MODULE
