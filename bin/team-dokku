@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. $TEAM_LIB/dokku.lib
+
+_dokku_test 2>/dev/null
+
+arg=$1
+shift
+
+dokku_$arg $*

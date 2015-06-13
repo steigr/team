@@ -1,0 +1,41 @@
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/coreos.lib
+
+_dokku_test() { true; }
+
+dokku_install() {
+  _dokku_start_container
+  _dokku_install_core
+}
+
+_dokku_container_name() {
+  echo "dokku"
+}
+
+_dokku_start_container() {
+  $coreos_early_docker run -d --privileged --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container)
+}
+
+_dokku_authorized_keys() {
+  echo "/home/core/.ssh/authorized_keys"
+}
+
+_dokku_graph_dir() {
+  echo "/var/lib/docker"
+}
+
+_dokku_docker_socket() {
+  echo "/var/run/docker.sock"
+}
+
+_dokku_base_container() {
+  echo "ubuntu:latest"
+}
+
+_dokku_install_core() {
+  $coreos_early_docker exec $(_dokku_container_name) "$(_dokku_core_install_command)"
+}
+
+_dokku_core_install_command() {
+  echo 'ping -c1 de.archive.ubuntu.com; sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list; apt-get update; apt-get install -y openssh-{client,server} curl; /etc/init.d/ssh start'
+}
