@@ -33,7 +33,7 @@ _flanneld_etcd_path() {
 }
 
 _flanneld_json() {
-  echo "{'Network':'$(_flanneld_network)','SubnetLen': $(_flanneld_subnet_len),'SubnetMin': '$(_flanneld_subnet_min)','SubnetMax': '$(_flanneld_subnet_max)','Backend': {'Type': '$(_flanneld_backend_type)','Port': $(_flanneld_vxlan_backend_vni)}}" \
+  echo "{'Network':'$(_flanneld_network)','SubnetLen': $(_flanneld_subnet_len),'SubnetMin': '$(_flanneld_subnet_min)','SubnetMax': '$(_flanneld_subnet_max)','Backend': {'Type': '$(_flanneld_backend_type)',$(_flanneld_vxlan_backend_options)}}" \
   | sed -e "s:':\":g"
 }
 
@@ -61,10 +61,10 @@ _flanneld_backend_type() {
   echo "vxlan"
 }
 
-_flanneld_udp_backend_port() {
-  echo "7890"
+_flanneld_udp_backend_options() {
+  echo "'Port':7890"
 }
 
-_flanneld_vxlan_backend_vni() {
-  echo "1"
+_flanneld_vxlan_backend_option() {
+  echo "'VNI':1"
 }
