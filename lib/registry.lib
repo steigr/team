@@ -42,13 +42,13 @@ registry_write-ip() {
 
 registry_halt() {
   for id in $(_registry_id); do
-    /usr/bin/docker stop $id
+    /usr/bin/docker stop $id || true
   done
 }
 
 registry_remove() {
   for id in $(_registry_id -a); do
-    /usr/bin/docker rm $id
+    /usr/bin/docker rm $id || true
   done
 }
 
