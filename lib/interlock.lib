@@ -1,7 +1,7 @@
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/coreos.lib
-. $TEAM_LIB/network.lib
-
+_INTERLOCK_LIB=true
+[[ -z "$_TEAM_LIB" ]]    && . $TEAM_LIB/team.lib
+[[ -z "$_COREOS_LIB" ]]  && . $TEAM_LIB/coreos.lib
+[[ -z "$_NETWORK_LIB" ]] && . $TEAM_LIB/network.lib
 
 interlock_install() {
   _interlock_write_unit $(coreos_unit interlock)
@@ -94,4 +94,3 @@ _interlock_balancer_cert() {
 _interlock_host_balancer_cert() {
   echo "/run/interlock/$(_interlock_balancer_cert)"
 }
-

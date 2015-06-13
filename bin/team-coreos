@@ -1,12 +1,12 @@
 #!/bin/bash
 
 set -x
-
-. $TEAM_LIB/serf.lib
-. $TEAM_LIB/network.lib
-. $TEAM_LIB/rancher.lib
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/coreos.lib
+. $TEAM_LIB/dependency.lib
+require serf
+require network
+require rancher
+require team
+require coreos
 
 arg=$1
 shift

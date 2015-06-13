@@ -1,3 +1,5 @@
+_SSL_LIB=true
+
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/interlock.lib
 . $TEAM_LIB/dokku.lib

@@ -1,8 +1,9 @@
 #!/bin/bash
 
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/docker.lib
-. $TEAM_LIB/coreos.lib
+. $TEAM_LIB/dependency.lib
+require team
+require docker
+require coreos
 
 arg=$1
 shift

@@ -1,3 +1,4 @@
+_DOCKER_LIB=true
 . $TEAM_LIB/coreos.lib
 
 _docker_tcp_port() {

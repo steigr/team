@@ -1,1 +1,3 @@
+_TEAM_LIB=true
+
 TEAM="$(dirname $(dirname $0))/bin/team"

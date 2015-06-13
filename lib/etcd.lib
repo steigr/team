@@ -1,3 +1,5 @@
+_ETCD_LIB=true
+
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/coreos.lib

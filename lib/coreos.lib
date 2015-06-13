@@ -1,3 +1,5 @@
+_COREOS_LIB=true
+
 coreos_unit() {
   if [[ $# -ge 2 ]]; then
     unit="${2}.${1}"

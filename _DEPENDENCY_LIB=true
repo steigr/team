@@ -1,0 +1,8 @@
+_DEPENDENCY_LIB=true
+
+_loaded() {
+  name=$(echo $1 | tr "[:lower:]" "[:upper:]")
+}
+_lib() {
+  
+}

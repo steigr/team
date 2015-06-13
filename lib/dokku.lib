@@ -1,3 +1,5 @@
+_DOKKU_LIB=true
+
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/coreos.lib
 . $TEAM_LIB/serf.lib

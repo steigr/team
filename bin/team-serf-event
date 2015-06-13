@@ -1,7 +1,8 @@
 #!/bin/sh
 
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/serf-event.lib
+. $TEAM_LIB/dependency.lib
+require team
+require serf-event
 
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 

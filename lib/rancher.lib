@@ -1,3 +1,4 @@
+_RANCHER_LIB=true
 . $TEAM_LIB/network.lib
 
 _ranch_default() {

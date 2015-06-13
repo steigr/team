@@ -1,3 +1,4 @@
+_SERF_LIB=true
 
 . $TEAM_LIB/platform.lib
 

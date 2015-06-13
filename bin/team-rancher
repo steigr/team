@@ -2,7 +2,8 @@
 
 set -x
 
-. $TEAM_LIB/rancher.lib
+. $TEAM_LIB/dependency.lib
+require rancher
 
 arg=$1
 shift

@@ -1,3 +1,5 @@
+_SSH_LIB=true
+
 . $TEAM_LIB/coreos.lib
 
 ssh_rebind() {

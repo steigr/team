@@ -1,6 +1,7 @@
 #!/bin/sh
 
-. $TEAM_LIB/team.lib
+. $TEAM_LIB/dependency.lib
+require team
 
 $TEAM ssh       rebind
 $TEAM docker    bind tcp

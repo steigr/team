@@ -1,0 +1,18 @@
+_DEPENDENCY_LIB=true
+
+_lib_var() {
+  echo "_$(echo $1 | tr "[:lower:]" "[:upper:]")_LIB"
+}
+
+_loaded() {
+  export $(_lib_var $1)=true
+}
+
+_load() {
+  [[ "x$(_lib_var $1)" = "xtrue" ]] || . $TEAM_LIB/$1.lib
+  _loaded $1
+}
+
+require() {
+  _load $1
+}
