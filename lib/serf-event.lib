@@ -16,13 +16,13 @@ serf_event_is() {
   test "x$SERF_EVENT" = "x$1" || return 1
   case "$1" in
     user)
-      test "x$SERF_USER_EVENT" = "x$2" && return 1
+      test "x$SERF_USER_EVENT" = "x$2" && return 0
     ;;
     query)
-      test "x$SERF_QUERY_NAME" = "x$2" && return 1
+      test "x$SERF_QUERY_NAME" = "x$2" && return 0
     ;;
     member-*)
-      return 1
+      return 0
     ;;
   esac
   return 0
