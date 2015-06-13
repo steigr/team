@@ -19,7 +19,7 @@ etcd_stop() {
 }
 
 etcd_local-token() {
-  echo "$(_etcd_token_var)$(cat $(_etcd_token_file))"
+  echo "$(_etcd_token_var)$(_etcd_local_token)"
 }
 
 etcd_create-token() {
@@ -46,6 +46,10 @@ EO_ETCD_UNIT_DROPIN
 
 _etcd_write_token() {
   echo $1 | tee $(_etcd_token_file)
+}
+
+_etcd_local_token() {
+  test -f $(_etcd_token_file) && cat $(_etcd_token_file)
 }
 
 _etcd_token_file() {
