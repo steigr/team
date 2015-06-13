@@ -41,9 +41,11 @@ _dokku_base_container() {
 
 _dokku_install_core() {
   export $(coreos_early_docker_env)
+  set -e
   _dokku_core_install_command | while read cmd; do
     docker exec -t $(_dokku_container_name) /bin/sh -l -c "$cmd"
   done
+  set +e
 }
 
 _dokku_core_install_command() {
@@ -59,6 +61,8 @@ mkdir -p /root/.ssh
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh
 sed -i -e 's:"linux-image-extra-$(uname -r)"::' bootstrap.sh
+mv /usr/sbin/modprobe /usr/sbin/modprobe.real
+ln /bin/true /usr/sbin/modprobe
 /bin/bash -x bootstrap.sh
 DOKKU_INSTALL_CORE_COMMANDS
 }
