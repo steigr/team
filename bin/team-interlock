@@ -8,9 +8,13 @@ arg=$1
 shift
 
 case "$arg" in
-  install|update)
+  install)
     interlock_write_unit $(coreos_unit interlock)
   ;;
+  update)
+    $TEAM interlock stop
+    $TEAM interlock install
+    $TEAM interlock start
   start)
     coreos_start interlock.service
   ;;
