@@ -8,8 +8,11 @@ arg=$1
 shift
 
 case "$arg" in
-  install)
+  install|update)
     interlock_write_unit $(coreos_unit interlock)
+  ;;
+  start)
+    coreos_start interlock.service
   ;;
   environment)
     interlock_write_environment
