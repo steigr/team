@@ -17,6 +17,10 @@ dokku_install() {
   dokku_start
 }
 
+dokku_env() {
+  _dokku_env
+}
+
 _dokku_container_name() {
   echo "dokku"
 }
@@ -72,7 +76,8 @@ After=early-docker.service
 Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
-ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+ExecStartPre=$TEAM dokku env
+ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
 ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
 EO_DOKKU_UNIT
   coreos_init reload
@@ -99,7 +104,7 @@ echo dokku dokku/web_config boolean false | debconf-set-selections
 echo dokku dokku/hostname string dokku.me | debconf-set-selections
 echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
 /bin/bash -x bootstrap.sh
-groupmod -g $(stat -c %g /run/docker.sock) docker 
+groupmod -g $(stat -c %g /run/docker.sock) docker
 DOKKU_INSTALL_CORE_COMMANDS
 }
 
@@ -109,4 +114,17 @@ _dokku_home() {
 
 _dokku_apps() {
   find $(_dokku_home) -mindepth 1 -maxdepth 1 -type d -not -name '.*' | cut -f4 -d/
+}
+
+_dokku_env() {
+  env_file=$(_dokku_env_file)
+  mkdir -p $(dirname $env_file)
+  cat <<EO_DOKKU_ENV | tee $env_file >/dev/null
+ZK_SERVER=$(zookeeper_ip)
+NERVE_PATH="/team/dokku/ssh/services"
+EO_DOKKU_ENV
+}
+
+_dokku_env_file() {
+  echo "/run/dokku/env"
 }
