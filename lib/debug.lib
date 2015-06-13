@@ -1,4 +1,6 @@
 for lib in $(ls $TEAM_LIB/*.lib); do
+  lib=$(basename $lib)
+  lib=${lib%.*}
   echo "Loading $lib"
   require $lib
 done
