@@ -21,8 +21,8 @@ registry_ip() {
   cat $(_registry_ip_file)
 }
 
-registry_clusterip() {
-  TIMEOUT=3s _serf_query registry-ip | grep ^$(_registry_ip_var)
+registry_cluster-ip() {
+  TIMEOUT=3s _serf_query registry-ip | grep $(_registry_ip_var) | head -n1 | awk -F$(_registry_ip_var) '{print $2}' | awk '{print $1}'
 }
 
 registry_write-ip() {
