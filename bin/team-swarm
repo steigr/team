@@ -25,11 +25,11 @@ case "$arg" in
   ;;
   create-token)
     token=$(coreos_early_docker run --net=host swarm create)
-    swarm_token_write $token
+    swarm_token_write token://$token
   ;;
   environment)
     dest=$1
     echo "SWARM_ADDR=tcp://$(private_ipv4_address):$(docker_tcp_port)"
-    echo "SWARM_DISCOVERY=token://$($TEAM swarm token)"
+    echo "SWARM_DISCOVERY=$($TEAM swarm token)"
   ;;
 esac
