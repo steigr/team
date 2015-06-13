@@ -44,7 +44,7 @@ ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
 ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) --net=host --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_OPTIONS'
+ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) --net=host --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_ARGS'
 ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
   coreos_init reload
@@ -55,7 +55,7 @@ _interlock_write_environment() {
   cat<<EO_INTERLOCK_ENV | tee $1
 INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375
 INTERLOCK_PLUGIN=$(_interlock_plugin_name)
-INTERLOCK_PLUGIN_OPTIONS=$(_interlock_plugin_options)
+INTERLOCK_PLUGIN_ARGS=$(_interlock_plugin_args)
 HAPROXY_PORT=80
 HAPROXY_SSL_PORT=443
 HAPROXY_SSL_CERT=$(_interlock_balancer_cert)
@@ -67,7 +67,7 @@ _interlock_plugin_name() {
   echo "haproxy"
 }
 
-_interlock_plugin_options() {
+_interlock_plugin_args() {
   echo ""
 }
 
