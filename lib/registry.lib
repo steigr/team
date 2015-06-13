@@ -21,10 +21,7 @@ registry_ip() {
   if [[ $(_registry_ip_file) ]]; then
     cat $(_registry_ip_file)
   else
-    if [[ $(registry_id) ]]; then
-      registry_write-ip
-      cat $(_registry_ip_file)
-    fi
+    test "$(registry_id)" && registry_write-ip
   fi
 }
 
