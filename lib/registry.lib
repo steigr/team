@@ -18,7 +18,14 @@ registry_stop() {
 }
 
 registry_ip() {
-  cat $(_registry_ip_file)
+  if [[ $(_registry_ip_file) ]]; then
+    cat $(_registry_ip_file)
+  else
+    if [[ $(registry_id) ]]; then
+      registry_write-ip
+      cat $(_registry_ip_file)
+    fi
+  fi
 }
 
 registry_cluster-ip() {
@@ -34,10 +41,10 @@ EO_REGISTRY_ENVIRONMENT
 }
 
 registry_write-ip() {
-  out=${1:-$(_registry_ip_file)}
-  mkdir -p $(dirname $out)
-  echo -n $(_registry_ip_var) > $out
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_id -a | head -1) >> $out
+  out="$(_registry_ip_var)$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_id -a | head -1))"
+  file=${1:-$(_registry_ip_file)}
+  mkdir -p $(dirname $file)
+  echo $out | tee $file
 }
 
 registry_halt() {
@@ -63,8 +70,7 @@ Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-$TEAM registry remove
 ExecStartPre=$TEAM registry env
-ExecStart=/bin/sh -c '/usr/bin/docker run -d -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) registry:2'
-ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
+ExecStart=/usr/bin/docker run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) registry:2
 ExecStop=-$TEAM registry halt
 EO_REGISTRY_UNIT
   coreos_init reload
