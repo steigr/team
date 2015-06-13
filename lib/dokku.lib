@@ -63,6 +63,7 @@ _dokku_base_container() {
 _dokku_build_container() {
   export $(coreos_early_docker_env)
   cnt=$(_dokku_container_name)
+  /usr/bin/docker stop $cnt
   /usr/bin/docker rm $cnt
   docker images | grep "^dokku " && base_image=dokku
   base_image=${base_image:-ubuntu:latest}
