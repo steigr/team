@@ -49,7 +49,7 @@ case "$arg" in
     done
   ;;
   unset)
-    for $tag in $*; do
+    for tag in $*; do
       $(serf_bin) tags -delete $tag
     done
   ;;
