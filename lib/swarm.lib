@@ -16,7 +16,7 @@ Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm swarm
 ExecStartPre=$TEAM swarm environment /run/swarm/env
 ExecStart=/usr/bin/docker run --name=swarm --env-file=/run/swarm/env --net=host swarm manage
-ExecStop=/usr/bin/docker stop swarm
+ExecStop=-/usr/bin/docker stop swarm
 EO_SWARM_UNIT
   coreos_init reload
 }
@@ -32,7 +32,7 @@ Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm bee
 ExecStartPre=$TEAM swarm environment /run/swarm/env
 ExecStart=/usr/bin/docker run --name=bee --env-file=/run/swarm/env --net=host swarm join
-ExecStop=/usr/bin/docker stop bee
+ExecStop=-/usr/bin/docker stop bee
 EO_BEE_UNIT
   coreos_init reload
 }
