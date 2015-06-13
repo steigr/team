@@ -2,7 +2,7 @@
 . $TEAM_LIB/network.lib
 
 interlock_write_unit() {
-  cat<<EO_INTERLOCK_UNIT | tee $1 >/dev/null
+  cat<<EO_INTERLOCK_UNIT | tee $1
 [Unit]
 Description=Interlock Load-Balancer
 Requires=early-docker.service
