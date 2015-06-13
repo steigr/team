@@ -22,7 +22,7 @@ registry_stop() {
 }
 
 registry_ip() {
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_container_name)
+  REGISTRY_IP="$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_container_name))"
 }
 
 _registry_container_name() {
