@@ -40,7 +40,10 @@ swarm_local-token() {
 swarm_environment() {
   env_file={$1:-$(_swarm_environment_file)}
   mkdir -p $(dirname $env_file)
-  echo "SWARM_ADDR=$(private_ipv4_address):$(_docker_tcp_port)" > $env_file
+  token=$(swarm_token)
+  test -z $token && token=$(swarm_local-token)
+  test -z $token && token=$(swarm_create-token)
+  echo "SWARM_DISCOVERY=$token" >> $env_file
 }
 
 swarm_() {

@@ -35,8 +35,6 @@ bee_environment() {
   echo "SWARM_DISCOVERY=$token" >> $env_file
 }
 
-
-
 _bee_write_unit() {
   _coreos_write_unit $(coreos_unit bee) <<EO_BEE_UNIT
 [Unit]
