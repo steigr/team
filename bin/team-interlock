@@ -1,7 +1,6 @@
 #!/bin/sh
 
 . $TEAM_LIB/team.lib
-. $TEAM_LIB/network.lib
 . $TEAM_LIB/coreos.lib
 . $TEAM_LIB/interlock.lib
 
@@ -10,6 +9,7 @@ shift
 
 case "$arg" in
   install)
+    interlock_write_unit $(coreos_unit interlock)
   ;;
   environment)
     interlock_write_environment
