@@ -13,17 +13,17 @@ serf_event_environment() {
 
 serf_event_is() {
   set -x
-  test "x$SERF_EVENT" = "x$1" || return /bin/false
+  test "x$SERF_EVENT" = "x$1" || return 1
   case "$1" in
     user)
-      test "x$SERF_USER_EVENT" = "x$2" && return /bin/true
+      test "x$SERF_USER_EVENT" = "x$2" && return 1
     ;;
     query)
-      test "x$SERF_QUERY_NAME" = "x$2" && return /bin/true
+      test "x$SERF_QUERY_NAME" = "x$2" && return 1
     ;;
     member-*)
-      return /bin/true
+      return 1
     ;;
   esac
-  /bin/false
+  return 0
 }
