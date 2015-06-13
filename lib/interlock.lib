@@ -1,3 +1,4 @@
+. $TEAM_LIB/team.lib
 . $TEAM_LIB/coreos.lib
 . $TEAM_LIB/network.lib
 
