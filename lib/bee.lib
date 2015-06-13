@@ -2,6 +2,7 @@
 . $TEAM_LIB/coreos.lib
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
+. $TEAM_LIB/docker.lib
 
 set -x
 
@@ -26,7 +27,7 @@ bee_stop() {
 bee_environment() {
   env_file={$1:-$(_bee_environment_file)}
   mkdir -p $(dirname $env_file)
-  echo "SWARM_ADDR=$(private_ipv4_address):$(docker_tcp_port)" > $env_file
+  echo "SWARM_ADDR=$(private_ipv4_address):$(_docker_tcp_port)" > $env_file
 }
 
 _bee_write_unit() {

@@ -2,6 +2,10 @@
 . $TEAM_LIB/coreos.lib
 
 docker_tcp_port() {
+  _docker_tcp_port
+}
+
+_docker_tcp_port() {
   echo "4375"
 }
 
