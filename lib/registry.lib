@@ -27,6 +27,7 @@ registry_clusterip() {
 
 registry_write-ip() {
   out=${1:-$(_registry_ip_file)}
+  mkdir -p $(basename $out)
   id=$(docker ps | awk '{print $1 "  " $2}' | grep " registry:2" | awk '{print $1}')
   echo -n $(_registry_ip_var) > $out
   docker inspect --format '{{ .NetworkSettings.IPAddress }}' $id >> $out
