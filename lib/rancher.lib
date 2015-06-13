@@ -12,6 +12,7 @@ _del_ranch_from_environment() {
   t=$(grep -v "^RANCH=" /etc/environment)
   echo -e $t | tee /etc/environment
 }
+
 ranch() {
   RANCH=${RANCH:-$(grep '^RANCH=' /etc/environment | cut -f2- -d'=')}
   RANCH=${RANCH:-$(hostname -a | cut -f2- -d".")}

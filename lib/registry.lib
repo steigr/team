@@ -6,12 +6,26 @@ _registry_test() {
   [[ -z "$(_serf_query docker-registry-ip)" ]] || exit 1
 }
 
+registry_install() {
+  
+}
+
+registry_ip() {
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_container_name)
+}
+
+_registry_container_name() {
+  echo "registry"
+}
+
 _registry_write_unit() {
   cat<<EO_REGISTRY_UNIT
 [Unit]
 Description=Docker Distribution Registry
 [Service]
-ExecStart=/usr/bin/docker run -d -P --hostname=registry.$(domainname) registry:2
+ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
+ExecStart=/usr/bin/docker run -d -P --name=$(_registry_container_name) --hostname=$(_registry_container_name).$(domainname) registry:2
+ExecStop=-/usr/bin/docker stop $(_registry_container_name)
 EO_REGISTRY_UNIT
 }
 

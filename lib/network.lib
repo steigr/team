@@ -33,7 +33,7 @@ public_ipv4_address() {
 }
 
 domainname() {
-  FROM_RESOLV=$(grep '^search ' /etc/resolv.conf | awk '{ print $2 }')
-  DOMAIN=${DOMAIN:-$d}
+  DOMAIN=${DOMAIN:-$(hostname -a | cut -f2- -d".")}
+  DOMAIN=${DOMAIN:-$(grep '^search ' /etc/resolv.conf | awk '{ print $2 }')}
   echo $DOMAIN
 }
