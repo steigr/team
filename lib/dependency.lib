@@ -5,7 +5,7 @@ _lib_var_name() {
 }
 
 _lib_var() {
-  echo $($(_lib_var_name $1))
+  echo \$$(echo $(_lib_var_name $1))
 }
 
 _loaded() {
