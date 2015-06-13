@@ -1,4 +1,4 @@
-set -x
+# set -x
 
 _lib_var_name() {
   echo "_$(echo $1 | tr "[:lower:]" "[:upper:]")_LIB"
