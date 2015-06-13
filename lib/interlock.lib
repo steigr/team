@@ -18,13 +18,13 @@ EO_INTERLOCK_UNIT
 }
 
 interlock_write_environment() {
-  mkdir -p /run/interlock
-  echo -n > /run/interlock/env
-  echo "INTERLOCK_HTTP_BIND=$(public_ipv4_address):80:80" >> /run/interlock/env
-  echo "INTERLOCK_HTTPS_BIND=$(public_ipv4_address):443:443" >> /run/interlock/env
-  echo "INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375" >> /run/interlock/env
-  echo "INTERLOCK_PLUGIN=$(interlock_plugin_name)" >> /run/interlock/env
-  echo "INTERLOCK_PLUGIN_OPTIONS=$(interlock_plugin_options)" >> /run/interlock/env
+  mkdir -p $(dirname $1)
+  echo -n > $1
+  echo "INTERLOCK_HTTP_BIND=$(public_ipv4_address):80:80" >> $1
+  echo "INTERLOCK_HTTPS_BIND=$(public_ipv4_address):443:443" >> $1
+  echo "INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375" >> $1
+  echo "INTERLOCK_PLUGIN=$(interlock_plugin_name)" >> $1
+  echo "INTERLOCK_PLUGIN_OPTIONS=$(interlock_plugin_options)" >> $1
 }
 
 interlock_plugin_name() {

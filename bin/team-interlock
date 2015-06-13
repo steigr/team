@@ -23,6 +23,7 @@ case "$arg" in
     coreos_stop interlock.service
   ;;
   environment)
-    interlock_write_environment
+    interlock_write_environment $1
+    cat $1
   ;;
 esac
