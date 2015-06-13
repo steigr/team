@@ -39,7 +39,7 @@ EO_BEE_UNIT
 
 swarm_token_write() {
   echo "$1" > /run/swarm/token
-  $TEAM serf set swarm-token=true
+  $TEAM serf set swarm-token=true >/dev/null
 }
 
 swarm_token_read() {
@@ -47,5 +47,5 @@ swarm_token_read() {
 }
 
 swarm_token_receive() {
-  $TEAM serf query swarm-token
+  $TEAM serf query -tags swarm-token=true swarm-token
 }
