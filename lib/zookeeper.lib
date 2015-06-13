@@ -9,6 +9,7 @@ zookeeper_update() {
 
 zookeeper_install() {
   _zookeeper_write_unit $(coreos_unit zookeeper)
+  zookeeper_start
 }
 
 zookeeper_start() {
