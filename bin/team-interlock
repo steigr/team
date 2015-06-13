@@ -1,30 +1,10 @@
 #!/bin/sh
 
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/coreos.lib
 . $TEAM_LIB/interlock.lib
+
+_interlock_test
 
 arg=$1
 shift
 
-case "$arg" in
-  install)
-    interlock_write_unit $(coreos_unit interlock)
-  ;;
-  update)
-    $TEAM interlock stop
-    $TEAM interlock install
-    $TEAM interlock start
-  ;;
-  start)
-    coreos_start interlock.service
-  ;;
-  stop)
-    coreos_stop interlock.service
-  ;;
-  environment)
-    env_file=${1:-$(interlock_environment_file)}
-    interlock_write_environment $env_file
-    cat $env_file
-  ;;
-esac
+interlock_$arg $*

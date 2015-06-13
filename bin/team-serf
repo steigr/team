@@ -59,5 +59,6 @@ case "$arg" in
   check)
     serf_check "swarm local-token" swarm-token 
     serf_check "swarm info 2>/dev/null" swarm
+    serf_check "interlock" interlock
   ;;
 esac
