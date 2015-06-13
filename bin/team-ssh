@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 . $TEAM_LIB/ssh.lib
 
 arg=$1
