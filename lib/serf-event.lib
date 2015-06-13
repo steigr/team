@@ -15,10 +15,11 @@ serf_event_is() {
   set -x
   local user=$SERF_USER_EVENT
   local query=$SERF_QUERY_NAME
-  local member-join=""
-  local member-leave=""
-  local member-failed=""
-  local member-update=""
-  local member-reap=""
-  test "x$SERF_EVENT" = "x$1" -a "x${!1}" = "x$2" && true || false
+  local join=""
+  local leave=""
+  local failed=""
+  local update=""
+  local reap=""
+  local tester="$(echo $1 | sed -e 's:member-::')
+  test "x$SERF_EVENT" = "x$1" -a "x${!tester}" = "x$2" && true || false
 }
