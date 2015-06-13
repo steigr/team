@@ -37,7 +37,7 @@ case "$arg" in
     echo "SWARM_DISCOVERY=$($TEAM swarm token)" >> /run/swarm/env
   ;;
   install|update)
-    $TEAM frontend-unit
-    $TEAM annoucement-unit
+    $TEAM swarm frontend-unit
+    $TEAM swarm annoucement-unit
   ;;
 esac
