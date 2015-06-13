@@ -36,9 +36,12 @@ EO_REGISTRY_ENVIRONMENT
 registry_write-ip() {
   out=${1:-$(_registry_ip_file)}
   mkdir -p $(dirname $out)
-  id=$(docker ps | awk '{print $1 "  " $2}' | grep " registry:2" | awk '{print $1}')
   echo -n $(_registry_ip_var) > $out
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $id >> $out
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_id) >> $out
+}
+
+registry_halt() {
+  /usr/bin/docker stop $(_registry_id)
 }
 
 _registry_container_name() {
@@ -54,7 +57,7 @@ ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
 ExecStartPre=$TEAM registry env
 ExecStart=/usr/bin/docker run -d -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_container_name).$(domainname) registry:2
 ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
-ExecStop=-/usr/bin/docker stop $(_registry_container_name)
+ExecStop=-$TEAM registry halt
 EO_REGISTRY_UNIT
   coreos_init reload
 }
@@ -75,4 +78,8 @@ _registry_store() {
 
 _registry_env_file() {
   echo "/run/registry/env"
+}
+
+_registry_id() {
+  docker ps -a | awk '{print $1 "  " $2}' | grep " registry:2" | head -1 | awk '{print $1}'
 }
