@@ -43,7 +43,7 @@ _dokku_install_core() {
   export $(coreos_early_docker_env)
   set -e
   _dokku_core_install_command | while read cmd; do
-    docker exec -ti $(_dokku_container_name) /bin/sh -l -c "$cmd"
+    docker exec -t $(_dokku_container_name) /bin/sh -l -c "$cmd"
   done
   set +e
 }
