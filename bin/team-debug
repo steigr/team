@@ -3,7 +3,6 @@ MODULE=debug
 
 . $TEAM_LIB/dependency.lib
 require debug
-_${MODULE}_test 2>/dev/null
 
 arg=$1
 shift

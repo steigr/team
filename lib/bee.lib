@@ -1,9 +1,9 @@
-. $TEAM_LIB/team.lib
-. $TEAM_LIB/coreos.lib
-. $TEAM_LIB/serf.lib
-. $TEAM_LIB/network.lib
-. $TEAM_LIB/docker.lib
-. $TEAM_LIB/swarm.lib
+require team
+require coreos
+require serf
+require network
+require docker
+require swarm
 
 bee_update() {
   bee_stop
