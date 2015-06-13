@@ -50,16 +50,18 @@ ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
 ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=/bin/sh -c "\$($TEAM interlock docker-command)"
+ExecStart=$TEAM interlock docker
 ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
 }
 
-interlock_docker-command() {
+interlock_docker() {
   INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375
   INTERLOCK_PLUGIN=$(_interlock_plugin_name)
   INTERLOCK_PLUGIN_ARGS=$(_interlock_plugin_args)
-  echo "/usr/bin/docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url $INTERLOCK_SWARM_URL --plugin $INTERLOCK_PLUGIN start $INTERLOCK_PLUGIN_ARGS"
+  cmd="/usr/bin/docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url $INTERLOCK_SWARM_URL --plugin $INTERLOCK_PLUGIN start $INTERLOCK_PLUGIN_ARGS"  
+  echo $cmd
+  $cmd
 }
 
 _interlock_write_environment() {
