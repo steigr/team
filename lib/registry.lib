@@ -18,11 +18,18 @@ registry_stop() {
 }
 
 registry_ip() {
-  echo REGISTRY_IP="$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(_registry_container_name))"
+  cat _registry_ip_file
 }
 
 registry_clusterip() {
-  TIMEOUT=3s _serf_query registry-ip | grep ^REGISTRY_IP=
+  TIMEOUT=3s _serf_query registry-ip | grep ^$(_registry_ip_var)
+}
+
+registry_write-ip() {
+  out=${1:-$(_registry_ip_file)}
+  id=$(docker ps | awk '{print $1 "  " $2}' | grep " registry:2" | awk '{print $1}')
+  echo -n $(_registry_ip_var) > $out
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $id >> $out
 }
 
 _registry_container_name() {
@@ -35,8 +42,16 @@ _registry_write_unit() {
 Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
-ExecStart=/usr/bin/docker run -d -P --name=$(_registry_container_name) -e INTERLOCK_DATA='{"ssl_only":true}' --hostname=$(_registry_container_name).$(domainname) registry:2
+ExecStart=/usr/bin/docker run -d -P -e INTERLOCK_DATA='{"ssl_only":true}' --hostname=$(_registry_container_name).$(domainname) registry:2)
+ExecStartPost=$TEAM registry write-ip $(_registry_ip_file)
 ExecStop=-/usr/bin/docker stop $(_registry_container_name)
 EO_REGISTRY_UNIT
 }
 
+_registry_ip_file() {
+  echo "/run/registry/ip"
+}
+
+_registry_ip_var() {
+  echo "REGISTRY_IP="
+}

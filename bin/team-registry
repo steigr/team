@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 MODULE=registry
 
 . $TEAM_LIB/$MODULE.lib
