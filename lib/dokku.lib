@@ -14,7 +14,7 @@ _dokku_container_name() {
 }
 
 _dokku_remove_container() {
-  coreos_early_docker $(_dokku_container_name)
+  coreos_early_docker rm $(_dokku_container_name)
 }
 
 _dokku_start_container() {
