@@ -80,5 +80,5 @@ _serf_query() {
 }
 
 _serf_query_filter() {
-  cat | awk -F$1 '{print $2}' | awk '{print $1}'
+  cat | awk -F$1 '{print $2}' | awk '{print $1}' | grep -v "^$"
 }
