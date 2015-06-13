@@ -1,15 +1,19 @@
 set -x
 
-_lib_var() {
+_lib_var_name() {
   echo "_$(echo $1 | tr "[:lower:]" "[:upper:]")_LIB"
 }
 
+_lib_var() {
+  echo $($(_lib_var_name))
+}
+
 _loaded() {
-  export $(_lib_var $1)=true
+  export $(_lib_var_name $1)=true
 }
 
 _load() {
-  [[ "x${!(_lib_var $1)}" = "xtrue" ]] || . $TEAM_LIB/$1.lib
+  [[ "x${_lib_var $1}" = "xtrue" ]] || . $TEAM_LIB/$1.lib
   _loaded $1
 }
 
