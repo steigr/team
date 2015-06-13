@@ -7,6 +7,9 @@
 arg=$1
 shift
 
+
+set -x
+
 case "$arg" in
   install)
     interlock_write_unit $(coreos_unit interlock)
