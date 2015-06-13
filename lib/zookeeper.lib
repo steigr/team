@@ -25,7 +25,7 @@ zookeeper_id() {
 }
 
 zookeeper_ip() {
-  _docker_ip $(zookeeper_id)
+  _serf_query zookeeper-ip
 }
 
 zookeeper_config() {

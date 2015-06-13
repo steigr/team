@@ -120,7 +120,7 @@ _dokku_env() {
   env_file=$(_dokku_env_file)
   mkdir -p $(dirname $env_file)
   cat <<EO_DOKKU_ENV | tee $env_file >/dev/null
-ZK_SERVER=$(zookeeper_ip)
+ZK_SERVER=$($TEAM zookeeper ip)
 NERVE_PATH="/team/dokku/ssh/services"
 EO_DOKKU_ENV
 }
