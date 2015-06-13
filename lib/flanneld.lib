@@ -9,6 +9,7 @@ flanneld_update() {
 
 flanneld_install() {
   _flanneld_config_present || _flanneld_write_config
+  _flanneld_write_dropin
   flanneld_start
 }
 
@@ -18,6 +19,17 @@ flanneld_start() {
 
 flanneld_stop() {
   _coreos_stop flanneld
+}
+
+_flanneld_write_dropin() {
+  _coreos_write_unit $(_flanneld_dropin_file) << EO_FLANNELD_DROPIN
+[Service]
+Environment="FLANNELD_INTERFACE=$(_flanneld_interface)"
+EO_FLANNELD_DROPIN
+}
+
+_flanneld_dropin_file() {
+  echo "/run/systemd/system/flanneld.service.d/20-cloudinit.conf"
 }
 
 _flanneld_config_present() {
