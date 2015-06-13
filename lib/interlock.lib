@@ -2,22 +2,23 @@ require team
 require coreos
 require network
 
-interlock_install() {
-  _interlock_write_unit $(coreos_unit interlock)
-}
-
 interlock_update() {
   interlock_stop
   interlock_install
-  interlock_start  
+}
+
+interlock_install() {
+  _interlockable
+  _interlock_write_unit
+  interlock_start
 }
 
 interlock_start() {
-  coreos_start interlock.service
+  _coreos_start interlock.service
 }
 
 interlock_stop() {
-  coreos_stop interlock.service
+  _coreos_stop interlock.service
 }
 
 interlock_environment() {
@@ -31,26 +32,27 @@ interlock_id() {
 }
 
 _interlock_test() {
+  _interlockable
+}
+_interlockable() {
   [[ -z "$(public_ipv4_address)" ]] && exit 1 
 }
 
 _interlock_write_unit() {
-  cat<<EO_INTERLOCK_UNIT | tee $1 >/dev/null
+  _coreos_write_unit  $(coreos_unit interlock) <<EO_INTERLOCK_UNIT
 [Unit]
 Description=Interlock Load-Balancer
 Requires=early-docker.service
 After=early-docker.service
 [Service]
 Restart=always
-Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
 ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) --net=host --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_ARGS'
+ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_ARGS'
 ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
-  coreos_init reload
 }
 
 _interlock_write_environment() {
@@ -92,4 +94,12 @@ _interlock_balancer_cert() {
 
 _interlock_host_balancer_cert() {
   echo "/run/interlock/$(_interlock_balancer_cert)"
+}
+
+_interlock_http_binding() {
+  echo "$(public_ipv4_address):80:8080"
+}
+
+_interlock_https_binding() {
+  echo "$(public_ipv4_address):443:8443"
 }
