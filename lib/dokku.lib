@@ -61,7 +61,6 @@ _dokku_base_container() {
 }
 
 _dokku_build_container() {
-  export $(coreos_early_docker_env)
   cnt=$(_dokku_container_name)
   /usr/bin/docker stop -t10 $cnt
   /usr/bin/docker rm $cnt
@@ -87,10 +86,9 @@ Requires=early-docker.service
 After=early-docker.service
 [Service]
 Restart=always
-Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
 ExecStartPre=$TEAM dokku env
-ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_nerve_config):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+ExecStart=/usr/bin/docker run --rm -t --privileged --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_nerve_config):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
 ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
 EO_DOKKU_UNIT
 }
@@ -104,7 +102,6 @@ Requires=dokku.service
 After=dokku.service
 [Service]
 Restart=always
-Environment=$(coreos_early_docker_env)
 ExecStartPre=$TEAM dokku nerve-config
 ExecStart=/usr/bin/docker exec $(_dokku_container_name) nerve -c /etc/nerve.json
 EO_DOKKU_NERVE_UNIT
