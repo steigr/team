@@ -28,6 +28,7 @@ etcd_local-token() {
 
 etcd_create-token() {
   token=$(curl -fS https://discovery.etcd.io/new?size=1)
+  _etcd_write_token $token
   echo $token
 }
 
@@ -50,6 +51,7 @@ EO_ETCD_UNIT_DROPIN
 }
 
 _etcd_write_token() {
+  mkdir -p $(dirname $(_etcd_token_file)) >/dev/null 
   echo $1 | tee $(_etcd_token_file)
 }
 
