@@ -2,3 +2,4 @@ bin/serf
 **/*gz
 **/*b64
 tmp/**/*
+var/**
