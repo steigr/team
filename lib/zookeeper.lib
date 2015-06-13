@@ -26,11 +26,11 @@ zookeeper_id() {
 }
 
 zookeeper_ip() {
-  _serf_query zookeeper-ip
+  _serf_query zookeeper-ip | grep $(_zookeeper_ip_var) | awk -F$(_zookeeper_ip_var) '{print $2}' | awk '{print $1}'
 }
 
 zookeeper_local-ip() {
-  _docker_ip $(zookeeper_id)
+  echo "$(_zookeeper_ip_var)$(_docker_ip $(zookeeper_id))"
 }
 
 zookeeper_config() {
@@ -71,4 +71,8 @@ _zookeeper_client_connections() {
 
 _zookeeper_image() {
   echo "steigr/zookeeper"
+}
+
+_zookeeper_ip_var() {
+  echo "ZK_SERVER="
 }
