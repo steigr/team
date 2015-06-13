@@ -10,7 +10,7 @@ After=early-docker.service
 [Service]
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm interlock
-ExecStart=/bin/sh -c "$TEAM interlock environment; docker run -d -p \\$INTERLOCK_HTTP_BIND -p \\$INTERLOCK_HTTPS_BIND --net=host --name=interlock ehazlett/interlock --swarm-url \\$INTERLOCK_SWARM_URL --plugin \\$INTERLOCK_PLUGIN start \\$INTERLOCK_PLUGIN_OPTIONS'
+ExecStart=/bin/sh -c "$TEAM interlock environment; docker run -d -p \\$INTERLOCK_HTTP_BIND -p \\$INTERLOCK_HTTPS_BIND --net=host --name=interlock ehazlett/interlock --swarm-url \\$INTERLOCK_SWARM_URL --plugin \\$INTERLOCK_PLUGIN start \\$INTERLOCK_PLUGIN_OPTIONS"
 ExecStop=/usr/bin/docker stop interlock
 EO_INTERLOCK_UNIT
   coreos_init reload
