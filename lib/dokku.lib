@@ -64,7 +64,9 @@ _dokku_build_container() {
   export $(coreos_early_docker_env)
   cnt=$(_dokku_container_name)
   /usr/bin/docker rm $cnt
-  /usr/bin/docker run -d -t --privileged --net=host --name $cnt -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) ubuntu:latest /bin/sh
+  docker images | grep "^dokku " && base_image=dokku
+  base_image=${base_image:-ubuntu:latest}
+  /usr/bin/docker run -d -t --privileged --net=host --name $cnt -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $base_image /bin/sh
   set -e
   _dokku_core_install_command | while read cmd; do
     docker exec -t $cnt /bin/sh -l -c "$cmd"
