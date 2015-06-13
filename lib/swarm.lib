@@ -4,8 +4,6 @@
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/docker.lib
 
-set -x
-
 swarm_update() {
   swarm_stop
   swarm_install

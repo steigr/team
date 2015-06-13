@@ -5,8 +5,6 @@
 . $TEAM_LIB/docker.lib
 . $TEAM_LIB/swarm.lib
 
-set -x
-
 bee_update() {
   bee_stop
   bee_install
