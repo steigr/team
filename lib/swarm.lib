@@ -6,7 +6,7 @@ _swarm_discovery() {
 }
 
 swarm_write_frontend_unit() {
-  cat<<EO_FRONTEND_UNIT | tee $1
+  cat<<EO_SWARM_UNIT | tee $1
 [Unit]
 Description=Docker Swarm Cluster Frontend
 Requires=early-docker.service
@@ -17,11 +17,11 @@ ExecStartPre=-/usr/bin/docker rm swarm
 ExecStartPre=$TEAM swarm environment /run/swarm/env
 ExecStart=/usr/bin/docker run --name=swarm --env-file=/run/swarm/env --net=host swarm manage
 ExecStop=/usr/bin/docker stop swarm
-EO_FRONTEND_UNIT  
+EO_SWARM_UNIT  
 }
 
 swarm_write_announcement_unit() {
-  cat<<EO_ANNOUNCEMENT_UNIT | tee $1
+  cat<<EO_BEE_UNIT | tee $1
 [Unit]
 Description=Docker Swarm Cluster Announcement
 Requires=early-docker.service
@@ -32,7 +32,7 @@ ExecStartPre=-/usr/bin/docker rm bee
 ExecStartPre=$TEAM swarm environment /run/swarm/env
 ExecStart=/usr/bin/docker run --name=bee --env-file=/run/swarm/env --net=host swarm join
 ExecStop=/usr/bin/docker stop bee
-EO_ANNOUNCEMENT_UNIT  
+EO_BEE_UNIT  
 }
 
 swarm_token_write() {
