@@ -37,6 +37,7 @@ registry_env() {
   mkdir -p $(dirname $(_registry_env_file)) >/dev/null
   cat<<EO_REGISTRY_ENVIRONMENT | tee $(_registry_env_file) >/dev/null
 REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=$(_registry_store)
+INTERLOCK_DATA='{"ssl_only":true}'
 EO_REGISTRY_ENVIRONMENT
 }
 
