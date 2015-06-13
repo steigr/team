@@ -71,7 +71,7 @@ After=early-docker.service
 [Service]
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
-ExecStart=/usr/bin/docker run -rm -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
 ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
 EO_DOKKU_UNIT
   coreos_init reload
