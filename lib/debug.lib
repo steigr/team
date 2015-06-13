@@ -1,6 +1,6 @@
 find $TEAM_LIB -type f -name '*.lib' | while read lib; do
   echo "Loading $lib"
-  . $lib
+  require $lib
 done
 
 set -x
