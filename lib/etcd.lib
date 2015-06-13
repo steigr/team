@@ -11,7 +11,7 @@ etcd_update() {
 
 etcd_install() {
   _etcd_write_unit_dropin
-  etcd_stop
+  etcd_start
 }
 
 etcd_start() {
