@@ -3,9 +3,13 @@ require serf
 require network
 require coreos
 
-registry_install() {
+registry_update() {
   registry_stop
-  _registry_write_unit $(coreos_unit registry)
+  registry_install
+}
+
+registry_install() {
+  _registry_write_unit
   registry_start
 }
 
@@ -61,7 +65,7 @@ _registry_hostname() {
 }
 
 _registry_write_unit() {
-  cat<<EO_REGISTRY_UNIT | tee $1 >/dev/null
+  _coreos_write_unit $(coreos_unit registry) <<EO_REGISTRY_UNIT
 [Unit]
 Description=Docker Distribution Registry
 [Service]
@@ -70,7 +74,6 @@ ExecStartPre=$TEAM registry env
 ExecStart=/usr/bin/docker run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) registry:2
 ExecStop=-$TEAM registry halt
 EO_REGISTRY_UNIT
-  coreos_init reload
 }
 
 _registry_ip_file() {
