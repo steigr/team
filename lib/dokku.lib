@@ -41,7 +41,7 @@ _dokku_base_container() {
 _dokku_install_core() {
   export $(coreos_early_docker_env)
   _dokku_core_install_command | while read cmd; do
-    docker exec $(_dokku_container_name) $cmd
+    docker exec $(_dokku_container_name) "$cmd"
   done
 }
 
