@@ -29,7 +29,7 @@ case "$arg" in
   ;;
   create-token)
     $TEAM docker bind tcp
-    token=$($(coreos_early_docker) /usr/bin/docker run --net=host swarm create)
+    token=$(coreos_early_docker run --net=host swarm create)
     swarm_token_write $token
   ;;
   environment)
