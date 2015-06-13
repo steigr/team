@@ -2,4 +2,4 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is member-join && $TEAM serf check
+serf_event_is member-join && $TEAM serf check &>/dev/null &
