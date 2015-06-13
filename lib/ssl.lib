@@ -21,7 +21,7 @@ ssl_snakeoil() {
   tmp=$(mktemp)
   out=$(mktemp)
   _ssl_config $tmp
-  HostName=$(hostname -a 2>/dev/null | hostname -f)
+  HostName=$(hostname -a 2>/dev/null || hostname -f)
   if [ ${#HostName} -gt 64 ] ; then
     AltName="DNS:$HostName"
     HostName="$(hostname)"
