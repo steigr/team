@@ -72,7 +72,7 @@ _etcd_nodename() {
 
 _etcd_token() {
   token=$(etcd_local-token)
-  token=${token:-$(etcd_token)}
-  token=${token:-$(etcd_create-token)}
+  test -z $token && token=$(etcd_token)
+  test -z $token && token=$(etcd_create-token)
   echo $token
 }
