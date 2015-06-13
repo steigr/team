@@ -10,6 +10,7 @@ flanneld_update() {
 flanneld_install() {
   _flanneld_config_present || _flanneld_write_config
   _flanneld_write_dropin
+  _flanneld_write_docker_network_clean
   flanneld_start
 }
 
@@ -27,6 +28,18 @@ _flanneld_write_dropin() {
 [Service]
 Environment="FLANNELD_INTERFACE=$(_flanneld_interface)"
 EO_FLANNELD_DROPIN
+}
+
+_flanneld_write_docker_network_clean() {
+  mkdir -p $(dirname $(_flanneld_drocker_dropin)) >/dev/null
+  _coreos_write_unit $(_flanneld_drocker_dropin) << EO_FLANNEL_DOCKER_DROPIN
+[Service]
+ExecStartPre=/usr/bin/ifconfig docker0 0.0.0.0
+EO_FLANNEL_DOCKER_DROPIN
+}
+
+_flanneld_drocker_dropin() {
+  echo "/run/systemd/system/docker.service.d/00-flannel.conf"
 }
 
 _flanneld_dropin_file() {
