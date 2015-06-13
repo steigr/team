@@ -42,6 +42,6 @@ case "$arg" in
     swarm_token_read
   ;;
   *)
-    DOCKER_HOST=tcp://$(private_ipv4_address) docker $*
+    DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $*
   ;;
 esac
