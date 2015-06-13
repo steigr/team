@@ -6,7 +6,7 @@ _dokku_test() { true; }
 dokku_install() {
   _dokku_remove_container
   _dokku_start_container
-  _dokku_install_core
+  _dokku_install
 }
 
 _dokku_container_name() {
@@ -14,7 +14,8 @@ _dokku_container_name() {
 }
 
 _dokku_remove_container() {
-  coreos_stop dokku
+  coreos_early_docker stop $(_dokku_container_name)
+  coreos_early_docker rm $(_dokku_container_name)
 }
 
 _dokku_start_container() {
@@ -35,17 +36,21 @@ _dokku_docker_socket() {
 }
 
 _dokku_base_container() {
-  echo "ubuntu:latest"
+  _dokku_container_name
 }
 
-_dokku_install_core() {
+_dokku_install() {
   export $(coreos_early_docker_env)
   cnt=$(_dokku_container_name)
+  /usr/bin/docker run -d -t --privileged --net=host --name $cnt -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) ubuntu:latest /bin/sh
   set -e
   _dokku_core_install_command | while read cmd; do
     docker exec -t $cnt /bin/sh -l -c "$cmd"
   done
   set +e
+  /usr/bin/docker stop $cnt
+  /usr/bin/docker commit $cnt
+  /usr/bin/docker rm $cnt
 }
 
 _dokku_unit_write() {
