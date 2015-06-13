@@ -24,7 +24,7 @@ ssh_port() {
 }
 
 ssh_unit() {
-  _ssh_unit
+  _ssh_unit $(coreos_unit socket sshd)
 }
 
 _ssh_unit() {
