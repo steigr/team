@@ -106,3 +106,7 @@ DOKKU_INSTALL_CORE_COMMANDS
 _dokku_home() {
   echo "/home/dokku"
 }
+
+_dokku_apps() {
+  find $(_dokku_home) -mindepth 1 -maxdepth 1 -type d -not -name '.*' | cut -f4 -d/
+}

@@ -40,10 +40,12 @@ After=early-docker.service
 [Service]
 Restart=always
 Environment=$(coreos_early_docker_env)
-ExecStartPre=-/usr/bin/docker rm interlock
+ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
+ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
-ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run --env-file=$(_interlock_environment_file) --net=host --rm --name=interlock ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_OPTIONS'
-ExecStop=-/usr/bin/docker stop interlock
+ExecStartPre=$TEAM ssl populate-interlock
+ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) --net=host --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_OPTIONS'
+ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
   coreos_init reload
 }
@@ -71,4 +73,12 @@ _interlock_plugin_options() {
 
 _interlock_environment_file() {
   echo "/run/interlock/env"
+}
+
+_interlock_ssl_dir() {
+  echo "/run/interlock/ssl"
+}
+
+_interlock_container_name() {
+  "interlock"
 }

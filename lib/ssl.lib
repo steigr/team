@@ -1,0 +1,13 @@
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/interlock.lib
+. $TEAM_LIB/dokku.lib
+
+ssl_populate-interlock() {
+  _dokku_apps | while read appname; do
+    CERT=$(find /home/dokku/$appname/tls -type f -name server.crt)
+    KEY=$(find /home/dokku/$appname/tls -type f -name server.key)
+    PEM=$(_interlock_ssl_dir)/$appname.pem
+    echo "Adding Certificate for $appname to $PEM"
+    cat $CERT $KEY > $PEM
+  done
+}
