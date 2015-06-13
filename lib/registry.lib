@@ -3,10 +3,6 @@
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/coreos.lib
 
-# _registry_test() {
-#   true
-# }
-
 registry_install() {
   registry_stop
   _registry_write_unit $(coreos_unit registry)
@@ -39,7 +35,7 @@ _registry_write_unit() {
 Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-/usr/bin/docker rm $(_registry_container_name)
-ExecStart=/usr/bin/docker run -d -P --name=$(_registry_container_name) --hostname=$(_registry_container_name).$(domainname) registry:2
+ExecStart=/usr/bin/docker run -d -P --name=$(_registry_container_name) -e INTERLOCK_DATA='{"ssl_only":true}' --hostname=$(_registry_container_name).$(domainname) registry:2
 ExecStop=-/usr/bin/docker stop $(_registry_container_name)
 EO_REGISTRY_UNIT
 }
