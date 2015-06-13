@@ -1,6 +1,7 @@
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/coreos.lib
 . $TEAM_LIB/serf.lib
+. $TEAM_LIB/docker.lib
 
 set -x
 
