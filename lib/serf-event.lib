@@ -13,7 +13,7 @@ serf_event_environment() {
 
 serf_event_is() {
   set -x
-  TEST_EVENT_user=SERF_USER_EVENT
-  TEST_EVENT_query=SERF_QUERY_NAME
-  test "x$SERF_EVENT" = "x$1" -a "x${TEST_EVENT_!1}" = "x$2" && true || false
+  local user=$SERF_USER_EVENT
+  local query=$SERF_QUERY_NAME
+  test "x$SERF_EVENT" = "x$1" -a "x${!1}" = "x$2" && true || false
 }
