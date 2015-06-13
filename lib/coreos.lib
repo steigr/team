@@ -54,3 +54,8 @@ coreos_early_docker_env() {
 coreos_early_docker() {
   /bin/sh -c "$(coreos_early_docker_env) docker $*"
 }
+
+_coreos_write_unit() {
+  cat | tee $1 >/dev/null
+  systemctl daemon-reload
+}
