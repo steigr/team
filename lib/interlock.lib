@@ -80,7 +80,7 @@ _interlock_ssl_dir() {
 }
 
 _interlock_container_name() {
-  "interlock"
+  echo "interlock"
 }
 
 _interlock_balancer_cert() {
@@ -90,3 +90,4 @@ _interlock_balancer_cert() {
 _interlock_host_balancer_cert() {
   echo "/run/interlock/$(_interlock_balancer_cert)"
 }
+
