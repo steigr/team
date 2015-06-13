@@ -7,4 +7,4 @@ set -x
 arg=$1
 shift
 
-ssh_$1 $*
+ssh_$arg $*
