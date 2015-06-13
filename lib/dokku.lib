@@ -1,5 +1,6 @@
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/coreos.lib
+. $TEAM_LIB/serf.lib
 
 _dokku_test() { true; }
 
@@ -19,6 +20,14 @@ dokku_install() {
 
 dokku_env() {
   _dokku_env
+}
+
+dokku_nerve() {
+  _dokku_nerve
+}
+
+dokku_nerve-config() {
+  _dokku_nerve_json
 }
 
 _dokku_container_name() {
@@ -77,10 +86,25 @@ Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
 ExecStartPre=$TEAM dokku env
-ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(/run/dokku/nerve):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
 ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
 EO_DOKKU_UNIT
   coreos_init reload
+}
+
+_dokku_nerve() {
+  coreos_stop dokku-nerve
+  _coreos_write_unit $(coreos_unit dokku-nerve) <<EO_DOKKU_NERVE_UNIT
+[Unit]
+Description=Dokku Paas Service Discovery
+Requires=dokku.service
+After=dokku.service
+[Service]
+Restart=always
+ExecStartPre=$TEAM dokku nerve-config
+ExecStart=/usr/bin/docker exec $(_dokku_container_name) nerve -c /etc/nerve.json
+EO_DOKKU_NERVE_UNIT
+  coreos_start dokku-nerve
 }
 
 _dokku_core_install_command() {
@@ -105,6 +129,7 @@ echo dokku dokku/hostname string dokku.me | debconf-set-selections
 echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
+
 DOKKU_INSTALL_CORE_COMMANDS
 }
 
@@ -121,10 +146,23 @@ _dokku_env() {
   mkdir -p $(dirname $env_file)
   cat <<EO_DOKKU_ENV | tee $env_file >/dev/null
 ZK_SERVER=$($TEAM zookeeper ip)
-NERVE_PATH="/team/dokku/ssh/services"
+NERVE_PATH="$(_dokku_nerve_ssh_path)"
 EO_DOKKU_ENV
 }
 
 _dokku_env_file() {
   echo "/run/dokku/env"
+}
+
+_dokku_nerve_ssh_path() {
+  echo "/team/dokku/ssh/services"
+}
+
+_dokku_nerve_json() {
+  echo "{'instance_id':'$(serf_node_name)','services':{'ssh':{'host': '1.2.3.4','port':22,'reporter_type':'zookeeper','zk_hosts': ['$($TEAM zookeeper ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
+  sed -e "s:':\":g" | tee $(_dokku_nerve_config) > /dev/null
+}
+
+_dokku_nerve_config() {
+  echo "/run/dokku/nerve"
 }
