@@ -5,8 +5,8 @@ for lib in $(ls $TEAM_LIB/*.lib); do
   require $lib
 done
 
-set -x
 
 debug_function() {
+  set -x
   $*
 }
