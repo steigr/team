@@ -1,0 +1,35 @@
+. $TEAM_LIB/coreos.lib
+. $TEAM_LIB/network.lib
+
+interlock_write_unit() {
+  cat<<EO_INTERLOCK_UNIT | tee $1 >/dev/null
+[Unit]
+Description=Interlock Load-Balancer
+Requires=early-docker.service
+After=early-docker.service
+[Service]
+Environment=$(coreos_early_docker_env)
+ExecStartPre=$TEAM interlock environment /run/interlock/env
+ExecStart=/bin/sh -c "source /run/interlock/env; docker run -d -p $INTERLOCK_HTTP_BIND -p $INTERLOCK_HTTPS_BIND --name=interlock ehazlett/interlock --swarm-url $INTERLOCK_SWARM_URL --plugin $INTERLOCK_PLUGIN start $INTERLOCK_PLUGIN_OPTIONS"
+ExecStop=/usr/bin/docker rm interlock
+EO_INTERLOCK_UNIT
+  coreos_init reload
+}
+
+interlock_write_environment() {
+  mkdir -p /run/interlock
+  echo -n > /run/interlock/env
+  echo "INTERLOCK_HTTP_BIND=$(public_ipv4_address):80:80" >> /run/interlock/env
+  echo "INTERLOCK_HTTPS_BIND=$(public_ipv4_address):443:443" >> /run/interlock/env
+  echo "INTERLOCK_SWARM_URL=tcp://$(private_ipv4_address):2375" >> /run/interlock/env
+  echo "INTERLOCK_PLUGIN=$(interlock_plugin_name)" >> /run/interlock/env
+  echo "INTERLOCK_PLUGIN_OPTIONS=$(interlock_plugin_options)" >> /run/interlock/env
+}
+
+interlock_plugin_name() {
+  echo "haproxy"
+}
+
+interlock_plugin_options() {
+  echo ""
+}

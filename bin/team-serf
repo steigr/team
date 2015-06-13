@@ -57,7 +57,6 @@ case "$arg" in
     $(serf_bin) query -timeout=${TIMEOUT:-1s} $* | grep "^Response: " 
   ;;
   check)
-    set -x
     serf_check "swarm local-token" swarm-token 
     serf_check "swarm info 2>/dev/null" swarm
   ;;

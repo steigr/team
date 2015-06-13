@@ -1,0 +1,17 @@
+#!/bin/sh
+
+. $TEAM_LIB/team.lib
+. $TEAM_LIB/network.lib
+. $TEAM_LIB/coreos.lib
+. $TEAM_LIB/interlock.lib
+
+arg=$1
+shift
+
+case "$arg" in
+  install)
+  ;;
+  environment)
+    interlock_write_environment
+  ;;
+esac
