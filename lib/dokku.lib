@@ -14,12 +14,13 @@ _dokku_container_name() {
 }
 
 _dokku_remove_container() {
+  coreos_early_docker stop $(_dokku_container_name)
   coreos_early_docker rm $(_dokku_container_name)
 }
 
 _dokku_start_container() {
   export $(coreos_early_docker_env)
-  docker run -d -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /bin/sh
+  docker run -d -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) exec /bin/sh
 }
 
 _dokku_authorized_keys() {
@@ -56,5 +57,7 @@ apt-get install curl openssh-server openssh-client apt-transport-https -y
 /etc/init.d/ssh start
 mkdir -p /root/.ssh
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
+wget https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh
+/bin/bash -c bootstrap.sh
 DOKKU_INSTALL_CORE_COMMANDS
 }
