@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 MODULE=interlock
 
 . $TEAM_LIB/$MODULE.lib

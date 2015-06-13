@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 MODULE=ssh
 
 . $TEAM_LIB/$MODULE.lib
