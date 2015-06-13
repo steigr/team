@@ -8,7 +8,7 @@ flanneld_update() {
 }
 
 flanneld_install() {
-  _flannel_config_present || _flannel_write_config
+  _flanneld_config_present || _flanneld_write_config
   flanneld_start
 }
 
