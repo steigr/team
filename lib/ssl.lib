@@ -30,7 +30,7 @@ ssl_snakeoil() {
   [ -z "$AltName" ] || echo "subjectAltName=$AltName" >> $tmp
   openssl req -config $tmp -new -x509 -days 3650 -nodes -out $1 -keyout $1.key > $out 2>&1
   cat $1.crt $1.key > $1
-  rm $1.crt $1.key $tmp $out
+  # rm $1.crt $1.key $tmp $out
 }
 
 _ssl_config() {
