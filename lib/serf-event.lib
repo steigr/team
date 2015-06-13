@@ -20,6 +20,7 @@ serf_event_is() {
   local failed=""
   local update=""
   local reap=""
-  local tester="$(echo $1 | sed -e 's:member-::')
-  test "x$SERF_EVENT" = "x$1" -a "x${!tester}" = "x$2" && true || false
+  local tester="$(echo $1 | sed -e 's:member-::')"
+  tester=${!tester}
+  test "x$SERF_EVENT" = "x$1" -a "x$tester" = "x$2" && true || false
 }
