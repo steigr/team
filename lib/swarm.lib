@@ -25,7 +25,7 @@ swarm_stop() {
 }
 
 swarm_token() {
-  _serf_query swarm-token | _serf_query_filter $(_swarm_token_var) | head -n1
+  TIMEOUT=5s _serf_query swarm-token | _serf_query_filter $(_swarm_token_var) | head -n1
 }
 
 swarm_create-token() {
