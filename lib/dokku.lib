@@ -40,9 +40,19 @@ _dokku_base_container() {
 
 _dokku_install_core() {
   export $(coreos_early_docker_env)
-  docker exec $(_dokku_container_name) "$(_dokku_core_install_command)"
+  _dokku_core_install_command | while read cmd; do
+    docker exec $(_dokku_container_name) $cmd
+  done
 }
 
 _dokku_core_install_command() {
-  echo 'ping -c1 de.archive.ubuntu.com; sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list; apt-get update; apt-get install -y openssh-{client,server} curl; /etc/init.d/ssh start'
+  cat<<DOKKU_INSTALL_CORE_COMMANDS
+ping -c1 de.archive.ubuntu.com
+sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list
+apt-get update
+apt-get dist-upgrade -y
+apt-get autoremove -y
+apt-get install curl openssh-server openssh-client apt-transport-https -y
+/etc/init.d/ssh start
+DOKKU_INSTALL_CORE_COMMANDS
 }
