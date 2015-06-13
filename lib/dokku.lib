@@ -4,7 +4,7 @@
 _dokku_test() { true; }
 
 dokku_install() {
-  # _dokku_remove_container
+  _dokku_remove_container
   _dokku_start_container
   _dokku_install_core
 }
@@ -14,13 +14,12 @@ _dokku_container_name() {
 }
 
 _dokku_remove_container() {
-  coreos_early_docker stop $(_dokku_container_name)
-  coreos_early_docker rm $(_dokku_container_name)
+  coreos_stop dokku
 }
 
 _dokku_start_container() {
-  export $(coreos_early_docker_env)
-  docker run -d -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /bin/sh -c 'exec /bin/sh'
+  _dokku_unit_write $(coreos_unit dokku)
+  coreos_start dokku
 }
 
 _dokku_authorized_keys() {
@@ -43,9 +42,25 @@ _dokku_install_core() {
   export $(coreos_early_docker_env)
   set -e
   _dokku_core_install_command | while read cmd; do
-    docker exec -ti $(_dokku_container_name) /bin/sh -l -c "$cmd"
+    docker exec -t $(_dokku_container_name) /bin/sh -l -c "$cmd"
   done
   set +e
+}
+
+_dokku_unit_write() {
+  cat<<EO_DOKKU_UNIT | tee $1
+[Unit]
+Desccription=Dokku PaaS
+Requires=early-docker.service
+After=early-docker.service
+[Service]
+Environment=$(coreos_early_docker_env)
+ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
+ExecStart=/usr/bin/docker run -d -t --privileged --net=host --name $(_dokku_container_name) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /bin/sh -c 'exec /bin/sh'
+ExecStartPost=-/usr/bin/docker exec $_dokku_container_name) /etc/init.d/ssh start
+ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
+EO_DOKKU_UNIT
+  coreos_init reload
 }
 
 _dokku_core_install_command() {
@@ -61,8 +76,13 @@ mkdir -p /root/.ssh
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh
 sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh
-mv /sbin/modprobe /sbin/modprobe.real
-ln /bin/true /sbin/modprobe
-/bin/bash -x bootstrap.sh
+test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real
+test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe
+tail -1 /root/.ssh/authorized_keys > /root/dokku_id.pub
+echo dokku dokku/vhost_enable  boolean false | debconf-set-selections
+echo dokku dokku/web_config  boolean false | debconf-set-selections
+echo dokku dokku/hostname  string  dokku.me | debconf-set-selections
+echo dokku dokku/key_file  string  /root/dokku_id.pub | debconf-set-selections
+/bin/bash -x bootstrap.sh 
 DOKKU_INSTALL_CORE_COMMANDS
 }
