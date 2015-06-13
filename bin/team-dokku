@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 MODULE=dokku
 
 . $TEAM_LIB/$MODULE.lib
