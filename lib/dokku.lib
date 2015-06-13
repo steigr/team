@@ -80,7 +80,7 @@ _dokku_build_container() {
 }
 
 _dokku_unit_write() {
-  cat<<EO_DOKKU_UNIT | tee $1 >/dev/null
+  coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
 [Unit]
 Description=Dokku PaaS
 Requires=early-docker.service
@@ -93,7 +93,6 @@ ExecStartPre=$TEAM dokku env
 ExecStart=/usr/bin/docker run --rm -t --privileged --net=host --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_nerve_config):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
 ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
 EO_DOKKU_UNIT
-  coreos_init reload
 }
 
 _dokku_nerve() {
