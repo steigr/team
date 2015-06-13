@@ -19,13 +19,11 @@ case "$arg" in
     swarm_write_announcement_unit $(coreos_unit bee)
   ;;
   token)
-    echo "Pulling Discovery Token"
     token=$(swarm_token_read)
     token=${token:-$(swarm_token_receive)}
     echo $token
   ;;
   create-token)
-    $TEAM docker bind tcp
     token=$(coreos_early_docker run --net=host swarm create)
     swarm_token_write $token
   ;;
