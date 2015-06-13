@@ -70,5 +70,6 @@ EO_UNIT
 }
 
 serf_check() {
-  [[ "x" = "x$($TEAM $1)" ]] && $TEAM serf unset $2 || $TEAM serf set $2=true
+  result=$(/bin/sh -c "$TEAM $1" )
+  [[ "x" = "x$result" ]] && $TEAM serf unset $2 || $TEAM serf set $2=true
 }
