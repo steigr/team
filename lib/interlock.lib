@@ -50,7 +50,7 @@ ExecStartPre=-/usr/bin/docker rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
 ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=/bin/sh -c '. $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_ARGS'
+ExecStart=/bin/sh -c ". $(_interlock_environment_file); docker run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --swarm-url \$INTERLOCK_SWARM_URL --plugin \$INTERLOCK_PLUGIN start \$INTERLOCK_PLUGIN_ARGS"
 ExecStop=-/usr/bin/docker stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
 }
