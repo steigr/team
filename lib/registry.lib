@@ -1,13 +1,14 @@
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
+. $TEAM_LIB/coreos.lib
 
 _registry_test() {
   [[ -z "$(_serf_query docker-registry-ip)" ]] || exit 1
 }
 
 registry_install() {
-  
+  _registry_write_unit $(coreos_unit registry)
 }
 
 registry_ip() {
