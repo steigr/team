@@ -78,3 +78,7 @@ serf_check() {
 _serf_query() {
   $(serf_bin) query -timeout=${TIMEOUT:-1s} $*
 }
+
+_serf_query_filter() {
+  cat | awk -F$1 '{print $2}' | awk '{print $1}'
+}

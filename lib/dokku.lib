@@ -31,6 +31,14 @@ dokku_nerve-config() {
   _dokku_nerve_json
 }
 
+dokku_ip() {
+  _serf_query dokku-ip | _serf_query_filter $(_dokku_ip_var) | head -n1
+}
+
+dokku_local-ip() {
+  _docker_ip $(_dokku_container_name)
+}
+
 _dokku_container_name() {
   echo "dokku"
 }
@@ -70,7 +78,8 @@ _dokku_build_container() {
   set -e
   _dokku_core_install_command | while read cmd; do
     docker exec -t $cnt /bin/sh -l -c "$cmd"
-    /usr/bin/docker commit -p $cnt
+    /usr/bin/docker commit -p $cnt >/dev/null
+    /usr/bin/docker tag -f $id dokku >/dev/null
   done
   set +e
   /usr/bin/docker stop -t 2 $cnt >/dev/null
@@ -129,6 +138,10 @@ echo dokku dokku/vhost_enable boolean false | debconf-set-selections
 echo dokku dokku/web_config boolean false | debconf-set-selections
 echo dokku dokku/hostname string dokku.me | debconf-set-selections
 echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
+echo dokku dokku/vhost_enable seen true | debconf-set-selections
+echo dokku dokku/web_config seen true | debconf-set-selections
+echo dokku dokku/hostname seen true | debconf-set-selections
+echo dokku dokku/key_file seen true | debconf-set-selections
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
 gem install nerve --no-ri --no-rdoc
@@ -161,11 +174,15 @@ _dokku_nerve_ssh_path() {
 }
 
 _dokku_nerve_json() {
-  echo "{'instance_id':'$(serf_node_name)','services':{'ssh':{'host': '$(_docker_ip $(_dokku_container_name))','port':22,'reporter_type':'zookeeper','zk_hosts': ['$($TEAM zookeeper ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
+  echo "{'instance_id':'$(serf_node_name)','services':{'ssh':{'host': '$(dokku_local-ip)','port':22,'reporter_type':'zookeeper','zk_hosts': ['$($TEAM zookeeper ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
   | sed -e "s:':\":g" \
   | tee $(_dokku_nerve_config)
 }
 
 _dokku_nerve_config() {
   echo "/run/dokku/nerve"
+}
+
+_dokku_ip_var() {
+  echo "DOKKU_IP="
 }

@@ -3,6 +3,8 @@
 . $TEAM_LIB/team.lib
 
 $TEAM ssh       rebind
+$TEAM docker    bind tcp
+
 $TEAM serf      restart
 
 $TEAM swarm     install

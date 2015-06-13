@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. $TEAM_LIB/serf-event.lib
+
+serf_event_is query dokku-ip  && $TEAM dokku local-ip

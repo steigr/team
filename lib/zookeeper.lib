@@ -26,7 +26,7 @@ zookeeper_id() {
 }
 
 zookeeper_ip() {
-  _serf_query zookeeper-ip | grep $(_zookeeper_ip_var) | awk -F$(_zookeeper_ip_var) '{print $2}' | awk '{print $1}'
+  _serf_query zookeeper-ip | _serf_query_filter $(_zookeeper_ip_var) | head -n1
 }
 
 zookeeper_local-ip() {

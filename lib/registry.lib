@@ -26,7 +26,7 @@ registry_ip() {
 }
 
 registry_cluster-ip() {
-  TIMEOUT=2s _serf_query registry-ip | grep $(_registry_ip_var) | head -n1 | awk -F$(_registry_ip_var) '{print $2}' | awk '{print $1}'
+  TIMEOUT=2s _serf_query registry-ip | _serf_query_filter $(_registry_ip_var) | head -n1
 }
 
 registry_env() {
