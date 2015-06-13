@@ -2,7 +2,10 @@
 . $TEAM_LIB/interlock.lib
 . $TEAM_LIB/dokku.lib
 
+set -x
+
 ssl_populate-interlock() {
+  test -f "$(_interlock_host_balancer_cert)" || ssl_snakeoil "$(_interlock_host_balancer_cert)"
   mkdir -p "$(_interlock_ssl_dir)"
   _dokku_apps | while read appname; do
     CERT=$(find /home/dokku/$appname/tls -type f -name server.crt)
@@ -11,4 +14,39 @@ ssl_populate-interlock() {
     echo "Adding Certificate for $appname to $PEM"
     cat $CERT $KEY > $PEM
   done
+}
+
+ssl_snakeoil() {
+  target=$1
+  tmp=$(mktemp)
+  out=$(mktemp)
+  _ssl_config $tmp
+  HostName=$(hostname -a 2>/dev/null | hostname -f)
+  if [ ${#HostName} -gt 64 ] ; then
+    AltName="DNS:$HostName"
+    HostName="$(hostname)"
+  fi
+  sed -i -e "s:@HostName@:$HostName" $tmp
+  [ -z "$AltName" ] || echo "subjectAltName=$AltName" >> $tmp
+  openssl req -config $tmp -new -x509 -days 3650 -nodes -out $1 -keyout $1.key > $out 2>&1
+  cat $1.crt $1.key > $1
+  rm $1.crt $1.key $tmp $out
+}
+
+_ssl_config() {
+  cat<<EO_SSL_CONFIG | tee $1 >/dev/null
+RANDFILE                = /dev/urandom
+[ req ]
+default_bits            = 2048
+default_keyfile         = privkey.pem
+distinguished_name      = req_distinguished_name
+prompt                  = no
+policy      = policy_anything
+req_extensions          = v3_req
+x509_extensions         = v3_req
+[ req_distinguished_name ]
+commonName                      = @HostName@
+[ v3_req ]
+basicConstraints        = CA:FALSE
+EO_SSL_CONFIG
 }
