@@ -1,5 +1,6 @@
 . $TEAM_LIB/serf.lib
 . $TEAM_LIB/network.lib
+. $TEAM_LIB/coreos.lib
 
 set -x
 
@@ -26,7 +27,7 @@ etcd_local-token() {
 }
 
 etcd_create-token() {
-  token=$(curl https://discovery.etcd.io/new?size=1)
+  token=$(curl -S https://discovery.etcd.io/new?size=1)
 }
 
 etcd_token() {
