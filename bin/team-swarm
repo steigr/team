@@ -43,6 +43,7 @@ case "$arg" in
   ;;
   *)
     set -x
+    echo $*
     DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $*
   ;;
 esac
