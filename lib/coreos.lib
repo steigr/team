@@ -46,3 +46,7 @@ coreos_unit_present() {
 coreos_unit_enabled() {
   test "x$(systemctl list-unit-files | grep $1 | awk '{print $2}')" = "xenabled"
 }
+
+coreos_early_docker() {
+  echo "DOCKER_HOST=unix:///run/early-docker.sock"
+}

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+. $TEAM_LIB/swarm.lib
+
+case "$SERF_EVENT" in
+  query)
+    case "$SERF_QUERY_NAME" in
+      swarm-token)
+        token=$(swarm_token_read)
+        test "x"= "x$token" || echo $token
+        exit 0
+      ;;
+    esac
+  ;;
+esac

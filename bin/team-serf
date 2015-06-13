@@ -43,4 +43,12 @@ case "$arg" in
     $TEAM coreos stop serf.service
     $TEAM serf start
   ;;
+  set)
+    for tag in $*; do
+      $(serf_bin) tags -set $tag
+    done
+  ;;
+  query)
+    $(serf_bin) query -timeout=${TIMEOUT:1s} $* | grep "^Response: " 
+  ;;
 esac

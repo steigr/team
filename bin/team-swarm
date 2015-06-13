@@ -5,9 +5,13 @@ set -x
 . $TEAM_LIB/team.lib
 . $TEAM_LIB/network.lib
 . $TEAM_LIB/swarm.lib
+. $TEAM_LIB/docker.lib
 . $TEAM_LIB/coreos.lib
 
-case "$1" in
+arg=$1
+shift
+
+case "$arg" in
   frontend-unit)
     swarm_write_frontend_unit $(coreos_unit swarm)
   ;;
@@ -16,13 +20,21 @@ case "$1" in
   ;;
   token)
     echo "Pulling Discovery Token"
-    token=$(swarm_receive_token)
-    [[ -z "$token" ]] && token=$(swarm_create_token)
-    if [[ 0 -eq $($TEAM serf count-nodes -tag swarm-token=true) ]]
-    $TEAM serf query -tags swarm-token=true swarm-token
+    token=$(swarm_token_read)
+    token=${token:-$(swarm_token_receive)}
+    # token=$(swarm_receive_token)
+    # [[ -z "$token" ]] && token=$(swarm_create_token)
+    # if [[ 0 -eq $($TEAM serf count-nodes -tag swarm-token=true) ]]
+    # $TEAM serf query -tags swarm-token=true swarm-token
   ;;
   create-token)
     $TEAM docker bind tcp
-    token=$(docker run --net=host swarm create)
+    token=$($(coreos_early_docker) /usr/bin/docker run --net=host swarm create)
+    swarm_token_write $token
+  ;;
+  environment)
+    dest=$1
+    echo "SWARM_ADDR=tcp://$(private_ipv4_address):$(docker_tcp_port)"
+    echo "SWARM_DISCOVERY=token://$($TEAM swarm token)"
   ;;
 esac

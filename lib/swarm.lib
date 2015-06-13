@@ -1,13 +1,21 @@
+. $TEAM_LIB/coreos.lib
+
+_swarm_discovery() {
+  $TEAM swarm token
+}
+
 swarm_write_frontend_unit() {
   cat<<EO_FRONTEND_UNIT | tee $1
 [Unit]
 Description=Docker Swarm Cluster Frontend
-Requires=early-docker.service serf.service
-After=early-docker.service serf.service
+Requires=early-docker.service
+After=early-docker.service
 [Service]
-Environment=DOCKER_HOST=$early_docker
-ExecStartPre=/usr/bin/docker rm swarm
-ExecStart=/usr/bin/docker run --name=swarm --net=host swarm manage $($TEAM serf nodes -tag swarm=true)
+Environment=$(coreos_early_docker)
+ExecStartPre=-/usr/bin/docker rm swarm
+ExecStartPre=$TEAM swarm environment /run/swarm/env
+ExecStart=/usr/bin/docker run --name=swarm --env-file=/run/swarm/env --net=host swarm manage $(_swarm_discovery)
+ExecStop=/usr/bin/docker stop swarm
 EO_FRONTEND_UNIT  
 }
 
@@ -15,11 +23,26 @@ swarm_write_announcement_unit() {
   cat<<EO_ANNOUNCEMENT_UNIT | tee $1
 [Unit]
 Description=Docker Swarm Cluster Announcement
-Requires=early-docker.service serf.service
-After=early-docker.service serf.service
+Requires=early-docker.service
+After=early-docker.service
 [Service]
-Environment=DOCKER_HOST=$early_docker
-ExecStartPre=/usr/bin/docker rm swarm
-ExecStart=/usr/bin/docker run --name=swarm --net=host swarm manage $($TEAM serf nodes -tag swarm=true)
+Environment=$(coreos_early_docker)
+ExecStartPre=-/usr/bin/docker rm bee
+ExecStartPre=$TEAM swarm environment /run/swarm/env
+ExecStart=/usr/bin/docker run --name=bee --env-file=/run/swarm/env --net=host swarm join $(_swarm_discovery)
+ExecStop=/usr/bin/docker stop bee
 EO_ANNOUNCEMENT_UNIT  
+}
+
+swarm_token_write() {
+  echo "$1" > /run/swarm/token
+  $TEAM serf set swarm-token=true
+}
+
+swarm_token_read() {
+  cat /run/swarm/token 2>/dev/null
+}
+
+swarm_token_receive() {
+  $TEAM serf query swarm-token
 }
