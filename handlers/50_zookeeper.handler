@@ -2,4 +2,4 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query zookeeper-ip  && $TEAM zookeeper ip
+serf_event_is query zookeeper-ip  && $TEAM zookeeper local-ip

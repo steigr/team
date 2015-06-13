@@ -28,6 +28,10 @@ zookeeper_ip() {
   _serf_query zookeeper-ip
 }
 
+zookeeper_local-ip() {
+  _docker_ip $(zookeeper_ip)
+}
+
 zookeeper_config() {
   cfg=${1:-/run/zookeeper/config}
   mkdir -p $(dirname $cfg)
