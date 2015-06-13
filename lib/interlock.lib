@@ -37,6 +37,7 @@ Description=Interlock Load-Balancer
 Requires=early-docker.service
 After=early-docker.service
 [Service]
+Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm interlock
 ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)

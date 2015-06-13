@@ -12,6 +12,7 @@ Description=Docker Swarm Cluster Frontend
 Requires=early-docker.service
 After=early-docker.service
 [Service]
+Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm swarm
 ExecStartPre=$TEAM swarm environment /run/swarm/env
@@ -28,6 +29,7 @@ Description=Docker Swarm Cluster Announcement
 Requires=early-docker.service
 After=early-docker.service
 [Service]
+Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-/usr/bin/docker rm bee
 ExecStartPre=$TEAM swarm environment /run/swarm/env
