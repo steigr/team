@@ -65,6 +65,6 @@ _flanneld_udp_backend_options() {
   echo "'Port':7890"
 }
 
-_flanneld_vxlan_backend_option() {
+_flanneld_vxlan_backend_options() {
   echo "'VNI':1"
 }
