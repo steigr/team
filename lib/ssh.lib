@@ -23,6 +23,10 @@ ssh_port() {
   echo "2220"
 }
 
+ssh_unit() {
+  _ssh_unit
+}
+
 _ssh_unit() {
   cat<<EO_SSH_SOCKET_UNIT | tee $1
 [Socket]
