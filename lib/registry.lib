@@ -4,7 +4,7 @@
 . $TEAM_LIB/coreos.lib
 
 _registry_test() {
-  [[ -z "$(_serf_query docker-registry-ip)" ]] || exit 1
+  [[ -z "$(_serf_query registry-ip)" ]] || exit 1
 }
 
 registry_install() {
