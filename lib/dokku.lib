@@ -54,5 +54,7 @@ apt-get dist-upgrade -y
 apt-get autoremove -y
 apt-get install curl openssh-server openssh-client apt-transport-https -y
 /etc/init.d/ssh start
+mkdir -p /root/.ssh
+cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 DOKKU_INSTALL_CORE_COMMANDS
 }
