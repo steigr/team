@@ -20,8 +20,9 @@ case "$arg" in
   ;;
   token)
     token=$(swarm_token_read)
-    token=${token:-$(swarm_token_receive)}
-    test "x" = "x$token" && $TEAM swarm create-token
+    [[ -z "$token" ]] && token=${token:-$(swarm_token_receive)}
+    [[ -z "$token" ]] && token=$($TEAM swarm create-token)
+    [[ -z "$token" ]] && token=$(swarm_token_read)
     echo $token
   ;;
   create-token)
