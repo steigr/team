@@ -30,7 +30,7 @@ zookeeper_ip() {
 }
 
 zookeeper_local-ip() {
-  _docker_ip $(zookeeper_ip)
+  _docker_ip $(zookeeper_id)
 }
 
 zookeeper_config() {
