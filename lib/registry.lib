@@ -37,7 +37,6 @@ registry_env() {
   mkdir -p $(dirname $(_registry_env_file)) >/dev/null
   cat<<EO_REGISTRY_ENVIRONMENT | tee $(_registry_env_file) >/dev/null
 REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=$(_registry_store)
-INTERLOCK_DATA='{"ssl_only":true}'
 EO_REGISTRY_ENVIRONMENT
 }
 
@@ -71,7 +70,7 @@ Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-$TEAM registry remove
 ExecStartPre=$TEAM registry env
-ExecStart=/usr/bin/docker run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) registry:2
+ExecStart=/usr/bin/docker run --rm -P --env-file=$(_registry_env_file) --env INTERLOCK_DATA='{"ssl_only":true}' -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) registry:2
 ExecStop=-$TEAM registry halt
 EO_REGISTRY_UNIT
 }
