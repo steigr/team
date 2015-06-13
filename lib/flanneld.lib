@@ -22,6 +22,7 @@ flanneld_stop() {
 }
 
 _flanneld_write_dropin() {
+  mkdir -p $(dirname $(_flanneld_dropin_file)) >/dev/null
   _coreos_write_unit $(_flanneld_dropin_file) << EO_FLANNELD_DROPIN
 [Service]
 Environment="FLANNELD_INTERFACE=$(_flanneld_interface)"
