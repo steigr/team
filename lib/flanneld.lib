@@ -33,7 +33,7 @@ _flanneld_etcd_path() {
 }
 
 _flanneld_json() {
-  echo "{'Network':'$(_flanneld_network)','SubnetLen': $(_flanneld_subnet_len),'SubnetMin': '$(_flanneld_subnet_min)','SubnetMax': '$(_flanneld_subnet_max)','Backend': {'Type': '$(_flanneld_backend_type)',$(_flanneld_vxlan_backend_options)}}" \
+  echo "{'Network':'$(_flanneld_network)','SubnetLen':$(_flanneld_subnet_len),'SubnetMin':'$(_flanneld_subnet_min)','SubnetMax':'$(_flanneld_subnet_max)','Backend':{'Type':'$(_flanneld_backend_type)',$(_flanneld_vxlan_backend_options)}}" \
   | sed -e "s:':\":g"
 }
 
