@@ -31,7 +31,7 @@ case "$arg" in
     dest=$1
     mkdir -p /run/swarm 2>/dev/null
     echo -n > /run/swarm/env
-    echo "SWARM_ADDR=tcp://$(private_ipv4_address):$(docker_tcp_port)" >> /run/swarm/env
+    echo "SWARM_ADDR=$(private_ipv4_address):$(docker_tcp_port)" >> /run/swarm/env
     echo "SWARM_DISCOVERY=$($TEAM swarm token)" >> /run/swarm/env
   ;;
   install|update)
