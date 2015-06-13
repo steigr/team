@@ -6,8 +6,6 @@
 . $TEAM_LIB/docker.lib
 . $TEAM_LIB/coreos.lib
 
-echo $*
-
 arg=$1
 shift
 
@@ -45,6 +43,6 @@ case "$arg" in
   ;;
   *)
     set -x
-    DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $*
+    DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $arg $*
   ;;
 esac
