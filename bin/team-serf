@@ -58,6 +58,6 @@ case "$arg" in
   ;;
   check)
     [[ "x" = "x$($TEAM swarm local-token)"     ]] && $TEAM serf unset swarm-token || $TEAM serf set swarm-token=true
-    [[ "x" = "x$($TEAM swarm info >/dev/null)" ]] && $TEAM serf unset swarm       || $TEAM serf set swarm=true
+    [[ "x" = "x$($TEAM swarm info 2>/dev/null)" ]] && $TEAM serf unset swarm       || $TEAM serf set swarm=true
   ;;
 esac
