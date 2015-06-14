@@ -6,7 +6,7 @@ for lib in $(ls $TEAM_LIB/*.lib); do
 done
 
 
-debug_function() {
+debug_() {
   set -x
   $*
 }

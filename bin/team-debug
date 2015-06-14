@@ -7,4 +7,4 @@ require debug
 arg=$1
 shift
 
-${MODULE}_$arg $*
+${MODULE}_ $arg $*
