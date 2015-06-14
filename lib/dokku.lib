@@ -53,6 +53,10 @@ dokku_rm() {
   done
 }
 
+dokku_exec() {
+  docker exec $(dokku_id) $*
+}
+
 _dokku_container_name() {
   _docker_name_by_id $(dokku_id)
 }
@@ -97,7 +101,7 @@ _dokku_build_container() {
   cmd=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
   id=$($cmd)
   _dokku_bootstrap_commands | while read cmd; do
-    docker exec -t $id /bin/bash -l -c "$cmd"
+    docker exec -ti $id /bin/bash -l -c "$cmd"
   done
   docker stop $id
   docker commit $id
@@ -107,20 +111,20 @@ _dokku_build_container() {
 }
 
 _dokku_docker_command() {
-  echo "/usr/bin/docker run --privileged -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
+  echo "/usr/bin/docker run -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_synapse_config):$(_dokku_synapse_config) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
 }
 
 _dokku_unit_write() {
   _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
 [Unit]
 Description=Dokku PaaS
-Requires=early-docker.service
-After=early-docker.service
+Requires=docker.service
+After=docker.service
 [Service]
 Restart=always
 ExecStartPre=-$TEAM dokku rm
 ExecStartPre=$TEAM dokku env
-ExecStart=$(_dokku_docker_command)
+ExecStart=$(_dokku_docker_command) /start ssh
 EO_DOKKU_UNIT
 }
 
@@ -159,11 +163,7 @@ RUN curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstr
 RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
  && echo dokku dokku/web_config boolean false | debconf-set-selections \
  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
- && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
- && echo dokku dokku/vhost_enable seen true | debconf-set-selections \
- && echo dokku dokku/web_config seen true | debconf-set-selections \
- && echo dokku dokku/hostname seen true | debconf-set-selections \
- && echo dokku dokku/key_file seen true | debconf-set-selections
+ && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
 RUN mkdir /app \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
  && echo "nerve: /usr/bin/nerve -c /etc/nerve.json >> /app/Procfile" \
