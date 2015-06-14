@@ -2,4 +2,5 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query dokku-ip  && $TEAM dokku local-ip
+serf_event_is query dokku-ip && $TEAM serf get dokku-ip
+serf_event_is user  dokku-ip && $TEAM serf set dokku-ip &>/dev/null &

@@ -2,4 +2,5 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query etcd-token && $TEAM etcd local-token
+serf_event_is query etcd-token && $TEAM serf get etcd-token
+serf_event_is user  etcd-token && $TEAM serf set etcd-token &>/dev/null &

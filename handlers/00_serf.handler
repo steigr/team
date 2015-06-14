@@ -2,4 +2,7 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is member-join && $TEAM serf check &>/dev/null &
+serf_event_is member-join          && $TEAM serf check &>/dev/null &
+
+serf_event_is query elected-master && $TEAM serf get elected-master
+serf_event_is user  elected-master && $TEAM serf set elected-master &>/dev/null &

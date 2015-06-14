@@ -2,5 +2,7 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query registry-ip  && $TEAM registry ip
+serf_event_is query registry-ip && $TEAM serf get registry-ip
+serf_event_is user  registry-ip && $TEAM serf set registry-ip &>/dev/null &
+
 serf_event_is query registry-run && $TEAM registry install

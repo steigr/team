@@ -2,4 +2,5 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query zookeeper-ip  && $TEAM zookeeper local-ip
+serf_event_is query zookeeper-ip && $TEAM serf get zookeeper-ip
+serf_event_is user  zookeeper-ip && $TEAM serf set zookeeper-ip &>/dev/null &

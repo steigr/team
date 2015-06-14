@@ -2,4 +2,5 @@
 
 . $TEAM_LIB/serf-event.lib
 
-serf_event_is query swarm-token && $TEAM swarm local-token
+serf_event_is query swarm-token && $TEAM serf get swarm-token
+serf_event_is user  swarm-token && $TEAM serf set swarm-token &>/dev/null &

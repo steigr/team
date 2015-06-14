@@ -57,16 +57,28 @@ serf_count-nodes() {
   serf_nodes | grep -v "^$" | wc -l
 }
 
-serf_set() {
+serf_tag() {
   for tag in $*; do
     $(_serf) tags -set $tag
   done
 }
 
-serf_unset() {
+serf_untag() {
   for tag in $*; do
     $(_serf) tags -delete $tag
   done
+}
+
+serf_set() {
+  cat > $(_serf_kv_dir)/$1 2>/dev/null
+}
+
+serf_get() {
+  cat $(_serf_kv_dir)/$1 2>/dev/null
+}
+
+serf_forget() {
+  rm $(_serf_kv_dir)/$1 2>/dev/null
 }
 
 serf_query() {
@@ -174,7 +186,7 @@ _serf_snapshot_file() {
 
 _serf_check() {
   result=$(/bin/sh -c "$TEAM $1" )
-  [[ "x" = "x$result" ]] && serf_unset $2 || serf_set $2=true
+  [[ "x" = "x$result" ]] && serf_untag $2 || serf_tag $2=true
 }
 
 _serf_query_filter() {
