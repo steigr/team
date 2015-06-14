@@ -60,6 +60,10 @@ registry_remove() {
   done
 }
 
+registry_id() {
+  _docker_ids_by_image $(_registry_image) | head -n1
+}
+
 _registry_hostname() {
   echo "registry.$(domainname)"
 }
@@ -71,7 +75,7 @@ Description=Docker Distribution Registry
 [Service]
 ExecStartPre=-$TEAM registry remove
 ExecStartPre=$TEAM registry env
-ExecStart=/usr/bin/docker run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) registry:2
+ExecStart=/usr/bin/docker run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) $(_registry_image)
 ExecStop=-$TEAM registry halt
 EO_REGISTRY_UNIT
 }
@@ -93,5 +97,9 @@ _registry_env_file() {
 }
 
 _registry_id() {
-  docker ps ${1} | awk '{print $1 "  " $2}' | grep " registry:2" | awk '{print $1}'
+  docker ps ${1} | awk '{print $1 "  " $2}' | grep " $(_registry_image)" | awk '{print $1}'
+}
+
+_registry_image() {
+  echo "registry:2"
 }
