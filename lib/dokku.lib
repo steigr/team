@@ -94,7 +94,7 @@ _dokku_base_container() {
 _dokku_build_container() {
   set -x
   set -e
-  temp_dir=$(mktemp -d)
+  temp_dir=$(mktemp -d /tmp/XXXXXX)
   _dokku_entrypoint_write $temp_dir
   _dokku_write_dockerfile $temp_dir
   docker build -t $(_dokku_image_name) $temp_dir
