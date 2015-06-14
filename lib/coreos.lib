@@ -23,6 +23,7 @@ coreos_stop() {
 coreos_restart() {
   systemctl restart $1
 }
+
 coreos_init() {
   case "$1" in
     reload)

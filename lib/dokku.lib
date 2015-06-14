@@ -38,6 +38,14 @@ dokku_local-ip() {
 }
 
 _dokku_container_name() {
+  _docker_name_by_id $(dokku_id)
+}
+
+dokku_id() {
+  _docker_ids_by_image "dokku" | head -1
+}
+
+_dokku_image_name() {
   echo "dokku"
 }
 
@@ -67,23 +75,26 @@ _dokku_base_container() {
 }
 
 _dokku_build_container() {
-  cnt=$(_dokku_container_name)
-  /usr/bin/docker stop -t 10 $cnt >/dev/null
-  /usr/bin/docker rm $cnt >/dev/null
-  docker images | grep "^dokku " && base_image=dokku
-  base_image=${base_image:-ubuntu:latest}
-  /usr/bin/docker run -d -t --privileged --name $cnt -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $base_image /bin/sh
+  set -x
+  temp_dir=$(mktemp -d)
+  _dokku_write_dockerfile $temp_dir
+  _dokku_entrypoint_write $temp_dir
+  /usr/bin/docker build -t $(_dokku_image_name) $temp_dir
+  rm -r $temp_dir
+  id=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
   set -e
-  _dokku_core_install_command | while read cmd; do
-    docker exec -t $cnt /bin/sh -l -c "$cmd"
-    id=$(/usr/bin/docker commit -p $cnt 2>/dev/null)
-    /usr/bin/docker tag -f $id dokku >/dev/null
-  done
+  _dokku_bootstrap_commands | while read cmd; do
+    docker exec -t $id /bin/bash -l -c "$cmd"
+  end
   set +e
-  /usr/bin/docker stop -t 2 $cnt >/dev/null
-  id=$(/usr/bin/docker commit $cnt)
-  /usr/bin/docker tag $id dokku >/dev/null
-  /usr/bin/docker rm $cnt >/dev/null
+  docker stop $id
+  docker commit $id
+  docker tag -f $i $(_dokku_image_name)
+  docker rm $id  
+}
+
+_dokku_docker_command() {
+  echo "/usr/bin/docker run --privileged -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
 }
 
 _dokku_unit_write() {
@@ -96,7 +107,7 @@ After=early-docker.service
 Restart=always
 ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
 ExecStartPre=$TEAM dokku env
-ExecStart=/usr/bin/docker run --rm -t --privileged --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_nerve_config):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+ExecStart=/usr/bin/docker run --rm --privileged --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_nerve_config):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /start
 ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
 EO_DOKKU_UNIT
 }
@@ -105,44 +116,88 @@ _dokku_nerve() {
   coreos_stop dokku-nerve
   _coreos_write_unit $(coreos_unit dokku-nerve) <<EO_DOKKU_NERVE_UNIT
 [Unit]
-Description=Dokku Paas Service Discovery
+Description=Dokku Paas Service Annoucement
 Requires=dokku.service
 After=dokku.service
 [Service]
 Restart=always
 ExecStartPre=$TEAM dokku nerve-config
-ExecStart=/usr/bin/docker exec $(_dokku_container_name) nerve -c /etc/nerve.json
+ExecStart=/usr/bin/docker exec $(_dokku_container_name) /start nerve
 EO_DOKKU_NERVE_UNIT
   coreos_start dokku-nerve
 }
 
+_dokku_write_dockerfile() {
+  cat <<EO_DOKKU_DOCKERFILE | tee $1/Dockerfile >/dev/null
+FROM ubuntu:latest
+MAINTAINER Mathias Kaufmann <me@stei.gr>
+RUN ping -c1 de.archive.ubuntu.com \
+ && sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list
+RUN apt-get update \
+ && apt-get dist-upgrade -y \
+ && apt-get autoremove -y \
+ && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates -y
+RUN gem install nerve synapse foreman --no-ri --no-rdoc
+RUN mkdir -p /root/.ssh \
+ && cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
+RUN curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh \
+ && sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh \
+ && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
+ && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
+ && tail -1 /root/.ssh/authorized_keys > /root/dokku_id.pub
+RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
+ && echo dokku dokku/web_config boolean false | debconf-set-selections \
+ && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
+ && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
+ && echo dokku dokku/vhost_enable seen true | debconf-set-selections \
+ && echo dokku dokku/web_config seen true | debconf-set-selections \
+ && echo dokku dokku/hostname seen true | debconf-set-selections \
+ && echo dokku dokku/key_file seen true | debconf-set-selections
+RUN mkdir /app \
+ && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
+ && echo "nerve: /usr/bin/nerve -c /etc/nerve.json >> /app/Procfile" \
+ && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
+ && cp /app/Procfile /app/.release
+ADD $1/(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
+VOLUMES ["$(_dokku_graph_dir)","$(_dokku_docker_socket","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
+ENTRYPOINT ["/start"]
+EXPOSE 22
+EO_DOKKU_DOCKERFILE
+}
+
+_dokku_entrypoint_file() {
+  echo "start"
+}
+
+_dokku_entrypoint_write() {
+  cat <<'EO_DOKKU_ENTRYPOINT' | tee $1/$(_dokku_entrypoint_file) >/dev/null
+#!/bin/bash
+export HOME=/app
+cd /app
+
+case "$(basename $0)" in
+  start)
+    [[ ! -f Procfile ]] && ruby -e "require 'yaml';File.write('Procfile', (YAML.load_file('.release')['default_process_types'] || {}).to_yaml)"
+    command="foreman start --procfile=Procfile $@"
+    ;;
+  *)
+    command="$@"
+    ;;
+esac
+
+if [[ -z "$command" ]]; then
+  echo "Missing command ($@)"
+  exit 1
+fi
+
+exec $(eval echo ${command})
+EO_DOKKU_ENTRYPOINT
+}
+
 _dokku_core_install_command() {
   cat<<DOKKU_INSTALL_CORE_COMMANDS
-ping -c1 de.archive.ubuntu.com
-sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list
-apt-get update
-apt-get dist-upgrade -y
-apt-get autoremove -y
-apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates -y
-/etc/init.d/ssh start
-mkdir -p /root/.ssh
-cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
-curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh
-sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh
-test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real
-test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe
-tail -1 /root/.ssh/authorized_keys > /root/dokku_id.pub
-echo dokku dokku/vhost_enable boolean false | debconf-set-selections
-echo dokku dokku/web_config boolean false | debconf-set-selections
-echo dokku dokku/hostname string dokku.me | debconf-set-selections
-echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
-echo dokku dokku/vhost_enable seen true | debconf-set-selections
-echo dokku dokku/web_config seen true | debconf-set-selections
-echo dokku dokku/hostname seen true | debconf-set-selections
-echo dokku dokku/key_file seen true | debconf-set-selections
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
-gem install nerve --no-ri --no-rdoc
 DOKKU_INSTALL_CORE_COMMANDS
 }
 

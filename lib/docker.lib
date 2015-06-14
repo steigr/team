@@ -23,6 +23,10 @@ _docker_id_by_name() {
   docker inspect --format '{{ .Id }}' $1
 }
 
+_docker_name_by_id() {
+  docker inspect --format='{{ .Name}}' $1 | sed -e 's:^/::g'
+}
+
 _docker_ids_by_image() {
   if [[ $# -eq 2 ]]; then
     op=$1
