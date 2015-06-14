@@ -24,7 +24,9 @@ _docker_id_by_name() {
 }
 
 _docker_name_by_id() {
-  docker inspect --format='{{ .Name}}' $1 | sed -e 's:^/::g'
+  docker inspect --format='{{ .Name }}' $1 | sed -e 's:^/::g' | while read sid; do
+    docker inspect --format='{{ .Id }}' $sid
+  done
 }
 
 _docker_ids_by_image() {
