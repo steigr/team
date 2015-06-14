@@ -164,6 +164,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
  && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
  && echo debconf debconf/frontend noninteractive | debconf-set-selections \
+ && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
  && echo "nerve: /usr/bin/nerve -c /etc/nerve.json" >> /app/Procfile \
@@ -209,10 +210,9 @@ EO_DOKKU_ENTRYPOINT
 
 _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
-echo debconf debconf/frontend string noninteractive | debconf-set-selections
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
-/bin/bash -x bootstrap.sh
+DOKKU_BRANCH=master bash bootstrap.sh || true
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arV $(_dokku_home)/ $(_dokku_home)_host
 EO_DOKKU_BOOTSTRAP_COMMANDS
