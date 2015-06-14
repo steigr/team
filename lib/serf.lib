@@ -186,7 +186,7 @@ _serf_snapshot_file() {
 
 _serf_check() {
   result=$(/bin/sh -c "$TEAM $1" )
-  [[ "x" = "x$result" ]] && serf_untag $2 || serf_tag $2=true
+  ( [[ "x" = "x$result" ]] && serf_untag $2 || serf_tag $2=true )>/dev/null 2>/dev/null
 }
 
 _serf_query_filter() {
