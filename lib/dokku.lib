@@ -142,7 +142,7 @@ EO_DOKKU_NERVE_UNIT
 _dokku_write_dockerfile() {
   cat <<EO_DOKKU_DOCKERFILE | tee $1/Dockerfile >/dev/null
 FROM ubuntu:latest
-MAINTAINER $(_dokku_image_maintainer)
+MAINTAINER Mathias Kaufmann <me@stei.gr>
 RUN ping -c1 de.archive.ubuntu.com \
  && sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list
 RUN apt-get update \
@@ -171,19 +171,11 @@ RUN mkdir /app \
  && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
  && cp /app/Procfile /app/.release
 ADD $1/(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
-VOLUMES $(_dokku_docker_volumes)
-ENTRYPOINT \["/start"\]
+VOLUMES "["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]"
+ENTRYPOINT ["/start"]
 EXPOSE 22
 EO_DOKKU_DOCKERFILE
 
-}
-
-_dokku_docker_volumes() {
-  echo "[\"$(_dokku_graph_dir)\",\"$(_dokku_docker_socket)\",\"$(_dokku_nerve_config)\",\"$(_dokku_synapse_config)\",\"$(_dokku_home)\",\"$(_dokku_authorized_keys)\"]"
-}
-
-_dokku_image_maintainer() {
-  echo 'Mathias Kaufmann <me@stei.gr>'
 }
 
 _dokku_entrypoint_file() {
