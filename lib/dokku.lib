@@ -6,12 +6,12 @@ require random
 require zookeeper
 
 dokku_update() {
+  _dokku_build_container
   dokku_stop
   dokku_install
 }
 
 dokku_install() {
-  _dokku_build_container
   _dokku_unit_write
   dokku_start
 }
