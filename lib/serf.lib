@@ -95,6 +95,7 @@ serf_check() {
   _serf_check "interlock id" interlock &
   _serf_check "zookeeper id" zookeeper & 
   _serf_check "registry id" registry &
+  _serf_check "dokku id" dokku &
 }
 
 serf_cluster() {
