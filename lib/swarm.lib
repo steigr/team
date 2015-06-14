@@ -45,7 +45,7 @@ swarm_environment() {
 }
 
 swarm_id() {
-  _docker_id_by_name swarm
+  $(coreos_early_docker_env) _docker_id_by_name swarm
 }
 
 swarm_() {
