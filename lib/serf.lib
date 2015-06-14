@@ -169,9 +169,9 @@ _serf_local_bin() {
 }
 
 _serf_snapshot_file() {
-  _sf="/run/serf/snapshot"
-  mkdir -p $(dirname $sf)
-  echo $sf
+  result="/run/serf/snapshot"
+  mkdir -p $(dirname $result)
+  echo $result
 }
 
 _serf_check() {
