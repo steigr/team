@@ -171,11 +171,15 @@ RUN mkdir /app \
  && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
  && cp /app/Procfile /app/.release
 ADD $1/(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
-VOLUMES ["$(_dokku_graph_dir)","$(_dokku_docker_socket","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
+VOLUMES $(_dokku_docker_volumes)
+ENTRYPOINT \["/start"\]
+EXPOSE 22
 EO_DOKKU_DOCKERFILE
-# ENTRYPOINT ["/start"]
-# EXPOSE 22
 
+}
+
+_dokku_docker_volumes() {
+  echo "[\"$(_dokku_graph_dir)\",\"$(_dokku_docker_socket\",\"$(_dokku_nerve_config)\",\"$(_dokku_synapse_config)\",\"$(_dokku_home)\",\"$(_dokku_authorized_keys)\"]"
 }
 
 _dokku_image_maintainer() {
