@@ -70,7 +70,7 @@ serf_untag() {
 }
 
 serf_set() {
-  cat > $(_serf_kv_dir)/$1 2>/dev/null
+  echo $SERF_PAYLOAD > $(_serf_kv_dir)/$1 2>/dev/null
 }
 
 serf_get() {
