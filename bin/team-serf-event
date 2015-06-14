@@ -7,10 +7,11 @@ require serf-event
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 
 SERF_PAYLOAD=$(cat /dev/stdin)
+echo "Got Payload $SERF_PAYLOAD" >> /tmp/serf-event.log
 
 serf_event_handlers | while read handler; do
   SERF_EVENT_ENVIRONMENT=$(serf_event_environment)
-  /bin/sh -c "TEAM=\"$TEAM\" TEAM_LIB=\"$TEAM_LIB\" $SERF_EVENT_ENVIRONMENT /bin/sh $handler $*"
+  /bin/sh -c "TEAM=\"$TEAM\" TEAM_LIB=\"$TEAM_LIB\" SERF_PAYLOAD=\"$SERF_PAYLOAD\" $SERF_EVENT_ENVIRONMENT /bin/sh $handler $*"
 done
 
 exit 0
