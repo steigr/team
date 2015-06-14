@@ -3,6 +3,8 @@ require coreos
 require serf
 require docker
 
+set -x
+
 dokku_update() {
   dokku_stop
   dokku_install
