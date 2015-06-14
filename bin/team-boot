@@ -6,7 +6,7 @@ require team
 $TEAM ssh       rebind
 $TEAM docker    bind tcp
 
-$TEAM serf      restart
+$TEAM serf      install
 
 $TEAM bee       install
 $TEAM swarm     install

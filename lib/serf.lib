@@ -1,11 +1,44 @@
 require platform
-
-_default_serf_bin() {
-  echo $PREFIX/bin/serf
-}
+require http
+require coreos
+require team
+require network
 
 serf_version() {
-  echo "0.6.4"
+  version=$(_serf_bin_version)
+  [[ -z "$version" ]] && version=$(_serf_default_version)
+  echo $version
+}
+
+serf_update() {
+  serf_stop
+  serf_install
+}
+
+serf_install() {
+  _serf_download
+  _serf_write_unit
+  sert_start
+}
+
+serf_start() {
+  coreos_start serf
+}
+
+serf_stop() {
+  coreos_stop serf
+}
+
+serf_config() {
+  _serf_write_config
+}
+
+serf_loglevel() {
+  echo "debug"
+}
+
+serf_handler() {
+  echo "$TEAM"
 }
 
 serf_node_name() {
@@ -22,60 +55,154 @@ serf_install() {
 }
 
 serf_bin() {
+  _serf
+}
+
+serf_event() {
+  $(_serf) event $*
+}
+
+serf_nodes() {
+  $(_serf) members -status=alive $* 2>/dev/null
+}
+
+serf_count-nodes() {
+  serf_nodes | grep -v "^$" | wc -l
+}
+
+serf_set() {
+  for tag in $*; do
+    $(_serf) tags -set $tag
+  done
+}
+
+serf_unset() {
+  for tag in $*; do
+    $(_serf) tags -delete $tag
+  done
+}
+
+serf_query() {
+  _serf_query $*
+}
+
+serf_timeout() {
+  echo "1s"
+}
+
+serf_check() {
+  _serf_check "swarm local-token" swarm-token 
+  _serf_check "swarm id" swarm
+  _serf_check "interlock id" interlock
+  _serf_check "zookeeper id" zookeeper
+  _serf_check "registry id" registry
+}
+
+_serf_download() {
+  test -x $(_serf) || return
+  test -f $(_serf) || return
+  _serf_zip=$(_http_get $(_serf_url) $(mktemp /tmp/XXXX.zip).zip)
+  unzip -o $(dirname $(_serf)) $_serf_zip >/dev/null
+  rm $_serf_zip
+  chmod +x $(_serf)
+}
+
+_serf_write_unit() {
+  _coreos_write_unit $(coreos_unit serf) <<EO_SERF_UNIT
+[Unit]
+Description=Serf Cluster Discovery and Event Processing
+[Service]
+Restart=always
+ExecStartPre=$TEAM serf config
+ExecStart=$(_serf) agent -config-file=$(_serf_config_file)
+EO_SERF_UNIT
+}
+
+_serf_write_config() {
+  mkdir -p $(dirname $(_serf_config_file))
+  cat <<EO_SERF_CONFIG | tee $(_serf_config_file) >/dev/null
+{
+  "discover":"$(_serf_cluster)",
+  "tags":{
+    "coreos":"true"
+  },
+  "node_name":"$(_serf_node_name)",
+  "snapshot_path":"$(_serf_snapshot_file)",
+  "rejoin_after_leave":true,
+  "disable_name_resolution":true,
+  "event_handlers":[
+    "$(serf_handler)"
+  ],
+  "log_level":"$(serf_loglevel)"
+}
+EO_SERF_CONFIG
+}
+
+_serf_config_file() {
+  echo "/run/serf/config"
+}
+
+_serf_url() {
+  echo "https://dl.bintray.com/mitchellh/serf/$(serf_version)_$(platform)_amd64.zip"
+}
+
+_serf_bin_version() {
+  $(_serf_bin) | grep -E "Serf v([0-9]+\.?)+" | awk -F' v' '{print $2}'
+}
+
+_serf_default_version() {
+  echo "0.6.4"
+}
+
+_serf_bin() {
+  _serf
+}
+
+_serf() {
+  serf_bin=$(_serf_local_bin)
+  [[ -z "$serf_bin"]] && serf_bin=$(_serf_default_bin)
+  echo $serf_bin
+  test -f $(which serf 2>/dev/null) && which serf 2>/dev/null
+  test 
   test -f $(which serf 2>/dev/null) && test -x $(which serf 2>/dev/null) && _serf_bin=$(which serf 2>/dev/null)
   test -x $(_default_serf_bin) && _serf_bin=$(_default_serf_bin)
   test "x" = "x$_serf_bin" && serf_install
   echo $_serf_bin
 }
 
-serf_config_file() {
-  mkdir -p "$PREFIX/tmp"
-  echo "$PREFIX/tmp/serf.json"
+_serf_default_bin() {
+  echo "$PREFIX/bin/serf"
 }
 
-serf_snapshot() {
-  local _snapshot="$PREFIX/var/lib/serf"
-  mkdir -p "$_snapshot"
-  echo "$_snapshot/snapshot"
-}
-serf_write_config() {
-    cat<<EO_CONFIG | tee $1
-{
-  "discover":"$(ranch)",
-  "tags":{
-    "coreos":"true"
-  },
-  "node_name":"$(serf_node_name)",
-  "snapshot_path":"$(serf_snapshot)",
-  "rejoin_after_leave":true,
-  "disable_name_resolution":true,
-  "event_handlers":[
-    "$TEAM"
-  ],
-  "log_level":"debug"
-}
-EO_CONFIG
+_serf_local_bin() {
+  serf_bin=$(which serf 2>/dev/null)
+  [[ -z "$serf_bin" ]] || return
+  [[ -f "$serf_bin" ]] || return
+  [[ -x "$serf_bin" ]] || return
+  echo $serf_bin
 }
 
-serf_write_unit() {
-  cat<<EO_UNIT | tee $1
-[Unit]
-Description=Serf Cluster Discovery and Event Processing
-[Service]
-Restart=always
-ExecStartPre=$TEAM serf config
-ExecStart=$($TEAM serf command)
-EO_UNIT
-  coreos_init reload
+_serf_cluster() {
+  _domainname | sed -e 's@\.@_@g'
 }
 
-serf_check() {
+_serf_node_name() {
+  _hostname long
+}
+
+_serf_snapshot_file() {
+  _sf="/run/serf/snapshot"
+  mkdir -p $(dirname $sf)
+  echo $sf
+}
+
+_serf_check() {
   result=$(/bin/sh -c "$TEAM $1" )
   [[ "x" = "x$result" ]] && $TEAM serf unset $2 || $TEAM serf set $2=true
 }
 
 _serf_query() {
-  $(serf_bin) query -timeout=${TIMEOUT:-1s} $*
+  $(_serf) query -timeout=${TIMEOUT:-$(serf_timeout)} $*
 }
 
 _serf_query_filter() {
