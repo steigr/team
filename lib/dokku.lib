@@ -201,12 +201,10 @@ _dokku_synapse() {
   _coreos_write_unit $(coreos_unit dokku-synapse) <<EO_DOKKU_NERVE_UNIT
 [Unit]
 Description=Dokku Paas Socket Proxy
-Requires=dokku.service
-After=dokku.service
 [Service]
 Restart=always
 ExecStartPre=$TEAM dokku synapse-config
-ExecStart=$TEAM dokku exec /start synapse
+ExecStart=/usr/bin/docker run --net=host --rm -v $(_dokku_synapse_config):/etc/synapse/synapse.json steigr/synapse
 EO_DOKKU_NERVE_UNIT
   _coreos_start dokku-nerve
 }
