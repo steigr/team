@@ -209,6 +209,7 @@ EO_DOKKU_ENTRYPOINT
 
 _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
+echo debconf debconf/frontend string noninteractive | debconf-set-selections
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
 /bin/bash -x bootstrap.sh
