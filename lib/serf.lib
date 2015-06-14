@@ -20,7 +20,7 @@ serf_update() {
 serf_install() {
   _serf_download
   _serf_write_unit
-  sert_start
+  serf_start
 }
 
 serf_start() {
