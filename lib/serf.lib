@@ -41,19 +41,6 @@ serf_handler() {
   echo "$TEAM"
 }
 
-serf_node_name() {
-  _serf_node_name
-}
-
-serf_install() {
-  _serf_bin=$(_default_serf_bin)
-  _serf_dir=$(dirname $_serf_bin)
-  _serf_zip=/tmp/$$.zip
-  $(which curl) -SLfslko $_serf_zip  https://dl.bintray.com/mitchellh/serf/$(serf_version)_$(platform)_amd64.zip
-  unzip -o $_serf_zip -d $_serf_dir >/dev/null
-  rm $_serf_zip
-}
-
 serf_bin() {
   _serf
 }
@@ -201,8 +188,4 @@ _serf_query() {
 
 _serf_query_filter() {
   cat | awk -F$1 '{print $2}' | awk '{print $1}' | grep -v "^$"
-}
-
-_serf_node_name() {
-  (hostname -a 2>/dev/null || hostname -f 2>/dev/null) | cut -f1 -d"."
 }

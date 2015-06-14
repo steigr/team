@@ -70,7 +70,7 @@ _etcd_unit_dropin_file() {
 }
 
 _etcd_nodename() {
-  _serf_node_name
+  serf_node-name
 }
 
 _etcd_token() {
