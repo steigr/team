@@ -90,11 +90,11 @@ serf_timeout() {
 }
 
 serf_check() {
-  _serf_check "swarm local-token" swarm-token 
-  _serf_check "swarm id" swarm
-  _serf_check "interlock id" interlock
-  _serf_check "zookeeper id" zookeeper
-  _serf_check "registry id" registry
+  _serf_check "swarm local-token" swarm-token &
+  _serf_check "swarm id" swarm &
+  _serf_check "interlock id" interlock &
+  _serf_check "zookeeper id" zookeeper & 
+  _serf_check "registry id" registry &
 }
 
 serf_cluster() {
