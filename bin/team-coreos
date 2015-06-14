@@ -1,21 +1,12 @@
 #!/bin/bash
+MODULE=coreos
 
-set -x
 . $TEAM_LIB/dependency.lib
-require serf
-require network
-require rancher
-require team
-require coreos
+require $MODULE
+
+_${MODULE}_test 2>/dev/null
 
 arg=$1
 shift
 
-case "$arg" in
-  start)
-    systemctl start $1
-  ;;
-  stop)
-    systemctl stop $1
-  ;;
-esac
+${MODULE}_$arg $*
