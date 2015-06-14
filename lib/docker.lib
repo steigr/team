@@ -24,9 +24,7 @@ _docker_id_by_name() {
 }
 
 _docker_name_by_id() {
-  docker inspect --format='{{ .Name }}' $1 | sed -e 's:^/::g' | while read sid; do
-    docker inspect --format='{{ .Id }}' $sid
-  done
+  docker inspect --format='{{ .Name }}' $1 | sed -e 's:^/::g'
 }
 
 _docker_ids_by_image() {
@@ -36,7 +34,9 @@ _docker_ids_by_image() {
   else
     image=$1
   fi
-  docker ps $op | awk '{print $1 "  " $2}' | grep " $image" | awk '{print $1}'
+  docker ps $op | awk '{print $1 "  " $2}' | grep " $image" | awk '{print $1}' | while read sid; do
+    docker inspect --format='{{ .Id }}' $sid
+  done
 }
 
 _docker_ip() {
