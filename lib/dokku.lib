@@ -169,7 +169,8 @@ RUN mkdir /app \
  && echo "nerve: /usr/bin/nerve -c /etc/nerve.json >> /app/Procfile" \
  && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
  && cp /app/Procfile /app/.release
-ADD $1/(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
+ADD $1/$(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y haproxy
 VOLUMES "["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]"
 ENTRYPOINT ["/start"]
 EXPOSE 22
