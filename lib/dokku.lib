@@ -36,6 +36,14 @@ dokku_nerve-config() {
   _dokku_nerve_json
 }
 
+dokku_synapse() {
+  _dokku_synapse
+}
+
+dokku_synapse-config() {
+  _dokku_synapse_json
+}
+
 dokku_ip() {
   serf_query dokku-ip | _serf_query_filter $(_dokku_ip_var) | head -n1
 }
@@ -138,8 +146,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
  && echo 'ssh: echo "ssh-\$(head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{print $2}')" > /root/.ssh/authorized_keys; mkdir -p /var/run/sshd; /usr/sbin/sshd -D -f /etc/ssh/sshd_config' > /app/Procfile \
- && echo "nerve: /usr/bin/nerve -c $(_dokku_nerve_config)" >> /app/Procfile \
- && echo "synapse: /usr/bin/synapse -c $(_dokku_synapse_config)" >> /app/Procfile \
+ && echo "nerve: \$(which nerve) -c $(_dokku_nerve_config)" >> /app/Procfile \
+ && echo "synapse: \$(which synapse) -c $(_dokku_synapse_config)" >> /app/Procfile \
  && cp /app/Procfile /app/.release
 VOLUME ["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
 ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
