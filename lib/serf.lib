@@ -167,15 +167,9 @@ _serf_bin() {
 }
 
 _serf() {
-  serf_bin=$(_serf_local_bin)
-  [[ -z "$serf_bin" ]] && serf_bin=$(_serf_default_bin)
-  echo $serf_bin
-  test -f $(which serf 2>/dev/null) && which serf 2>/dev/null
-  test 
-  test -f $(which serf 2>/dev/null) && test -x $(which serf 2>/dev/null) && _serf_bin=$(which serf 2>/dev/null)
-  test -x $(_default_serf_bin) && _serf_bin=$(_default_serf_bin)
-  test "x" = "x$_serf_bin" && serf_install
-  echo $_serf_bin
+  result=$(_serf_local_bin)
+  [[ -z "$result" ]] && result=$(_serf_default_bin)
+  echo $result
 }
 
 _serf_default_bin() {
