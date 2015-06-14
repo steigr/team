@@ -154,7 +154,6 @@ EXPOSE 22
 ENTRYPOINT ["/start"]
 EO_DOKKU_DOCKERFILE
 }
-# ONBUILD VOLUME ["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
 
 _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
@@ -190,7 +189,7 @@ After=dokku.service
 [Service]
 Restart=always
 ExecStartPre=$TEAM dokku nerve-config
-ExecStart=$TEAM dokku exec /start nerve
+ExecStart=$TEAM dokku exec "/usr/local/bin/nerve -c $(_dokku_nerve_config)"
 EO_DOKKU_NERVE_UNIT
   _coreos_start dokku-nerve
 }
@@ -242,7 +241,7 @@ case "$(basename $0)" in
     ;;
 esac
 
-if [[ -z "$command" ]]; then
+if test -z "$command"; then
   echo "Missing command ($@)"
   exit 1
 fi
