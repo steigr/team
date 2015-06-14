@@ -35,8 +35,7 @@ _docker_ids_by_image() {
     image=$1
   fi
   docker ps $op -q | while read iid; do
-    imid=$(docker inspect --format='{{ .Image }}' $iid)
-    imname=$(docker inspect --format='{{ .ContainerConfig.Image }}' $imid)
+    imname=$(docker inspect --format='{{ .Config.Image }}' $iid)
     test "x$image" = "x$imname" && echo $iid
   done
 }
