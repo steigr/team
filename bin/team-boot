@@ -20,5 +20,4 @@ $TEAM registry  install
 $TEAM zookeeper install
 
 $TEAM dokku     install
-$TEAM dokku     nerve
-$TEAM dokku     synapse
+$TEAM dokku     router
