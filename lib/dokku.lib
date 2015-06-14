@@ -86,24 +86,24 @@ _dokku_base_container() {
   _dokku_container_name
 }
 
-# _dokku_build_container() {
-#   set -x
-#   temp_dir=$(mktemp -d)
-#   _dokku_write_dockerfile $temp_dir
-#   _dokku_entrypoint_write $temp_dir
-#   /usr/bin/docker build -t $(_dokku_image_name) $temp_dir
-#   rm -r $temp_dir
-#   id=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
-#   set -e
-#   _dokku_bootstrap_commands | while read cmd; do
-#     docker exec -t $id /bin/bash -l -c "$cmd"
-#   end
-#   set +e
-#   docker stop $id
-#   docker commit $id
-#   docker tag -f $i $(_dokku_image_name)
-#   docker rm $id  
-# }
+_dokku_build_container() {
+  set -x
+  temp_dir=$(mktemp -d)
+  _dokku_write_dockerfile $temp_dir
+  _dokku_entrypoint_write $temp_dir
+  docker build -t $(_dokku_image_name) $temp_dir
+  rm -r $temp_dir
+  # id=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
+  # set -e
+  # _dokku_bootstrap_commands | while read cmd; do
+  #   docker exec -t $id /bin/bash -l -c "$cmd"
+  # end
+  # set +e
+  # docker stop $id
+  # docker commit $id
+  # docker tag -f $i $(_dokku_image_name)
+  # docker rm $id  
+}
 
 _dokku_docker_command() {
   echo "/usr/bin/docker run --privileged -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
