@@ -45,7 +45,7 @@ swarm_environment() {
 }
 
 swarm_id() {
-  docker -H unix://run/early-docker.sock inspect --format '{{ .Id }}' swarm
+  docker -H unix:///run/early-docker.sock inspect --format '{{ .Id }}' swarm
 }
 
 swarm_() {
