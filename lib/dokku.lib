@@ -176,7 +176,7 @@ After=docker.service
 Restart=always
 ExecStartPre=-$TEAM dokku rm
 ExecStartPre=$TEAM dokku env
-ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) ) /start ssh
+ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) --rm ) /start ssh
 EO_DOKKU_UNIT
 }
 
