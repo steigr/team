@@ -160,7 +160,7 @@ _serf_bin() {
 
 _serf() {
   serf_bin=$(_serf_local_bin)
-  [[ -z "$serf_bin"]] && serf_bin=$(_serf_default_bin)
+  [[ -z "$serf_bin" ]] && serf_bin=$(_serf_default_bin)
   echo $serf_bin
   test -f $(which serf 2>/dev/null) && which serf 2>/dev/null
   test 
