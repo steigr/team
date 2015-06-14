@@ -103,7 +103,7 @@ serf_cluster() {
 }
 
 serf_node-name() {
-  _hostname long
+  _hostname
 }
 
 _serf_download() {
