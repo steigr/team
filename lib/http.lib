@@ -1,0 +1,4 @@
+_http_get() {
+  $(which curl) -SLfslko "$2" "$1"
+  echo $2
+}
