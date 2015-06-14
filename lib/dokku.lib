@@ -101,7 +101,7 @@ _dokku_build_container() {
   rm -r $temp_dir
   _dokku_bootstrap_commands | while read cmd; do
     name=$(_random 8)
-    $($(_dokku_docker_command --name=$name --entrypoint=/bin/sh -v $(_dokku_home):$(_dokku_home)_host) -c "$cmd")
+    $(_dokku_docker_command --name=$name --entrypoint=/bin/sh -v $(_dokku_home):$(_dokku_home)_host) -c "$cmd"
     iid=$(docker commit $name)
     docker tag -f $iid $(_dokku_image_name)
     docker rm $name
