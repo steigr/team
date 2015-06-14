@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 PROJECT_REPO=https://github.com/steigr/team
 
 make_prefix() { mkdir "$(dirname $1)" 2>/dev/null; echo "$1"; }
@@ -15,7 +15,7 @@ team_lib()    { echo "$(prefix)/lib"; }
 called()      { echo "${BASH_SOURCE[0]%*.orig}"; }
 is_linked()   { test -L $(called); }
 
-has_git    || git_clone
+has_git || git_clone
 
 if abs_called; then
   cmd=$(module $*)
