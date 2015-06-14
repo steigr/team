@@ -101,7 +101,7 @@ _dokku_build_container() {
   cmd=$(_dokku_docker_command --entrypoint=/bin/sh -t -d -v $(_dokku_home):$(_dokku_home)_host)
   id=$($cmd)
   _dokku_bootstrap_commands | while read cmd; do
-    docker exec -ti $id /bin/bash -l -c "$cmd"
+    docker exec $id /bin/bash -l -c "$cmd"
   done
   docker stop $id
   docker commit $id
