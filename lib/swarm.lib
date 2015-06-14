@@ -44,6 +44,10 @@ swarm_environment() {
   echo "SWARM_DISCOVERY=$token" >> $env_file
 }
 
+swarm_id() {
+  _docker_id_by_name swarm
+}
+
 swarm_() {
   DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $*
 }
