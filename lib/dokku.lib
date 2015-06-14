@@ -166,8 +166,8 @@ RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
  && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
 RUN mkdir /app \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
- && echo "nerve: /usr/bin/nerve -c /etc/nerve.json >> /app/Procfile" \
- && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
+ && echo "nerve: /usr/bin/nerve -c /etc/nerve.json" >> /app/Procfile \
+ && echo "synapse: /usr/bin/synapse -c /etc/synapse.json" >> /app/Procfile \
  && cp /app/Procfile /app/.release
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y haproxy
 RUN mkdir -p /root/.ssh; apt-get clean
