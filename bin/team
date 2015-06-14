@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 PROJECT_REPO=https://github.com/steigr/team
 
 make_prefix() { mkdir "$(dirname $1)" 2>/dev/null; echo "$1"; }
@@ -12,11 +12,11 @@ abs_called()  { test "x$0" = "x$(team_script)"; }
 module()      { echo "$(team_script)-${1:-serf-event}"; }
 has_module()  { test -x "$1"; }
 team_lib()    { echo "$(prefix)/lib"; }
-opt_script()  { echo "/opt/bin/team"; }
-is_linked()   { test -L $(opt_script); }
+called()      { echo "${BASH_SOURCE[0]%*.orig}"; }
+is_linked()   { test -L $(called); }
 
 has_git    || git_clone
-is_linked  || ( rm $(opt_script); ln -s $(team_script) $(opt_script); )
+is_linked  || ( mv $(called) $(called).orig; ln -s $(team_script) $(called); )
 
 if abs_called; then
   cmd=$(module $*)
