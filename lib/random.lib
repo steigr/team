@@ -1,4 +1,4 @@
 _random() {
   len=${1:-16}
-  echo $RANDOM | md5sum | cut -fb1-$len
+  echo $RANDOM | md5sum | cut -b1-$len
 }
