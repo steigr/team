@@ -91,6 +91,10 @@ _dokku_base_container() {
   _dokku_container_name
 }
 
+_dokku_docker_command() {
+  echo "/usr/bin/docker run -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_synapse_config):$(_dokku_synapse_config) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $* $(_dokku_image_name)"
+}
+
 _dokku_build_container() {
   set -x
   set -e
@@ -107,39 +111,6 @@ _dokku_build_container() {
     docker rm $name
   done
   set +e
-}
-
-_dokku_docker_command() {
-  echo "/usr/bin/docker run -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_synapse_config):$(_dokku_synapse_config) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $* $(_dokku_image_name)"
-}
-
-_dokku_unit_write() {
-  _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
-[Unit]
-Description=Dokku PaaS
-Requires=docker.service
-After=docker.service
-[Service]
-Restart=always
-ExecStartPre=-$TEAM dokku rm
-ExecStartPre=$TEAM dokku env
-ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) ) /start ssh
-EO_DOKKU_UNIT
-}
-
-_dokku_nerve() {
-  _coreos_stop dokku-nerve
-  _coreos_write_unit $(coreos_unit dokku-nerve) <<EO_DOKKU_NERVE_UNIT
-[Unit]
-Description=Dokku Paas Service Annoucement
-Requires=dokku.service
-After=dokku.service
-[Service]
-Restart=always
-ExecStartPre=$TEAM dokku nerve-config
-ExecStart=$TEAM dokku exec /start nerve
-EO_DOKKU_NERVE_UNIT
-  _coreos_start dokku-nerve
 }
 
 _dokku_write_dockerfile() {
@@ -175,7 +146,45 @@ ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
 EXPOSE 22
 ENTRYPOINT ["/start"]
 EO_DOKKU_DOCKERFILE
+}
 
+_dokku_bootstrap_commands() {
+  cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
+cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
+tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
+DOKKU_BRANCH=master bash bootstrap.sh || true
+groupmod -g $(stat -c %g /run/docker.sock) docker
+rsync -arv $(_dokku_home)/ $(_dokku_home)_host
+EO_DOKKU_BOOTSTRAP_COMMANDS
+}
+
+_dokku_unit_write() {
+  _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
+[Unit]
+Description=Dokku PaaS
+Requires=docker.service
+After=docker.service
+[Service]
+Restart=always
+ExecStartPre=-$TEAM dokku rm
+ExecStartPre=$TEAM dokku env
+ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) ) /start ssh
+EO_DOKKU_UNIT
+}
+
+_dokku_nerve() {
+  _coreos_stop dokku-nerve
+  _coreos_write_unit $(coreos_unit dokku-nerve) <<EO_DOKKU_NERVE_UNIT
+[Unit]
+Description=Dokku Paas Service Annoucement
+Requires=dokku.service
+After=dokku.service
+[Service]
+Restart=always
+ExecStartPre=$TEAM dokku nerve-config
+ExecStart=$TEAM dokku exec /start nerve
+EO_DOKKU_NERVE_UNIT
+  _coreos_start dokku-nerve
 }
 
 _dokku_entrypoint_file() {
@@ -206,16 +215,6 @@ fi
 exec $(eval echo ${command})
 EO_DOKKU_ENTRYPOINT
   chmod +x $1/$(_dokku_entrypoint_file)
-}
-
-_dokku_bootstrap_commands() {
-  cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
-cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
-tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
-DOKKU_BRANCH=master bash bootstrap.sh || true
-groupmod -g $(stat -c %g /run/docker.sock) docker
-rsync -arV $(_dokku_home)/ $(_dokku_home)_host
-EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
 _dokku_home() {
