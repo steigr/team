@@ -45,7 +45,7 @@ swarm_environment() {
 }
 
 swarm_id() {
-  coreos_early_docker inspect --format '{{ .Id }}' swarm 
+  coreos_early_docker inspect --format "{{ .Id }}" swarm 
 }
 
 swarm_() {
