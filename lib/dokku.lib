@@ -140,7 +140,7 @@ EO_DOKKU_NERVE_UNIT
 }
 
 _dokku_write_dockerfile() {
-  cat <<EO_DOKKU_DOCKERFILE | tee $1/Dockerfile >/dev/null
+  cat <<'EO_DOKKU_DOCKERFILE' | tee $1/Dockerfile >/dev/null
 FROM ubuntu:latest
 MAINTAINER Mathias Kaufmann <me@stei.gr>
 RUN ping -c1 de.archive.ubuntu.com \
