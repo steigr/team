@@ -98,6 +98,14 @@ serf_check() {
   _serf_check "registry id" registry
 }
 
+serf_cluster() {
+  _domainname | sed -e 's@\.@_@g'
+}
+
+serf_node-name() {
+  _hostname long
+}
+
 _serf_download() {
   test -x $(_serf) || return
   test -f $(_serf) || return
@@ -122,11 +130,11 @@ _serf_write_config() {
   mkdir -p $(dirname $(_serf_config_file))
   cat <<EO_SERF_CONFIG | tee $(_serf_config_file) >/dev/null
 {
-  "discover":"$(_serf_cluster)",
+  "discover":"$(serf_cluster)",
   "tags":{
     "coreos":"true"
   },
-  "node_name":"$(_serf_node_name)",
+  "node_name":"$(serf_node-name)",
   "snapshot_path":"$(_serf_snapshot_file)",
   "rejoin_after_leave":true,
   "disable_name_resolution":true,
@@ -180,14 +188,6 @@ _serf_local_bin() {
   [[ -f "$serf_bin" ]] || return
   [[ -x "$serf_bin" ]] || return
   echo $serf_bin
-}
-
-_serf_cluster() {
-  _domainname | sed -e 's@\.@_@g'
-}
-
-_serf_node_name() {
-  _hostname long
 }
 
 _serf_snapshot_file() {
