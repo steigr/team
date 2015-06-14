@@ -144,15 +144,11 @@ _serf_url() {
 }
 
 _serf_bin_version() {
-  $(_serf_bin) | grep -E "Serf v([0-9]+\.?)+" | awk -F' v' '{print $2}'
+  $(_serf) version | grep -E "Serf v([0-9]+\.?)+" | awk -F' v' '{print $2}'
 }
 
 _serf_default_version() {
   echo "0.6.4"
-}
-
-_serf_bin() {
-  _serf
 }
 
 _serf() {
