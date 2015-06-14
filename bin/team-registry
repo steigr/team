@@ -7,5 +7,5 @@ _${MODULE}_test 2>/dev/null
 
 arg=$1
 shift
-set -x
+
 ${MODULE}_$arg $*

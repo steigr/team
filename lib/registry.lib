@@ -62,7 +62,7 @@ registry_remove() {
 }
 
 registry_id() {
-  _docker_ids_by_image $(_registry_image) | head -n1
+  _docker_ids_by_image $(_registry_image) | head -1
 }
 
 _registry_hostname() {
