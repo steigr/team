@@ -98,7 +98,7 @@ _dokku_build_container() {
   _dokku_write_dockerfile $temp_dir
   docker build -t $(_dokku_image_name) $temp_dir
   rm -r $temp_dir
-  cmd=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
+  cmd=$(_dokku_docker_command --entrypoint=/bin/sh -d -v $(_dokku_home):$(_dokku_home)_host)
   id=$($cmd)
   _dokku_bootstrap_commands | while read cmd; do
     docker exec -ti $id /bin/bash -l -c "$cmd"
@@ -111,7 +111,7 @@ _dokku_build_container() {
 }
 
 _dokku_docker_command() {
-  echo "/usr/bin/docker run -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_synapse_config):$(_dokku_synapse_config) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
+  echo "/usr/bin/docker run -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_synapse_config):$(_dokku_synapse_config) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $* $(_dokku_image_name)"
 }
 
 _dokku_unit_write() {
@@ -124,7 +124,7 @@ After=docker.service
 Restart=always
 ExecStartPre=-$TEAM dokku rm
 ExecStartPre=$TEAM dokku env
-ExecStart=$(_dokku_docker_command) /start ssh
+ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) ) /start ssh
 EO_DOKKU_UNIT
 }
 
@@ -206,14 +206,17 @@ fi
 
 exec $(eval echo ${command})
 EO_DOKKU_ENTRYPOINT
+  chmod +x $1/$(_dokku_entrypoint_file)
 }
 
 _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
-/bin/bash bootstrap.sh
+set -x
+/bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
+rsync -arV $(_dokku_home)/ $(_dokku_home)_host
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
