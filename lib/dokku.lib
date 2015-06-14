@@ -157,24 +157,25 @@ RUN curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstr
  && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
  && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
  && tail -1 /root/.ssh/authorized_keys > /root/dokku_id.pub
-RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
- && echo dokku dokku/web_config boolean false | debconf-set-selections \
- && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
- && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
- && echo dokku dokku/vhost_enable seen true | debconf-set-selections \
- && echo dokku dokku/web_config seen true | debconf-set-selections \
- && echo dokku dokku/hostname seen true | debconf-set-selections \
- && echo dokku dokku/key_file seen true | debconf-set-selections
-RUN mkdir /app \
- && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
- && echo "nerve: /usr/bin/nerve -c /etc/nerve.json >> /app/Procfile" \
- && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
- && cp /app/Procfile /app/.release
-ADD $1/(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
-VOLUMES ["$(_dokku_graph_dir)","$(_dokku_docker_socket","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
-ENTRYPOINT ["/start"]
-EXPOSE 22
 EO_DOKKU_DOCKERFILE
+# RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
+#  && echo dokku dokku/web_config boolean false | debconf-set-selections \
+#  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
+#  && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
+#  && echo dokku dokku/vhost_enable seen true | debconf-set-selections \
+#  && echo dokku dokku/web_config seen true | debconf-set-selections \
+#  && echo dokku dokku/hostname seen true | debconf-set-selections \
+#  && echo dokku dokku/key_file seen true | debconf-set-selections
+# RUN mkdir /app \
+#  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
+#  && echo "nerve: /usr/bin/nerve -c /etc/nerve.json >> /app/Procfile" \
+#  && echo "synapse: /usr/bin/synapse -c /etc/synapse.json >> /app/Procfile" \
+#  && cp /app/Procfile /app/.release
+# ADD $1/(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
+# VOLUMES ["$(_dokku_graph_dir)","$(_dokku_docker_socket","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
+# ENTRYPOINT ["/start"]
+# EXPOSE 22
+
 }
 
 _dokku_image_maintainer() {
