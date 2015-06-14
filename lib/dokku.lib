@@ -93,7 +93,8 @@ _dokku_build_container() {
   _dokku_entrypoint_write $temp_dir
   docker build -t $(_dokku_image_name) $temp_dir
   rm -r $temp_dir
-  id=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
+  cmd=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
+  id=$cmd
   set -e
   _dokku_bootstrap_commands | while read cmd; do
     docker exec -t $id /bin/bash -l -c "$cmd"
