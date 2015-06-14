@@ -162,7 +162,7 @@ tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
 DOKKU_BRANCH=master bash bootstrap.sh || true
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arv $(_dokku_home)/ $(_dokku_home)_host
-rm /root/dokku_id.pub /root/.ssh/authorized_keys
+rm /root/dokku_id.pub /root/.ssh/authorized_keys || true
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
