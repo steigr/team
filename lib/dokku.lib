@@ -3,18 +3,22 @@ require coreos
 require serf
 require docker
 
-dokku_start() {
-  _dokku_start_container
-}
-
-dokku_stop() {
-  _dokku_stop_container
+dokku_update() {
+  dokku_stop
+  dokku_install
 }
 
 dokku_install() {
-  dokku_stop
   _dokku_build_container
   dokku_start
+}
+
+dokku_start() {
+  _coreos_start dokku
+}
+
+dokku_stop() {
+  _coreos_stop dokku
 }
 
 dokku_env() {
@@ -37,12 +41,18 @@ dokku_local-ip() {
   _docker_ip $(_dokku_container_name)
 }
 
-_dokku_container_name() {
-  _docker_name_by_id $(dokku_id)
-}
-
 dokku_id() {
   _docker_ids_by_image "dokku" | head -1
+}
+
+dokku_rm() {
+  for id in $(_docker_ids_by_image $(_dokku_image_name)); do
+    docker rm $id
+  done
+}
+
+_dokku_container_name() {
+  _docker_name_by_id $(dokku_id)
 }
 
 _dokku_image_name() {
@@ -55,7 +65,7 @@ _dokku_stop_container() {
 
 _dokku_start_container() {
   _dokku_unit_write $(coreos_unit dokku)
-  coreos_start $(_dokku_container_name)
+  _coreos_start $(_dokku_container_name)
 }
 
 _dokku_authorized_keys() {
@@ -105,15 +115,14 @@ Requires=early-docker.service
 After=early-docker.service
 [Service]
 Restart=always
-ExecStartPre=-/usr/bin/docker rm $(_dokku_container_name)
+ExecStartPre=-$TEAM dokku rm
 ExecStartPre=$TEAM dokku env
-ExecStart=/usr/bin/docker run --rm --privileged --env-file=$(_dokku_env_file) --name $(_dokku_container_name) -v $(_dokku_nerve_config):/etc/nerve.json -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $(_dokku_base_container) /start
-ExecStop=-/usr/bin/docker stop $(_dokku_container_name)
+ExecStart=$(_dokku_docker_command)
 EO_DOKKU_UNIT
 }
 
 _dokku_nerve() {
-  coreos_stop dokku-nerve
+  _coreos_stop dokku-nerve
   _coreos_write_unit $(coreos_unit dokku-nerve) <<EO_DOKKU_NERVE_UNIT
 [Unit]
 Description=Dokku Paas Service Annoucement
@@ -122,9 +131,9 @@ After=dokku.service
 [Service]
 Restart=always
 ExecStartPre=$TEAM dokku nerve-config
-ExecStart=/usr/bin/docker exec $(_dokku_container_name) /start nerve
+ExecStart=$TEAM dokku exec /start nerve
 EO_DOKKU_NERVE_UNIT
-  coreos_start dokku-nerve
+  _coreos_start dokku-nerve
 }
 
 _dokku_write_dockerfile() {
