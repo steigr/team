@@ -2,6 +2,7 @@ require team
 require coreos
 require serf
 require docker
+require random
 
 set -x
 
@@ -98,15 +99,13 @@ _dokku_build_container() {
   _dokku_write_dockerfile $temp_dir
   docker build -t $(_dokku_image_name) $temp_dir
   rm -r $temp_dir
-  cmd=$(_dokku_docker_command --entrypoint=/bin/sh -t -d -v $(_dokku_home):$(_dokku_home)_host)
-  id=$($cmd)
   _dokku_bootstrap_commands | while read cmd; do
-    docker exec $id /bin/bash -l -c "$cmd"
+    name=$(_random 8)
+    $($(_dokku_docker_command --name=$name --entrypoint=/bin/sh -v $(_dokku_home):$(_dokku_home)_host)) $cmd
+    docker commit $name
+    docker tag -f $name $(_dokku_image_name)
+    docker rm $name
   done
-  docker stop $id
-  docker commit $id
-  docker tag -f $i $(_dokku_image_name)
-  docker rm $id  
   set +e
 }
 
