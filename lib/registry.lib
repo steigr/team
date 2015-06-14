@@ -2,6 +2,7 @@ require team
 require serf
 require network
 require coreos
+require docker
 
 registry_update() {
   registry_stop
