@@ -96,8 +96,8 @@ serf_node-name() {
 }
 
 _serf_download() {
-  test -x $(_serf) || return
-  test -f $(_serf) || return
+  test -x $(_serf) || exit
+  test -f $(_serf) || exit
   _serf_zip=$(_http_get $(_serf_url) $(mktemp /tmp/XXXX.zip).zip)
   unzip -o $(dirname $(_serf)) $_serf_zip >/dev/null
   rm $_serf_zip
