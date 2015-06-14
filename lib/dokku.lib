@@ -140,9 +140,9 @@ EO_DOKKU_NERVE_UNIT
 }
 
 _dokku_write_dockerfile() {
-  cat <<'EO_DOKKU_DOCKERFILE' | tee $1/Dockerfile >/dev/null
+  cat <<EO_DOKKU_DOCKERFILE | tee $1/Dockerfile >/dev/null
 FROM ubuntu:latest
-MAINTAINER Mathias Kaufmann <me@stei.gr>
+MAINTAINER $(_dokku_image_maintainer)
 RUN ping -c1 de.archive.ubuntu.com \
  && sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list
 RUN apt-get update \
@@ -175,6 +175,10 @@ VOLUMES ["$(_dokku_graph_dir)","$(_dokku_docker_socket","$(_dokku_nerve_config)"
 ENTRYPOINT ["/start"]
 EXPOSE 22
 EO_DOKKU_DOCKERFILE
+}
+
+_dokku_image_maintainer() {
+  echo 'Mathias Kaufmann <me@stei.gr>'
 }
 
 _dokku_entrypoint_file() {
