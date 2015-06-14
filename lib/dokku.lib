@@ -150,13 +150,10 @@ RUN apt-get update \
  && apt-get autoremove -y \
  && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates -y
 RUN gem install nerve synapse foreman --no-ri --no-rdoc
-RUN mkdir -p /root/.ssh \
- && cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 RUN curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh \
  && sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh \
  && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
- && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
- && tail -1 /root/.ssh/authorized_keys > /root/dokku_id.pub
+ && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe
 RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
  && echo dokku dokku/web_config boolean false | debconf-set-selections \
  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
@@ -211,6 +208,9 @@ _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
+mkdir -p /root/.ssh
+cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
+tail -1 /root/.ssh/authorized_keys > /root/dokku_id.pub
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
