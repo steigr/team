@@ -11,6 +11,7 @@ dokku_update() {
 
 dokku_install() {
   _dokku_build_container
+  _dokku_write_unit
   dokku_start
 }
 
