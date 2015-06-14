@@ -107,7 +107,7 @@ _dokku_build_container() {
 }
 
 _dokku_docker_command() {
-  echo "/usr/bin/docker run --privileged -v $(_dokku_synapse_config):$(_dokku_synapse_config) -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
+  echo "/usr/bin/docker run --privileged -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_nerve_config):$(_dokku_nerve_config) -v $(_dokku_home):$(_dokku_home) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_graph_dir):$(_dokku_graph_dir) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $1 $(_dokku_image_name)"
 }
 
 _dokku_unit_write() {
@@ -249,7 +249,7 @@ _dokku_nerve_config() {
   echo "/run/dokku/nerve"
 }
 
-__dokku_synapse_config() {
+_dokku_synapse_config() {
   echo "/run/dokku/synapse"
 }
 
