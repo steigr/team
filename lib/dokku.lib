@@ -262,7 +262,7 @@ _dokku_nerve_ssh_path() {
 }
 
 _dokku_nerve_json() {
-  echo "{'instance_id':'$(serf_node_name)','services':{'ssh':{'host': '$(dokku_local-ip)','port':22,'reporter_type':'zookeeper','zk_hosts': ['$($TEAM zookeeper ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
+  echo "{'instance_id':'$(serf_node-name)','services':{'ssh':{'host': '$(dokku_local-ip)','port':22,'reporter_type':'zookeeper','zk_hosts': ['$(zookeeper_ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
   | sed -e "s:':\":g" \
   | tee $(_dokku_nerve_config)
 }
