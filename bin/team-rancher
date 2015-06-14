@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 . $TEAM_LIB/dependency.lib
 require rancher
 
