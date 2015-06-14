@@ -34,10 +34,14 @@ _docker_ids_by_image() {
   else
     image=$1
   fi
-  docker ps $op | awk '{print $1 "  " $2}' | grep " $image" | awk '{print $1}' | while read sid; do
-    docker inspect --format='{{ .Id }}' $sid
+  docker ps $op -q | while read iid; do
+    imid=$(docker inspect --format='{{ .Image }}' $iid)
+    imname=$(docker inspect --format='{{ .ContainerConfig.Image }}' $imid)
+    "x$image" = "x$imname" && echo $iid
   done
 }
+
+
 
 _docker_ip() {
   docker inspect --format '{{ .NetworkSettings.IPAddress }}' $1
