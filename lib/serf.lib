@@ -4,6 +4,8 @@ require coreos
 require team
 require network
 
+set -x
+
 serf_version() {
   version=$(_serf_bin_version)
   [[ -z "$version" ]] && version=$(_serf_default_version)
