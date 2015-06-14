@@ -69,10 +69,10 @@ After=early-docker.service
 [Service]
 Restart=always
 Environment=$(coreos_early_docker_env)
-ExecStartPre=-/usr/bin/docker rm swarm
+ExecStartPre=-$(_docker) rm swarm
 ExecStartPre=$TEAM swarm environment $(_swarm_environment_file)
-ExecStart=/usr/bin/docker run --name=swarm --env-file=$(_swarm_environment_file) --net=host swarm manage
-ExecStop=-/usr/bin/docker stop swarm
+ExecStart=$(_docker) run --name=swarm --env-file=$(_swarm_environment_file) --net=host swarm manage
+ExecStop=-$(_docker) stop swarm
 EO_SWARM_UNIT
 }
 

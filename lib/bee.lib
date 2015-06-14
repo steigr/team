@@ -42,10 +42,10 @@ After=early-docker.service
 [Service]
 Restart=always
 Environment=$(coreos_early_docker_env)
-ExecStartPre=-/usr/bin/docker rm bee
+ExecStartPre=-$(_docker) rm bee
 ExecStartPre=$TEAM bee environment $(_bee_environment_file)
-ExecStart=/usr/bin/docker run --name=bee --env-file=$(_bee_environment_file) --net=host swarm join
-ExecStop=-/usr/bin/docker stop bee
+ExecStart=$(_docker) run --name=bee --env-file=$(_bee_environment_file) --net=host swarm join
+ExecStop=-$(_docker) stop bee
 EO_BEE_UNIT
 }
 
