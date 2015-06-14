@@ -88,22 +88,22 @@ _dokku_base_container() {
 
 _dokku_build_container() {
   set -x
+  set -e
   temp_dir=$(mktemp -d)
-  _dokku_write_dockerfile $temp_dir
   _dokku_entrypoint_write $temp_dir
+  _dokku_write_dockerfile $temp_dir
   docker build -t $(_dokku_image_name) $temp_dir
   rm -r $temp_dir
   cmd=$(_dokku_docker_command "--entrypoint=/bin/sh -t -d")
   id=$($cmd)
-  set -e
   _dokku_bootstrap_commands | while read cmd; do
     docker exec -t $id /bin/bash -l -c "$cmd"
   done
-  set +e
   docker stop $id
   docker commit $id
   docker tag -f $i $(_dokku_image_name)
   docker rm $id  
+  set +e
 }
 
 _dokku_docker_command() {
