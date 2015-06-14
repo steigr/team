@@ -24,11 +24,11 @@ serf_install() {
 }
 
 serf_start() {
-  coreos_start serf
+  _coreos_start serf
 }
 
 serf_stop() {
-  coreos_stop serf
+  _coreos_stop serf
 }
 
 serf_config() {
