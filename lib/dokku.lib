@@ -205,11 +205,11 @@ exec $(eval echo ${command})
 EO_DOKKU_ENTRYPOINT
 }
 
-_dokku_core_install_command() {
-  cat<<DOKKU_INSTALL_CORE_COMMANDS
+_dokku_bootstrap_commands() {
+  cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
-DOKKU_INSTALL_CORE_COMMANDS
+EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
 _dokku_home() {
