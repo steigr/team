@@ -137,7 +137,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo debconf debconf/frontend noninteractive | debconf-set-selections \
  && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
- && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
+ && echo 'ssh: echo "ssh-\$(head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{print $2}')" > /root/.ssh/authorized_keys; mkdir -p /var/run/sshd; /usr/sbin/sshd -D -f /etc/ssh/sshd_config' > /app/Procfile \
  && echo "nerve: /usr/bin/nerve -c /etc/nerve.json" >> /app/Procfile \
  && echo "synapse: /usr/bin/synapse -c /etc/synapse.json" >> /app/Procfile \
  && cp /app/Procfile /app/.release
@@ -155,9 +155,10 @@ tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
 DOKKU_BRANCH=master bash bootstrap.sh || true
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arv $(_dokku_home)/ $(_dokku_home)_host
-rm /root/dokku_id.pub /root/.ssh/authorized_keys
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
+
+# rm /root/dokku_id.pub /root/.ssh/authorized_keys
 
 _dokku_unit_write() {
   _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
