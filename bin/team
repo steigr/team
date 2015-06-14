@@ -8,7 +8,7 @@ has_git()     { test -d $(prefix)/.git; }
 git_update()  { (cd $(prefix); git reset -q --hard; git pull -q origin master); }
 git_clone()   { (git clone -q "$PROJECT_REPO" $(prefix) ); }
 team_script() { echo "$(prefix)/bin/team"; }
-abs_called()  { test "x$0" = "x$(team_script)"; }
+abs_called()  { test "x$(called)" = "x$(team_script)"; }
 module()      { echo "$(team_script)-${1:-serf-event}"; }
 has_module()  { test -x "$1"; }
 team_lib()    { echo "$(prefix)/lib"; }
@@ -16,7 +16,6 @@ called()      { echo "${BASH_SOURCE[0]%*.orig}"; }
 is_linked()   { test -L $(called); }
 
 has_git    || git_clone
-is_linked  || ( mv $(called) $(called).orig; ln -s $(team_script) $(called); )
 
 if abs_called; then
   cmd=$(module $*)
@@ -24,6 +23,7 @@ if abs_called; then
   has_module $cmd || exit 1
   PREFIX=$(prefix) TEAM_LIB=$(team_lib) $cmd $*
 else
+  is_linked  || ( mv $(called) $(called).orig; ln -s $(team_script) $(called); )
   git_update
   $(team_script) $*
 fi
