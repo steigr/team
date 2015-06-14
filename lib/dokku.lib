@@ -145,28 +145,26 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo debconf debconf/frontend noninteractive | debconf-set-selections \
  && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
- && echo 'ssh: echo "ssh-\$(head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{print $2}')" > /root/.ssh/authorized_keys; mkdir -p /var/run/sshd; /usr/sbin/sshd -D -f /etc/ssh/sshd_config' > /app/Procfile \
+ && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
  && echo "nerve: \$(which nerve) -c $(_dokku_nerve_config)" >> /app/Procfile \
  && echo "synapse: \$(which synapse) -c $(_dokku_synapse_config)" >> /app/Procfile \
  && cp /app/Procfile /app/.release
-VOLUME ["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
 ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
 EXPOSE 22
 ENTRYPOINT ["/start"]
 EO_DOKKU_DOCKERFILE
 }
+# ONBUILD VOLUME ["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
 
 _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
-cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
 DOKKU_BRANCH=master bash bootstrap.sh || true
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arv $(_dokku_home)/ $(_dokku_home)_host
+rm /root/dokku_id.pub /root/.ssh/authorized_keys
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
-
-# rm /root/dokku_id.pub /root/.ssh/authorized_keys
 
 _dokku_unit_write() {
   _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
@@ -222,6 +220,9 @@ _dokku_entrypoint_write() {
 #!/bin/bash
 export HOME=/app
 cd /app
+
+[[ -f "/root/.ssh/authorized_keys" ]] && ( mkdir /root/.ssh; echo "ssh-\$(head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{print $2}')" > /root/.ssh/authorized_keys )
+[[ -d "/var/run/sshd" ]] || mkdir -p /var/run/sshd
 
 case "$(basename $0)" in
   start)
