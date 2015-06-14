@@ -31,7 +31,7 @@ registry_ip() {
 }
 
 registry_cluster-ip() {
-  TIMEOUT=2s _serf_query registry-ip | _serf_query_filter $(_registry_ip_var) | head -n1
+  TIMEOUT=2s serf_query registry-ip | _serf_query_filter $(_registry_ip_var) | head -n1
 }
 
 registry_env() {

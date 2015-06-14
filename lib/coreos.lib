@@ -56,6 +56,10 @@ coreos_early_docker() {
   /bin/sh -c "$(coreos_early_docker_env) docker $*"
 }
 
+coreos_ip() {
+  private_ipv4_address
+}
+
 _coreos_write_unit() {
   cat | tee $1 >/dev/null
   systemctl daemon-reload

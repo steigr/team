@@ -31,7 +31,7 @@ etcd_create-token() {
 }
 
 etcd_token() {
-  _serf_query etcd-token | _serf_query_filter $(_etcd_token_var) | head -n1
+  serf_query etcd-token | _serf_query_filter $(_etcd_token_var) | head -n1
 }
 
 _etcd_write_unit_dropin() {

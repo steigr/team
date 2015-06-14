@@ -70,7 +70,7 @@ serf_unset() {
 }
 
 serf_query() {
-  _serf_query $*
+  $(_serf) query -timeout=${TIMEOUT:-$(serf_timeout)} $*
 }
 
 serf_timeout() {
@@ -175,10 +175,6 @@ _serf_snapshot_file() {
 _serf_check() {
   result=$(/bin/sh -c "$TEAM $1" )
   [[ "x" = "x$result" ]] && serf_unset $2 || serf_set $2=true
-}
-
-_serf_query() {
-  $(_serf) query -timeout=${TIMEOUT:-$(serf_timeout)} $*
 }
 
 _serf_query_filter() {
