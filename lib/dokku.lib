@@ -171,7 +171,7 @@ RUN mkdir /app \
  && cp /app/Procfile /app/.release
 ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y haproxy
-VOLUMES "["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]"
+VOLUME ["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
 ENTRYPOINT ["/start"]
 EXPOSE 22
 EO_DOKKU_DOCKERFILE
