@@ -4,8 +4,6 @@ require serf
 require docker
 require random
 
-set -x
-
 dokku_update() {
   dokku_stop
   dokku_install
