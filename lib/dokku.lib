@@ -146,34 +146,33 @@ _dokku_write_dockerfile() {
   cat <<EO_DOKKU_DOCKERFILE | tee $1/Dockerfile >/dev/null
 FROM ubuntu:latest
 MAINTAINER Mathias Kaufmann <me@stei.gr>
-RUN ping -c1 de.archive.ubuntu.com \
- && sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list
 RUN export DEBIAN_FRONTEND=noninteractive \
+ && ping -c1 de.archive.ubuntu.com \
+ && sed -i -e "s@http://archive@http://de.archive@g" /etc/apt/sources.list \
  && apt-get update \
  && apt-get dist-upgrade -y \
- && apt-get autoremove -y
-RUN export DEBIAN_FRONTEND=noninteractive \
- && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates ruby ruby-dev devscripts -y
-RUN gem install nerve synapse foreman --no-ri --no-rdoc
-RUN curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh \
+ && apt-get autoremove -y \
+ && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates ruby ruby-dev devscripts haproxy -y \
+ && apt-get clean \
+ && gem install nerve synapse foreman --no-ri --no-rdoc \
+ && curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh \
  && sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh \
  && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
- && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe
-RUN echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
+ && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
+ && echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
  && echo dokku dokku/web_config boolean false | debconf-set-selections \
  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
- && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections
-RUN mkdir /app \
+ && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
+ && echo debconf debconf/frontend noninteractive | debconf-set-selections \
+ && mkdir /app /root/.ssh \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
  && echo "nerve: /usr/bin/nerve -c /etc/nerve.json" >> /app/Procfile \
  && echo "synapse: /usr/bin/synapse -c /etc/synapse.json" >> /app/Procfile \
  && cp /app/Procfile /app/.release
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y haproxy
-RUN mkdir -p /root/.ssh; apt-get clean
 VOLUME ["$(_dokku_graph_dir)","$(_dokku_docker_socket)","$(_dokku_nerve_config)","$(_dokku_synapse_config)","$(_dokku_home)","$(_dokku_authorized_keys)"]
-ENTRYPOINT ["/start"]
 ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
 EXPOSE 22
+ENTRYPOINT ["/start"]
 EO_DOKKU_DOCKERFILE
 
 }
@@ -212,7 +211,6 @@ _dokku_bootstrap_commands() {
   cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
 cat $(_dokku_authorized_keys) > /root/.ssh/authorized_keys
 tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
-set -x
 /bin/bash -x bootstrap.sh
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arV $(_dokku_home)/ $(_dokku_home)_host
