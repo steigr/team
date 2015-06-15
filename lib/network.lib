@@ -70,3 +70,9 @@ _domainname_from_resolv() {
 _hostname() {
   [[ "x$1" = "xlong" ]] && (hostname -a 2>/dev/null || hostname -f 2>/dev/null) || hostname
 }
+
+_exposed_address() {
+  r=$(public_ipv4_address)
+  [[ -z "$r" ]] && r=$(private_ipv4_address)
+  echo $r
+}

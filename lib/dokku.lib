@@ -283,25 +283,30 @@ _dokku_ip_var() {
   echo "DOKKU_IP="
 }
 
-_dokku_synapse_json() {
-  cat <<EO_DOKKU_SYNAPSE_CONFIG | sed -e "s:':\":g" | tee $(_dokku_synapse_config)
-{"services":
-  {"dokku":
-    {"default_servers":
-      [
-        {
-          "name":"local-node",
-          "host":"$(dokku_ip)",
-          "port":2220
-        }
-      ],
-      "discovery":{
-        "method":"zookeeper","path":"/team/dokku/ssh/services","hosts":["$(zookeeper_ip):2181"]},"haproxy":{"port":22,"server_options":"check inter 2s rise 3 fall 2","listen":["mode tcp"]}}},"haproxy":{"reload_command":"service haproxy reload","config_file_path":"/etc/haproxy/haproxy.cfg","socket_file_path":"/tmp/haproxy.sock","do_writes":true,"do_reloads":true,"do_socket":true,"bind_address":"0.0.0.0","global":["daemon","user root","group root","maxconn 4096","log 127.0.0.1 local0","log 127.0.0.1 local1 notice","stats socket /tmp/haproxy.sock mode 666 level admin"],"defaults":["log global","option dontlognull","maxconn 2000","retries 3","timeout server 1m","option redispatch","balance roundrobin"]}}
-EO_DOKKU_SYNAPSE_CONFIG
-}
-
 _dokku_public_address() {
   address=$(public_ipv4_address)
   [[ -z "$address" ]] && address=$(private_ipv4_address)
   echo $address
+}
+
+
+
+dokku_service-path() {
+  _dokku_nerve_ssh_path
+}
+
+dokku_frontend-port() {
+  dokku_container-port
+}
+
+dokku_backend-name() {
+  _dokku_container_name
+}
+
+dokku_backend-ip() {
+  dokku-ip
+}
+
+dokku_backend-port() {
+  echo 22
 }

@@ -30,6 +30,10 @@ zookeeper_ip() {
   TIMEOUT=$(_zookeeper_discovery_timeout) _serf_query_json zookeeper-ip | _serf_query_json_first
 }
 
+zookeeper_port() {
+  echo 2181
+}
+
 zookeeper_local-ip() {
   _coreos_active docker && echo "$(_docker_ip $(zookeeper_id))"
 }
@@ -42,7 +46,7 @@ tickTime=2000
 initLimit=10
 syncLimit=5
 dataDir=$(_zookeeper_data_dir)
-clientPort=2181
+clientPort=$(zookeeper_port)
 maxClientCnxns=$(_zookeeper_client_connections)
 EO_ZOOKEEPER_CONFIG
 }
