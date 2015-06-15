@@ -109,11 +109,12 @@ serf_node-name() {
 }
 
 _serf_download() {
-  test -x $(_serf) -a -f $(_serf) && return
+  r=$(_serf_default_bin)
+  test -z $r && return
   _serf_zip=$(_http_get $(_serf_url) $(mktemp /tmp/XXXX.zip).zip)
-  unzip -d $(dirname $(_serf)) $_serf_zip >/dev/null
+  unzip -d $(dirname $r) $_serf_zip >/dev/null
   rm $_serf_zip
-  chmod +x $(_serf)
+  chmod +x $r
 }
 
 _serf_write_unit() {
