@@ -66,7 +66,7 @@ _swarm_token_file() {
 }
 
 _swarm_write_unit() {
-  _coreos_write_unit $(coreos_unit swarm) << EO_SWARM_UNIT
+  _coreos_write_unit $(coreos_unit swarm) <<EO_SWARM_UNIT
 [Unit]
 Description=Docker Swarm Cluster Frontend
 Requires=early-docker.service

@@ -178,8 +178,8 @@ _dokku_unit_write() {
   _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
 [Unit]
 Description=Dokku PaaS
-Requires=docker.service flanneld.service
-After=docker.service flanneld.service
+Requires=flanneld.service
+After=flanneld.service
 [Service]
 Restart=always
 ExecStartPre=-$(_team) dokku rm

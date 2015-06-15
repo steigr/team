@@ -66,6 +66,10 @@ registry_id() {
   _docker_ids_by_image $(_registry_image) | head -1
 }
 
+registry_clean() {
+  _coreos_remove_unit $(_coreos_unit registry)
+}
+
 _registry_hostname() {
   echo "registry.$(domainname)"
 }
@@ -74,7 +78,10 @@ _registry_write_unit() {
   _coreos_write_unit $(coreos_unit registry) <<EO_REGISTRY_UNIT
 [Unit]
 Description=Docker Distribution Registry
+Requires=flanneld.service
+After=flanneld.service
 [Service]
+Restart=always
 ExecStartPre=-$(_team) registry remove
 ExecStartPre=$(_team) registry env
 ExecStart=$(_docker) run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) $(_registry_image)

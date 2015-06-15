@@ -58,7 +58,10 @@ _zookeeper_write_unit() {
   _coreos_write_unit $1 <<EO_ZOOKEEPER_UNIT
 [Unit]
 Description=Apache Zookeeper Distributed Key-Value-Store
+Requires=flanneld.service
+After=flanneld.service
 [Service]
+Restart=always
 ExecStartPre=$(_team) zookeeper config
 ExecStartPre=$(_docker) pull $(_zookeeper_image)
 ExecStart=$(_docker) run --rm -v $(dirname _zookeeper_config_file):/app/conf -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)

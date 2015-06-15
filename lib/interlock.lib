@@ -36,8 +36,8 @@ _interlock_write_unit() {
   _coreos_write_unit  $(coreos_unit interlock) <<EO_INTERLOCK_UNIT
 [Unit]
 Description=Interlock Load-Balancer
-Requires=early-docker.service
-After=early-docker.service
+Requires=flanneld.service
+After=flanneld.service
 [Service]
 Restart=always
 ExecStartPre=-$(_docker) rm $(_interlock_container_name)
@@ -56,6 +56,10 @@ interlock_docker() {
   cmd="$(_docker) run -v $(_interlock_ssl_dir):/ssl --env-file=$(_interlock_environment_file) -p $(_interlock_http_binding) -p $(_interlock_https_binding) --rm --name=$(_interlock_container_name) ehazlett/interlock --debug --swarm-url $INTERLOCK_SWARM_URL --plugin $INTERLOCK_PLUGIN start $INTERLOCK_PLUGIN_ARGS"  
   echo $cmd
   $cmd
+}
+
+interlock_clean() {
+  _coreos_remove_unit $(_coreos_unit interlock)
 }
 
 _interlock_write_environment() {
