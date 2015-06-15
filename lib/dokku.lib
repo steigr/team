@@ -296,7 +296,7 @@ dokku_service-path() {
 }
 
 dokku_frontend-port() {
-  dokku_container-port
+  dokku_backend-port
 }
 
 dokku_backend-name() {
