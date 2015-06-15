@@ -2,6 +2,7 @@ require team
 require coreos
 require docker
 require serf
+require config
 
 zookeeper_update() {
   zookeeper_stop
@@ -39,9 +40,7 @@ zookeeper_local-ip() {
 }
 
 zookeeper_config() {
-  cfg=${1:-$(_zookeeper_config_file)}
-  mkdir -p $(dirname $cfg) 2>/dev/null
-  cat <<EO_ZOOKEEPER_CONFIG | tee $cfg >/dev/null
+  cat <<EO_ZOOKEEPER_CONFIG | tee $(_zookeeper_config_file) >/dev/null
 tickTime=2000
 initLimit=10
 syncLimit=5
@@ -60,14 +59,14 @@ _zookeeper_write_unit() {
 [Unit]
 Description=Apache Zookeeper Distributed Key-Value-Store
 [Service]
-ExecStartPre=$(_team) zookeeper config $(_zookeeper_config_file)
+ExecStartPre=$(_team) zookeeper config
 ExecStartPre=$(_docker) pull $(_zookeeper_image)
 ExecStart=$(_docker) run --rm -v $(_zookeeper_config_file):/app/conf/zoo.cfg -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)
 EO_ZOOKEEPER_UNIT
 }
 
 _zookeeper_config_file() {
-  echo "/run/zookeeper/config"
+  _volatile_file zookeeper config
 }
 
 _zookeeper_data_dir() {
