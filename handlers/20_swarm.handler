@@ -2,5 +2,6 @@
 
 . $TEAM_LIB/serf-event.lib
 require serf
+
 serf_event_is query swarm-token && serf_get swarm-token
 serf_event_is user  swarm-token && serf_set swarm-token
