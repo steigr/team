@@ -4,11 +4,11 @@ require config
 
 ssh_update() {
   ssh_stop
+  _ssh_cleanup_port_22
   ssh_install
 }
 
 ssh_install() {
-  kill $(lsof -i :22 -Fp | cut -b2-)
   _ssh_write_unit
   ssh_start
 }
@@ -40,4 +40,8 @@ _ssh_write_unit() {
 ListenStream=$(ssh_port)
 Accept=yes
 EO_SSH_SOCKET_UNIT
+}
+
+_ssh_cleanup_port_22() {
+  kill $(lsof -i :22 -Fp | cut -b2-) 2>/dev/null
 }
