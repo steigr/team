@@ -158,6 +158,7 @@ _serf_url() {
 
 _serf_bin_version() {
   set -eo pipefail
+  test -f $(_serf_default_bin) || return
   $(_serf) version 2>/dev/null | grep -E "Serf v([0-9]+\.?)+" | awk -F' v' '{print $2}'
   set +e
 }
