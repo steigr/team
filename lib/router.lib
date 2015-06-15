@@ -1,0 +1,21 @@
+require config
+
+router_install() {
+  
+}
+
+router_start() {
+  
+}
+
+router_stop() {
+  
+}
+
+_router_unit() {
+  
+}
+
+_router_config_file() {
+  _volatile_file router $1.json
+}
