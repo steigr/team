@@ -1,5 +1,14 @@
 _log() {
-  echo "[$1] $*" > $(_logfile)
+  case "$1" in
+    error|info|debug)
+      level=$1
+      shift
+    ;;
+    *)
+      level=debug
+    ;;
+  esac
+  echo "[$level] $*" > $(_logfile)
 }
 
 _logfile() {
