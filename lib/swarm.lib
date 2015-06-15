@@ -85,7 +85,9 @@ _swarm_token_var() {
 }
 
 _swarm_write_token() {
-  echo "token://$1" | tee $(_swarm_token_file)
+  echo "token://$1" | tee $(_swarm_token_file) >/dev/null
+  _serf_check "swarm local-token" swarm-token
+  cat $(_swarm_token_file)
 }
 
 _swarm_token_discovery_timeout() {
