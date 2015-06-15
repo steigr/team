@@ -27,7 +27,7 @@ ssh_reload() {
 }
 
 ssh_port() {
-  _defaults ssh-port
+  _defaults ssh_port
 }
 
 ssh_clean() {
