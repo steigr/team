@@ -33,7 +33,7 @@ _router_unit() {
 Description=Service Router for %i
 After=docker.service flanneld.service
 Requires=docker.service flanneld.service
-[Servie]
+[Service]
 ExecStartPre=$(_team) router prepare %i
 ExecStart=$(_team) router start %i
 ExecStop=$(_team) router stop %i
