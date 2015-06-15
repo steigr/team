@@ -25,7 +25,7 @@ etcd_local-token() {
 }
 
 etcd_create-token() {
-  token=$(curl -fS https://discovery.etcd.io/new?size=1)
+  token=$(curl -fS "https://discovery.etcd.io/new?size=1")
   _etcd_write_token $token
   echo $token
 }
