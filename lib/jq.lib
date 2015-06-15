@@ -1,7 +1,6 @@
 require http
 
 jq_install() {
-  t=$(mktemp /tmp/XXX.zip )
   _http_get http://stedolan.github.io/jq/download/linux64/jq $(_jq)
 }
 
