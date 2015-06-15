@@ -28,7 +28,7 @@ zookeeper_id() {
 }
 
 zookeeper_ip() {
-  TIMEOUT=$(_zookeeper_discovery_timeout) _serf_query_json zookeeper-ip | _serf_query_json_first
+  TIMEOUT=$(_zookeeper_discovery_timeout) _serf_query_json zookeeper-ip | _serf_query_json_values | head -1
 }
 
 zookeeper_port() {

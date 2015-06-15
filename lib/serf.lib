@@ -219,8 +219,8 @@ _serf_query_json() {
   serf_query -format=json $*
 }
 
-_serf_query_json_first() {
-  _jq '.Responses | to_entries | .[0].value' | xargs echo -e | head -1 | grep -v "^null$"
+_serf_query_json_values() {
+  _jq '.Responses | to_entries | map(.value) | join("\n")' | xargs echo -e | grep -v "^$"
 }
 
 _serf_query_json_values() {

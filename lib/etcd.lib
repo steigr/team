@@ -32,7 +32,7 @@ etcd_create-token() {
 }
 
 etcd_token() {
-  TIMEOUT=$(_etcd_token_discovery_timeout) _serf_query_json -tag etcd-token=true etcd-token | _serf_query_json_first
+  TIMEOUT=$(_etcd_token_discovery_timeout) _serf_query_json -tag etcd-token=true etcd-token | _serf_query_json_values | head -1
 }
 
 etcd_clean() {

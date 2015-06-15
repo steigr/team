@@ -24,7 +24,7 @@ swarm_stop() {
 }
 
 swarm_token() {
-  TIMEOUT=$(_swarm_token_discovery_timeout) _serf_query_json -tag swarm-token=true swarm-token | _serf_query_json_first
+  TIMEOUT=$(_swarm_token_discovery_timeout) _serf_query_json -tag swarm-token=true swarm-token | _serf_query_json_values | head -1
 }
 
 swarm_create-token() {
