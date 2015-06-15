@@ -66,13 +66,13 @@ etcd_cluster-resize() {
 
 etcd_master-election() {
   if etcd_is-single; then
-    serf_tag etcd-master=true
-    exit
+    serf_tag etcd-master=true >/dev/null && exit 0 || exit 1
   fi
   if etcd_is-master; then
     _master=$(_etcd_receive_new_master)
     _master_name=$(echo $_master | awk -F@ '{print $3}')
     serf_event etcd-elect-master $_master_name
+    exit
   fi
 }
 
