@@ -3,8 +3,10 @@
 . $TEAM_LIB/dependency.lib
 require team
 
-echo "Install jq Tool"
+echo "Make Journald Logs volatile"
+$TEAM journald  update
 
+echo "Install jq Tool"
 $TEAM jq        install
 
 echo "Rebind SSHd"
