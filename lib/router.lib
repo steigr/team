@@ -9,7 +9,7 @@ router_install() {
 }
 
 router_start() {
-  $(_docker) --rm -v $(_router_config_file $1):/etc/synapse/synapse.json $(_router_binding $1) $(_router_image)
+  $(_docker) --rm -l "router=$1" -v $(_router_config_file $1):/etc/synapse/synapse.json $(_router_binding $1) $(_router_image)
   _coreos_start router@$1
 }
 
@@ -63,7 +63,7 @@ _router_binding() {
 }
 
 _router_exposed_ports() {
-  _router_config | _jq ".services.$1.haproxy.port" | grep -v "^null$"
+  _router_config $1 | _jq ".services.$1.haproxy.port" | grep -v "^null$"
 }
 
 _router_config_write() {

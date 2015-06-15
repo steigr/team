@@ -188,22 +188,6 @@ ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) --rm ) /start
 EO_DOKKU_UNIT
 }
 
-_dokku_synapse() {
-  _dokku_public_address || exit
-  _coreos_stop dokku-router
-  _coreos_write_unit $(coreos_unit dokku-router) <<EO_DOKKU_NERVE_UNIT
-[Unit]
-Description=Dokku Paas Socket Proxy
-[Service]
-Restart=always
-ExecStartPre=/usr/bin/docker pull steigr/synapse
-ExecStartPre=$(_team) dokku synapse-config
-ExecStart=/usr/bin/docker run --rm -l load-balancer=dokku -v $(_dokku_synapse_config):/etc/synapse/synapse.json -p $(_dokku_public_address):22:22 steigr/synapse
-ExecStop=-$(_team) dokku mask
-EO_DOKKU_NERVE_UNIT
-  _coreos_start dokku-router
-}
-
 _dokku_entrypoint_file() {
   echo "start"
 }
