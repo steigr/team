@@ -1,5 +1,6 @@
 TEAM="$(dirname $(dirname $0))/bin/team"
 [[ "x$DEBUG" = "x" ]] || set -x
+
 _team_prefix() {
   echo ${PREFIX:-/opt/lib/team}
 }

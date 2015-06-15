@@ -21,3 +21,5 @@ _load() {
 require() {
   _load $1
 }
+
+require log

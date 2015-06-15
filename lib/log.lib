@@ -1,0 +1,8 @@
+_log() {
+  echo "[$1] $*" > $(_logfile)
+}
+
+_logfile() {
+  mkdir -p /run/team 2>/dev/null || true
+  echo "/run/team/log"
+}
