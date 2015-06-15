@@ -32,14 +32,6 @@ dokku_nerve-config() {
   _dokku_nerve_json
 }
 
-dokku_router() {
-  _dokku_synapse
-}
-
-dokku_synapse-config() {
-  _dokku_synapse_json
-}
-
 dokku_ip() {
   serf_query dokku-ip | _serf_query_filter $(_dokku_ip_var) | head -n1
 }
@@ -61,10 +53,6 @@ dokku_rm() {
 
 dokku_exec() {
   docker exec $(dokku_id) $*
-}
-
-dokku_mask() {
-  _docker_ids_by_image "steigr/synapse"
 }
 
 dokku_clean() {
