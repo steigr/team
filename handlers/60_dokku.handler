@@ -2,6 +2,6 @@
 
 . $TEAM_LIB/serf-event.lib
 require serf
+require dokku
 
-serf_event_is query dokku-ip && serf_get dokku-ip
-serf_event_is user  dokku-ip && serf_set dokku-ip
+serf_event_is query dokku-ip && dokku_local-ip
