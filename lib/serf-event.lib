@@ -1,3 +1,4 @@
+. $TEAM_LIB/dependency.lib
 require log
 
 serf_event_handlers() {
