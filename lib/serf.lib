@@ -168,6 +168,7 @@ _serf_default_version() {
 _serf() {
   result=$(_serf_local_bin)
   [[ -z "$result" ]] && result=$(_serf_default_bin)
+  test -f $result || _serf_download
   echo $result
 }
 
