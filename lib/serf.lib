@@ -205,7 +205,7 @@ _serf_kv_dir() {
 }
 
 _serf_query_json() {
-  _serf_query -format=json $*
+  serf_query -format=json $*
 }
 
 _serf_query_json_first() {
