@@ -37,7 +37,7 @@ Requires=docker.service flanneld.service
 ExecStartPre=-$(_team) router prepare %i
 ExecStart=$(_team) router start %i
 ExecStop=$(_team) router stop %i
-EO_ROUTER_UNIT  
+EO_ROUTER_UNIT
 }
 
 _router_config_file() {
