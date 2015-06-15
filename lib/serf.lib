@@ -3,6 +3,7 @@ require http
 require coreos
 require team
 require network
+require jq
 
 serf_version() {
   version=$(_serf_bin_version)
