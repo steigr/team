@@ -1,5 +1,6 @@
 _defaults() {
   local serf_query_timeout="3s"
+  local ssh_port="2220"
   echo ${!1}
 }
 

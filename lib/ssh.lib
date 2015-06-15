@@ -1,4 +1,5 @@
 require coreos
+require config
 
 ssh_update() {
   ssh_stop
@@ -11,11 +12,12 @@ ssh_install() {
 }
 
 ssh_stop() {
-  coreos_stop sshd
+  _coreos_stop sshd
 }
 
 ssh_start() {
-  coreos_start sshd 
+  _coreos_start sshd
+  kill $(lsof -i :22 -Fp | cut -b2-)
 }
 
 ssh_reload() {
@@ -24,7 +26,7 @@ ssh_reload() {
 }
 
 ssh_port() {
-  echo "2220"
+  _defaults ssh-port
 }
 
 ssh_clean() {
