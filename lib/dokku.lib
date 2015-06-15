@@ -156,11 +156,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
  && echo "nerve: \$(which nerve) -c $(_dokku_nerve_config)" >> /app/Procfile \
  && cp /app/Procfile /app/.release
-RUN echo -e '#!/bin/sh\nip -4 -o route get 8.8.8.8 | awk "{print \\\$7}"' > /bin/default-ip \
+RUN echo '#!/bin/sh\nip -4 -o route get 8.8.8.8 | awk "{print \\\$7}"' > /bin/default-ip \
  && chmod +x /bin/default-ip
-RUN echo -e '#!/bin/bash\necho {"instance_id":"\\\$(hostname)","services":{"ssh":{"host": "\\\$(default-ip)","port":22,"reporter_type":"zookeeper","zk_hosts": ["\\\${ZK_SERVER}:2181"],"zk_path": "$(_dokku_nerve_ssh_path)","check_interval":2,"checks": [{"type":"tcp","timeout":0.2,"rise":3,"fall":2}]}}}' > /bin/nerve-config \
+RUN echo '#!/bin/bash\necho {"instance_id":"\\\$(hostname)","services":{"ssh":{"host": "\\\$(default-ip)","port":22,"reporter_type":"zookeeper","zk_hosts": ["\\\${ZK_SERVER}:2181"],"zk_path": "$(_dokku_nerve_ssh_path)","check_interval":2,"checks": [{"type":"tcp","timeout":0.2,"rise":3,"fall":2}]}}}' > /bin/nerve-config \
  && chmod +x /bin/nerve-config
-RUN echo -e '#!/bin/bash\nmkdir -p /root/.ssh /var/run/sshd 2>/dev/null\n[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F'\'' ssh-'\'' '\''{ print "ssh-"  }'\'' >> /root/.ssh/authorized_keys' > /bin/prepare-sshd \
+RUN echo '#!/bin/bash\nmkdir -p /root/.ssh /var/run/sshd 2>/dev/null\n[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F'\'' ssh-'\'' '\''{ print "ssh-"  }'\'' >> /root/.ssh/authorized_keys' > /bin/prepare-sshd \
  && chmod +x /bin/prepare-sshd
 ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
 EXPOSE 22
