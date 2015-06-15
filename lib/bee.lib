@@ -33,6 +33,10 @@ bee_environment() {
   echo "SWARM_DISCOVERY=$token" >> $env_file
 }
 
+swarm_clean() {
+  _coreos_remove_unit $(_coreos_unit bee)
+}
+
 _bee_write_unit() {
   _coreos_write_unit $(coreos_unit bee) <<EO_BEE_UNIT
 [Unit]

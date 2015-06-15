@@ -48,6 +48,10 @@ swarm_id() {
   docker -H unix:///run/early-docker.sock inspect --format '{{ .Id }}' swarm
 }
 
+swarm_clean() {
+  _coreos_remove_unit $(_coreos_unit swarm)
+}
+
 swarm_() {
   DOCKER_HOST=tcp://$(private_ipv4_address):2375 docker $*
 }
