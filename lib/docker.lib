@@ -94,7 +94,7 @@ _docker_ids_by_image() {
 }
 
 _docker_ip() {
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $1
+  [[ "x$1" = "x" ]] || docker inspect --format '{{ .NetworkSettings.IPAddress }}' $1
 }
 
 _docker() {
