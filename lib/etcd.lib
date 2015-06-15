@@ -31,7 +31,7 @@ etcd_create-token() {
 }
 
 etcd_token() {
-  serf_query etcd-token | _serf_query_filter $(_etcd_token_var) | head -n1
+  TIMEOUT=$(_etcd_token_discovery_timeout) _serf_query_json -tag etcd-token=true etcd-token | _serf_query_json_first
 }
 
 _etcd_write_unit_dropin() {
@@ -86,4 +86,8 @@ _etcd_set() {
 
 _etcd_get() {
   etcdctl get $1
+}
+
+_etcd_token_discovery_timeout() {
+  echo "3s"
 }
