@@ -7,7 +7,7 @@ echo "Rebind SSHd"
 $TEAM ssh       rebind
 
 echo "Add Docker TCP Socket"
-$TEAM docker    bind tcp
+$TEAM docker    install
 
 echo "Provide Serf"
 $TEAM serf      install

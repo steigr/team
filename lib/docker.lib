@@ -1,16 +1,64 @@
+require team
 require coreos
 
-_docker_tcp_port() {
+docker_update() {
+  docker_stop
+  docker_install
+}
+
+docker_install() {
+  _docker_write_tcp_unit
+  docker_start
+}
+
+docker_start() {
+  _coreos_socket enable docker-tcp
+  _coreos_start docker-tcp.socket
+}
+
+docker_stop() {
+  _coreos_stop docker
+  _coreos_stop docker-tcp.socket
+}
+
+docker_tcp-unit() {
+  _docker_write_tcp_unit
+}
+docker_tcp-enable() {
+  coreos_stop docker
+  coreos_socket docker-tcp
+}
+
+docker_bound() {
+  case "$1" in
+    tcp)
+      coreos_unit_present docker-tcp.socket || exit 1
+      coreos_unit_enabled docker-tcp.socket || exit 1
+      exit 0
+    ;;
+  esac 
+}
+
+docker_bind() {
+  case "$1" in
+    tcp)
+      coreos_unit_present docker-tcp.socket || docker_tcp-unit
+      coreos_unit_enabled docker-tcp.socket || docker_tcp-enable
+    ;;
+  esac
+}
+
+docker_tcp-port() {
   echo "4375"
 }
 
-docker_write_tcp_unit() {
-  cat <<EO_DOCKER_UNIT | tee $1
+_docker_write_tcp_unit() {
+  _coreos_write_unit $(_coreos_unit socket docker-tcp) <<EO_DOCKER_UNIT
 [Unit]
 Description=Docker Socket for the API
 
 [Socket]
-ListenStream=$(_docker_tcp_port)
+ListenStream=$(docker_tcp-port)
 BindIPv6Only=both
 Service=docker.service
 

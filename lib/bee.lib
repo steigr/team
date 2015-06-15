@@ -29,7 +29,7 @@ bee_environment() {
   token=$(swarm_token)
   test -z $token && token=$(swarm_local-token)
   test -z $token && token=$(swarm_create-token)
-  echo "SWARM_ADDR=$(private_ipv4_address):$(_docker_tcp_port)" > $env_file
+  echo "SWARM_ADDR=$(private_ipv4_address):$(docker_tcp-port)" > $env_file
   echo "SWARM_DISCOVERY=$token" >> $env_file
 }
 
