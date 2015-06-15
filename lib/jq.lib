@@ -6,7 +6,7 @@ jq_install() {
 
 _jq() {
   jq_install
-  cat | $(_jq_bin) $*
+  cat | $(_jq_bin) "$*"
 }
 
 _jq_bin() {
