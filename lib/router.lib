@@ -49,7 +49,7 @@ _router_unit_present() {
 }
 
 _router_image() {
-  "steigr/synapse:latest"
+  echo "steigr/synapse:latest"
 }
 
 _router_config() {
