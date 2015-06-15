@@ -85,7 +85,7 @@ etcd_name() {
   addresses="$(private_ipv4_addresses) $(public_ipv4_addresses)"
   etcdctl member list | while read member; do
     for address in $addresses; do
-      if [[ "$(echo $member | grep $address >/dev/null)" ]]; then
+      if [[ "$(echo $member | grep $address 2>/dev/null)" ]]; then
         nn=$(echo $member | awk -F'name=' '{print $2}' | cut -f1 -d' ')
         if [[ "$nn" ]]; then
           echo $nn
