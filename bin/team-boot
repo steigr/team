@@ -16,16 +16,15 @@ $TEAM docker    update
 echo "Provide Serf"
 $TEAM serf      install
 
-echo "Provide swarm/join"
-$TEAM bee       install
-echo "Provide swarm/manage"
-$TEAM swarm     install
-
 echo "Provide etcd2"
 $TEAM etcd      install
 echo "Provide flanneld"
 $TEAM flanneld  install
 
+echo "Provide swarm/join"
+$TEAM bee       install
+echo "Provide swarm/manage"
+$TEAM swarm     install
 echo "Provide Interlock"
 $TEAM interlock install
 echo "Provide Docker Distribution"
