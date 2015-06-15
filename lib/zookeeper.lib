@@ -36,7 +36,7 @@ zookeeper_local-ip() {
 
 zookeeper_config() {
   cfg=${1:-$(_zookeeper_config_file)}
-  mkdir -p $(dirname $cfg)
+  mkdir -p $(dirname $cfg) 2>/dev/null
   cat <<EO_ZOOKEEPER_CONFIG | tee $cfg >/dev/null
 tickTime=2000
 initLimit=10
