@@ -251,7 +251,7 @@ _dokku_apps() {
 _dokku_env() {
   env_file=$(_dokku_env_file)
   mkdir -p $(dirname $env_file)
-  cat <<EO_DOKKU_ENV | tee $env_file
+  cat <<EO_DOKKU_ENV > $env_file
 ZK_SERVER= "$(zookeeper_ip)"
 NERVE_PATH="$(_dokku_nerve_ssh_path)"
 EO_DOKKU_ENV
