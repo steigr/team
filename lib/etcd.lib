@@ -34,6 +34,10 @@ etcd_token() {
   TIMEOUT=$(_etcd_token_discovery_timeout) _serf_query_json -tag etcd-token=true etcd-token | _serf_query_json_first
 }
 
+etcd_clean() {
+  _coreos_remove_unit $(_etcd_unit_dropin_file)
+}
+
 _etcd_write_unit_dropin() {
   dropin_file=$(_etcd_unit_dropin_file)
   mkdir -p $(dirname $dropin_file)
