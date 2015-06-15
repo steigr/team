@@ -52,6 +52,11 @@ docker_tcp-port() {
   echo "4375"
 }
 
+docker_clean() {
+  _coreos_socket disable docker-tcp
+  _coreos_remove_unit $(_coreos_unit docker-tcp.socket)
+}
+
 _docker_write_tcp_unit() {
   _coreos_write_unit $(_coreos_unit socket docker-tcp) <<EO_DOCKER_UNIT
 [Unit]
