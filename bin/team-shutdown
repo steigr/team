@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. $TEAM_LIB/dependency.lib
+require team
+
+for module in ssh docker serf bee swarm flanneld etcd interlock registry zookeeper dokku; do
+  echo "Clean up $module"
+  $TEAM $module clean
+done
