@@ -6,7 +6,7 @@ require serf-event
 
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 
-SERF_EVENT=user && PAYLOAD=$(cat)
+test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
 
 serf_event_handlers | while read handler; do
   SERF_EVENT=user \
