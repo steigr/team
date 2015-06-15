@@ -13,7 +13,7 @@ _boot etcd       install
 _boot flanneld   install
 _boot bee        install
 _boot swarm      install
+_boot router     install
 _boot interlock  install
 _boot zookeeper  install
 _boot dokku      update
-_boot dokku      router

@@ -27,6 +27,9 @@ router_prepare() {
   $(_docker) pull $(_router_image)
 }
 
+router_clean() {
+  _coreos_remove_unit $(_coreos_unit router@)  
+}
 _router_unit() {
   _coreos_write_unit $(_coreos_unit router@) <<EO_ROUTER_UNIT
 [Unit]
