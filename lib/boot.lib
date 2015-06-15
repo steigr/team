@@ -1,0 +1,6 @@
+require team
+
+_boot() {
+  echo "Activating $1 with $2"
+  $(_team) $1 $2
+}
