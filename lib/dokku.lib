@@ -312,5 +312,5 @@ dokku_backend-port() {
 }
 
 dokku_running() {
-  dokku_id >/dev/null 2>/dev/null
+  [[ -z "$(dokku_id >/dev/null 2>/dev/null)" ]] && true || false
 }
