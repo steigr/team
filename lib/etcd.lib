@@ -39,6 +39,31 @@ etcd_clean() {
   _coreos_remove_unit $(_etcd_unit_dropin_file)
 }
 
+etcd_is-member() {
+  test -d /var/lib/etcd2/member
+}
+
+etcd_is-proxy() {
+  test -d /var/lib/etcd2/proxy 
+}
+
+etcd_cluster-resize() {
+  serf_count-nodes -tag etcd=true
+}
+
+etcd_node-name() {
+  ( private_ipv4_addresses; public_ipv4_addresses ) | while read address; do
+    line=$(etcdctl member list | grep "://${address}:")
+    if [[ "$line" ]]; then
+      nn=$(echo $line | awk -F'name=' '{print $2}' | cut -f1 -d' ')
+      if [[ "$nn" ]]; then
+        echo $nn
+        exit
+      fi
+    fi
+  done
+}
+
 _etcd_write_unit_dropin() {
   dropin_file=$(_etcd_unit_dropin_file)
   mkdir -p $(dirname $dropin_file)
