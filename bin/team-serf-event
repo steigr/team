@@ -9,7 +9,7 @@ require serf-event
 test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
 
 serf_event_handlers | while read handler; do
-  SERF_EVENT=user \
+  test "x$SERF_EVENT" = "xuser" \
   && echo $PAYLOAD | /bin/bash -i $handler $* \
   || /bin/bash -i $handler $*
 done
