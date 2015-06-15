@@ -3,6 +3,7 @@ MODULE=journald
 
 . $TEAM_LIB/dependency.lib
 require $MODULE
+
 _${MODULE}_test 2>/dev/null
 
 arg=$1
