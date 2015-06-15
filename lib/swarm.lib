@@ -15,11 +15,11 @@ swarm_install() {
 }
 
 swarm_start() {
-  coreos_start bee
+  coreos_start swarm
 }
 
 swarm_stop() {
-  coreos_stop bee
+  coreos_stop swarm
 }
 
 swarm_token() {
