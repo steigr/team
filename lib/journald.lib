@@ -1,0 +1,31 @@
+require coreos
+
+journald_update() {
+  journald_stop
+  journald_install  
+}
+
+journald_install() {
+  _journald_write_dropin
+  journald_install
+}
+
+journald_start() {
+  _coreos_start systemd-journald
+}
+
+journald_stop() {
+  _coreos_stop systemd-journald
+}
+
+_journald_write_dropin() {
+  mkdir -p $(dirname $(_journald_dropin_file))
+  _coreos_write_unit $(+_journald_dropin_file) <<EO_JOURNALD_DROPIN
+[Journal]
+Storage=volatile
+EO_JOURNALD_DROPIN
+}
+
+_journald_dropin_file() {
+  echo "/run/systemd/journald.conf.d/00-volatile.conf"
+}
