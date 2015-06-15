@@ -1,3 +1,5 @@
+require log
+
 serf_event_handlers() {
   find /opt/lib/team/lib/../handlers -type f -name '*.handler' | sort
 }
@@ -20,5 +22,7 @@ serf_event_is() {
   local reap=""
   local tester="$(echo $1 | sed -e 's:member-::')"
   tester=${!tester}
-  test "x$SERF_EVENT" = "x$1" -a "x$tester" = "x$2" && true || false
+  test "x$SERF_EVENT" = "x$1" -a "x$tester" = "x$2" && result=true || result=false
+  $result && _log info handling event $SERF_EVENT $tester
+  $result
 }
