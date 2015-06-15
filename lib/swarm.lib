@@ -32,7 +32,7 @@ swarm_create-token() {
 }
 
 swarm_local-token() {
-  _serf_get swarm-token
+  serf_get swarm-token
 }
 
 swarm_environment() {
@@ -85,7 +85,7 @@ _swarm_token_var() {
 }
 
 _swarm_write_token() {
-  echo "token://$1" | _serf_set swarm-token >/dev/null
+  echo "token://$1" | serf_set swarm-token >/dev/null
   _serf_check "swarm local-token" swarm-token
   cat $(_swarm_token_file)
 }
