@@ -86,7 +86,7 @@ _coreos_socket() {
 }
 
 _coreos_active() {
-  systemctl is-active $1 \
+  systemctl is-active $1 >/dev/null 2>/dev/null \
   && true \
   || false
 }
