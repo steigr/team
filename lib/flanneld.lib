@@ -47,7 +47,7 @@ _flanneld_dropin_file() {
 }
 
 _flanneld_config_present() {
-  test -z "$(_etcd_get "$(_flanneld_etcd_path)")"
+  test "x" = "x$(_etcd_get "$(_flanneld_etcd_path)")" && false || true
 }
 
 _flanneld_write_config() {
