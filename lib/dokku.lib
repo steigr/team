@@ -28,6 +28,10 @@ dokku_env() {
   _dokku_env
 }
 
+dokku_run(){
+  $(_docker) run --rm -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_docker_socket):$(_dokku_docker_socket) -v $(_dokku_home):$(_dokku_home) $(_dokku_image_name) /start
+}
+
 dokku_nerve-config() {
   _dokku_nerve_json
 }
