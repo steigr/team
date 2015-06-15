@@ -35,7 +35,7 @@ zookeeper_local-ip() {
 }
 
 zookeeper_config() {
-  cfg=${1:-/run/zookeeper/config}
+  cfg=${1:-$(_zookeeper_config_file)}
   mkdir -p $(dirname $cfg)
   cat <<EO_ZOOKEEPER_CONFIG | tee $cfg >/dev/null
 tickTime=2000
@@ -45,6 +45,10 @@ dataDir=$(_zookeeper_data_dir)
 clientPort=2181
 maxClientCnxns=$(_zookeeper_client_connections)
 EO_ZOOKEEPER_CONFIG
+}
+
+zookeeper_clean() {
+  _coreos_remove_unit $(_coreos_unit zookeeper)
 }
 
 _zookeeper_write_unit() {
