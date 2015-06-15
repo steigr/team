@@ -1,4 +1,4 @@
-TEAM="$(dirname $(dirname $0))/bin/team"
+export TEAM="$(dirname $(dirname $0))/bin/team"
 [[ "x$DEBUG" = "x" ]] || set -x
 
 _team_prefix() {
