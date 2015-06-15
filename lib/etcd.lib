@@ -73,7 +73,8 @@ etcd_proxy-name() {
 }
 
 etcd_stand-for-election() {
-  etcd_is-member || _etcd_election_standing
+  # etcd_is-member || \
+  _etcd_election_standing
 }
 
 etcd_peer-url() {
