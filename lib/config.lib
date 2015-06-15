@@ -1,6 +1,6 @@
 _defaults() {
-  ${_defaults[serf_query_timeout]} = "3s"
-  echo ${_defaults[$1]:-$2}
+  local serf_query_timeout="3s"
+  echo ${!1}
 }
 
 _volatile_file() {
