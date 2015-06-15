@@ -61,12 +61,12 @@ Description=Apache Zookeeper Distributed Key-Value-Store
 [Service]
 ExecStartPre=$(_team) zookeeper config
 ExecStartPre=$(_docker) pull $(_zookeeper_image)
-ExecStart=$(_docker) run --rm -v $(_zookeeper_config_file):/app/conf/zoo.cfg -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)
+ExecStart=$(_docker) run --rm -v $(dirname _zookeeper_config_file):/app/conf -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)
 EO_ZOOKEEPER_UNIT
 }
 
 _zookeeper_config_file() {
-  _volatile_file zookeeper config
+  _volatile_file zookeeper/config zoo.cfg
 }
 
 _zookeeper_data_dir() {
