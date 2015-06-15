@@ -4,6 +4,6 @@ _defaults() {
 }
 
 _volatile_file() {
-  mkdir "/run/$1"
+  mkdir "/run/$1" 2>/dev/null
   echo "/run/$1/$2"
 }
