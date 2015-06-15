@@ -33,7 +33,7 @@ dokku_nerve-config() {
 }
 
 dokku_ip() {
-  serf_query dokku-ip | _serf_query_filter $(_dokku_ip_var) | head -n1
+  serf_query -format=json dokku-ip | _serf_query_json_values | head -1
 }
 
 dokku_local-ip() {
