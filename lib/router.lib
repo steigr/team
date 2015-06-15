@@ -58,7 +58,7 @@ _router_config() {
 
 _router_binding() {
   _router_exposed_ports $1 | while read port; do
-    echo "-p $(_exposed_address):$(port):$(port)"
+    echo "-p $(_exposed_address):$port:$port"
   done
 }
 
