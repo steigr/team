@@ -1,6 +1,7 @@
 require serf
 require network
 require coreos
+require config
 
 etcd_update() {
   etcd_stop
@@ -93,5 +94,5 @@ _etcd_get() {
 }
 
 _etcd_token_discovery_timeout() {
-  echo "3s"
+  _defaults serf_query_timeout
 }

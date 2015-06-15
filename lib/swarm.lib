@@ -3,6 +3,7 @@ require coreos
 require serf
 require network
 require docker
+require config
 
 swarm_update() {
   swarm_stop
@@ -91,5 +92,5 @@ _swarm_write_token() {
 }
 
 _swarm_token_discovery_timeout() {
-  echo "3s"
+  _defaults serf_query_timeout
 }
