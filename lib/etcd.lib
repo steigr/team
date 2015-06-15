@@ -39,6 +39,14 @@ etcd_clean() {
   _coreos_remove_unit $(_etcd_unit_dropin_file)
 }
 
+etcd_is-single() {
+  [[ "$(etcdctl member list | wc -l)" = "0" ]] && true || false
+}
+
+etcd_is-master() {
+  [[ "$(serf_tags | grep 'etcd-master' 2>/dev/null)" ]] && true || false
+}
+
 etcd_is-member() {
   test -d /var/lib/etcd2/member
 }
@@ -57,20 +65,33 @@ etcd_cluster-resize() {
 }
 
 etcd_master-election() {
-  test -z "$(etcd_master)" || exit
-  serf_query etcd-master-election
+  if etcd_is-single; then
+    serf_tag etcd-master=true
+    exit
+  fi
+  if etcd_is-master; then
+    _master=$(_etcd_receive_new_master)
+    _master_name=$(echo $_master | awk -F@ '{print $3}')
+    serf_event etcd-elect-master $_master_name
+  fi
+}
+
+etcd_become-master() {
+  read payload
+  [[ "$payload" = "$(etcd_name)" ]] && serf_tag etcd-master=true >/dev/null 2>/dev/null
 }
 
 etcd_name() {
-  ( private_ipv4_addresses; public_ipv4_addresses ) | while read address; do
-    line=$(etcdctl member list | grep "://${address}:")
-    if [[ "$line" ]]; then
-      nn=$(echo $line | awk -F'name=' '{print $2}' | cut -f1 -d' ')
-      if [[ "$nn" ]]; then
-        echo $nn
-        exit
+  etcdctl member list | grep "://${address}:" | while read member; do
+    ( private_ipv4_addresses; public_ipv4_addresses ) | while read address; do
+      if grep $address $member >/dev/null; then
+        nn=$(echo $member | awk -F'name=' '{print $2}' | cut -f1 -d' ')
+        if [[ "$nn" ]]; then
+          echo $nn
+          exit
+        fi
       fi
-    fi
+    done
   done
 }
 
@@ -98,10 +119,6 @@ etcd_peer-url() {
 
 etcd_master() {
   serf_nodes -tag etcd-master=true | grep -v "^$" | sort -n | head -1
-}
-
-etcd_is-master() {
-  [[ "$(serf_tags | grep 'etcd-master' 2>/dev/null)" ]] && true || false
 }
 
 _etcd_add-member() {

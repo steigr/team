@@ -9,8 +9,9 @@ serf_event_is user  etcd-token           && serf_set etcd-token
 serf_event_is member-join                && etcd_cluster-resize
 serf_event_is member-leave               && etcd_cluster-resize
 serf_event_is member-fail                && etcd_cluster-resize
-serf_event_is member-join                && etcd_cluster-resize
+serf_event_is member-join                && etcd_master-election
 serf_event_is member-leave               && etcd_master-election
 serf_event_is member-fail                && etcd_master-election
 serf_event_is query etcd-member-election && etcd_stand-for-member-election
 serf_event_is query etcd-master-election && etcd_stand-for-master-election
+serf_event_is user  etcd-elect-master    && etcd_become-master
