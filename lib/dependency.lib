@@ -8,7 +8,7 @@ _lib_var() {
 }
 
 _loaded() {
-  $(_lib_var_name $1)=true
+  eval $(_lib_var_name $1)=true
 }
 
 _load() {
