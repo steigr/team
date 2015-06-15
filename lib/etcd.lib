@@ -82,7 +82,7 @@ etcd_become-master() {
 }
 
 etcd_name() {
-  etcdctl member list | grep "://${address}:" | while read member; do
+  etcdctl member list | while read member; do
     ( private_ipv4_addresses; public_ipv4_addresses ) | while read address; do
       if grep $address $member >/dev/null; then
         nn=$(echo $member | awk -F'name=' '{print $2}' | cut -f1 -d' ')
