@@ -1,7 +1,7 @@
 require http
 
 jq_install() {
-  _http_get http://stedolan.github.io/jq/download/linux64/jq $(_jq)
+  chmod +x  $(_http_get http://stedolan.github.io/jq/download/linux64/jq $(_jq))
 }
 
 _jq() {
