@@ -20,7 +20,7 @@ journald_stop() {
 
 _journald_write_dropin() {
   mkdir -p $(dirname $(_journald_dropin_file))
-  _coreos_write_unit $(+_journald_dropin_file) <<EO_JOURNALD_DROPIN
+  _coreos_write_unit $(_journald_dropin_file) <<EO_JOURNALD_DROPIN
 [Journal]
 Storage=volatile
 EO_JOURNALD_DROPIN
