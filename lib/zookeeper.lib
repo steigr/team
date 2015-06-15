@@ -22,6 +22,7 @@ zookeeper_stop() {
 }
 
 zookeeper_id() {
+  _coreos_active docker || return
   _docker_ids_by_image "steigr/zookeeper" | head -1
 }
 

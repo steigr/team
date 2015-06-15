@@ -84,3 +84,9 @@ _coreos_remove_unit() {
 _coreos_socket() {
   systemctl $1 $2.socket
 }
+
+_coreos_active() {
+  systemctl is-active $1 \
+  && true \
+  || false
+}
