@@ -6,7 +6,7 @@ require random
 require zookeeper
 
 dokku_update() {
-  _dokku_build_container
+  _dokku_image_present || _dokku_build_image
   dokku_stop
   dokku_install
 }
@@ -63,6 +63,9 @@ dokku_exec() {
   docker exec $(dokku_id) $*
 }
 
+_dokku_image_present() {
+  docker images | grep ^dokku >/dev/null 2>/dev/null
+}
 _dokku_container_name() {
   _docker_name_by_id $(dokku_id)
 }
@@ -100,7 +103,7 @@ _dokku_docker_command() {
   echo "$(_docker) run -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_docker_socket):$(_dokku_docker_socket) $* $(_dokku_image_name)"
 }
 
-_dokku_build_container() {
+_dokku_build_image() {
   set -x
   set -e
   temp_dir=$(mktemp -d /tmp/XXXXXX)

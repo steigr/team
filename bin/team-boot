@@ -15,5 +15,5 @@ _boot bee        install
 _boot swarm      install
 _boot interlock  install
 _boot zookeeper  install
-_boot dokku      install
+_boot dokku      update
 _boot dokku      router
