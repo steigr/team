@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . $TEAM_LIB/serf-event.lib
+require serf
 
-serf_event_is query dokku-ip && $TEAM serf get dokku-ip
-serf_event_is user  dokku-ip && $TEAM serf set dokku-ip &>/dev/null &
+serf_event_is query dokku-ip && serf_get dokku-ip
+serf_event_is user  dokku-ip && serf_set dokku-ip

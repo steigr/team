@@ -1,10 +1,10 @@
 #!/bin/sh
 
-require serf-event #. $TEAM_LIB/serf-event.lib
+. $TEAM_LIB/serf-event.lib
 require serf
 
-serf_event_is member-join          && $TEAM serf_check
+serf_event_is member-join          && serf_check
 
-serf_event_is query elected-master && $TEAM serf_get elected-master
-serf_event_is user  elected-master && $TEAM serf_set elected-master
-serf_event_is user  update-tags    && $TEAM serf_check
+serf_event_is query elected-master && serf_get elected-master
+serf_event_is user  elected-master && serf_set elected-master
+serf_event_is user  update-tags    && serf_check

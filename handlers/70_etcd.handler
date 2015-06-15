@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . $TEAM_LIB/serf-event.lib
+require serf
 
-serf_event_is query etcd-token && $TEAM serf get etcd-token
-serf_event_is user  etcd-token && $TEAM serf set etcd-token &>/dev/null &
+serf_event_is query etcd-token && serf_get etcd-token
+serf_event_is user  etcd-token && serf_set etcd-token

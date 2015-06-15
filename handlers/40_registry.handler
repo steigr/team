@@ -1,8 +1,10 @@
 #!/bin/bash
 
 . $TEAM_LIB/serf-event.lib
+require serf
+reuqire registry
 
-serf_event_is query registry-ip && $TEAM serf get registry-ip
-serf_event_is user  registry-ip && $TEAM serf set registry-ip &>/dev/null &
+serf_event_is query registry-ip && serf_get registry-ip
+serf_event_is user  registry-ip && serf_set registry-ip
 
-serf_event_is query registry-run && $TEAM registry install
+serf_event_is query registry-run && registry_install

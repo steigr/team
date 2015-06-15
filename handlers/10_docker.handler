@@ -1,5 +1,6 @@
 #!/bin/bash
 
 . $TEAM_LIB/serf-event.lib
+require docker
 
-serf_event_is user docker-bind-tcp && $TEAM docker bind tcp &>/dev/null &
+serf_event_is user docker-bind-tcp && docker_update
