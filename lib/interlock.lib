@@ -33,13 +33,6 @@ interlock_id() {
   docker inspect --format \"{{ .Id }}\" $(_interlock_container_name)
 }
 
-_interlock_test() {
-  _interlockable
-}
-_interlockable() {
-  [[ -z "$(public_ipv4_address)" ]] && exit 1 
-}
-
 _interlock_write_unit() {
   _coreos_write_unit  $(coreos_unit interlock) <<EO_INTERLOCK_UNIT
 [Unit]
@@ -108,9 +101,15 @@ _interlock_host_balancer_cert() {
 }
 
 _interlock_http_binding() {
-  echo "$(public_ipv4_address):80:8080"
+  echo "$(_interlock_public_address):80:8080"
 }
 
 _interlock_https_binding() {
-  echo "$(public_ipv4_address):443:8443"
+  echo "$(_interlock_public_address):443:8443"
+}
+
+_interlock_public_address() {
+  address=$(public_ipv4_address)
+  [[ -z "$address" ]] || address=$(private_ipv4_address)
+  echo $address
 }
