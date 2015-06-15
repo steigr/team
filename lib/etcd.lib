@@ -51,7 +51,7 @@ etcd_cluster-resize() {
   serf_count-nodes -tag etcd=true
 }
 
-etcd_node-name() {
+etcd_name() {
   ( private_ipv4_addresses; public_ipv4_addresses ) | while read address; do
     line=$(etcdctl member list | grep "://${address}:")
     if [[ "$line" ]]; then
@@ -62,6 +62,10 @@ etcd_node-name() {
       fi
     fi
   done
+}
+
+etcd_member-name() {
+  etcd_is-member && etcd_name
 }
 
 _etcd_write_unit_dropin() {
