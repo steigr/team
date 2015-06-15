@@ -80,3 +80,7 @@ _coreos_stop() {
 _coreos_remove_unit() {
   rm $1 2>/dev/null && systemctl daemon-reload || true
 }
+
+_coreos_socket() {
+  systemctl $1 $2.socket
+}
