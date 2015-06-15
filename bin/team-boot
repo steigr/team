@@ -3,21 +3,34 @@
 . $TEAM_LIB/dependency.lib
 require team
 
+echo "Rebind SSHd"
 $TEAM ssh       rebind
+
+echo "Add Docker TCP Socket"
 $TEAM docker    bind tcp
 
+echo "Provide Serf"
 $TEAM serf      install
 
+echo "Provide swarm/join"
 $TEAM bee       install
+echo "Provide swarm/manage"
 $TEAM swarm     install
 
+echo "Provide etcd2"
 $TEAM etcd      install
+echo "Provide flanneld"
 $TEAM flanneld  install
 
+echo "Provide Interlock"
 $TEAM interlock install
+echo "Provide Docker Distribution"
 $TEAM registry  install
 
+echo "Provide Zookeeper"
 $TEAM zookeeper install
 
+echo "Provide Dokku"
 $TEAM dokku     install
+echo "Provide Dokku SOA Router"
 $TEAM dokku     router
