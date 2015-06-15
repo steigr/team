@@ -91,5 +91,5 @@ _swarm_write_token() {
 }
 
 _swarm_token_discovery_timeout() {
-  echo "1s"
+  echo "3s"
 }
