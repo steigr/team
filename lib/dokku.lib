@@ -310,3 +310,7 @@ dokku_backend-ip() {
 dokku_backend-port() {
   echo 22
 }
+
+dokku_running() {
+  dokku_id >/dev/null 2>/dev/null
+}
