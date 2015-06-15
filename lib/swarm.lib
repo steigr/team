@@ -61,7 +61,7 @@ _swarm_environment_file() {
 }
 
 _swarm_token_file() {
-  echo "/run/swarm/token"
+  echo "$(_serf_kv_dir)/swarm-token"
 }
 
 _swarm_write_unit() {
