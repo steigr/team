@@ -5,6 +5,7 @@ _defaults() {
 }
 
 _volatile_file() {
-  mkdir "/run/$1" 2>/dev/null
-  echo "/run/$1/$2"
+  p="/run/$1/$2"
+  mkdir -p $(dirname $p) 2>/dev/null
+  echo $p
 }
