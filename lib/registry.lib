@@ -62,6 +62,7 @@ registry_remove() {
 }
 
 registry_id() {
+  _coreos_active docker || exit 0
   _docker_ids_by_image $(_registry_image) | head -1
 }
 
