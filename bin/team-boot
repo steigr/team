@@ -4,10 +4,10 @@
 require team
 
 echo "Rebind SSHd"
-$TEAM ssh       rebind
+DEBUG=1 $TEAM ssh       update
 
 echo "Add Docker TCP Socket"
-$TEAM docker    install
+DEBUG=1 $TEAM docker    update
 
 echo "Provide Serf"
 $TEAM serf      install

@@ -1,8 +1,12 @@
 require coreos
 
-ssh_rebind() {
+ssh_update() {
   ssh_stop
-  ssh_unit
+  ssh_install
+}
+
+ssh_install() {
+  _ssh_write_unit
   ssh_start
 }
 
@@ -23,15 +27,11 @@ ssh_port() {
   echo "2220"
 }
 
-ssh_unit() {
-  _ssh_unit
-}
-
 ssh_clean() {
   _coreos_remove_unit $(_coreos_unit socket sshd)
 }
 
-_ssh_unit() {
+_ssh_write_unit() {
   _coreos_write_unit $(coreos_unit socket sshd) <<EO_SSH_SOCKET_UNIT
 [Socket]
 ListenStream=$(ssh_port)
