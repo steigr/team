@@ -49,9 +49,9 @@ After=early-docker.service
 Restart=always
 ExecStartPre=-$(_docker) rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
-ExecStartPre=$TEAM interlock environment $(_interlock_environment_file)
-ExecStartPre=$TEAM ssl populate-interlock
-ExecStart=$TEAM interlock docker
+ExecStartPre=$(_team) interlock environment $(_interlock_environment_file)
+ExecStartPre=$(_team) ssl populate-interlock
+ExecStart=$(_team) interlock docker
 ExecStop=-$(_docker) stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT
 }

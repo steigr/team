@@ -51,7 +51,7 @@ _zookeeper_write_unit() {
 [Unit]
 Description=Apache Zookeeper Distributed Key-Value-Store
 [Service]
-ExecStartPre=$TEAM zookeeper config $(_zookeeper_config_file)
+ExecStartPre=$(_team) zookeeper config $(_zookeeper_config_file)
 ExecStartPre=$(_docker) pull $(_zookeeper_image)
 ExecStart=$(_docker) run --rm -v $(_zookeeper_config_file):/app/conf/zoo.cfg -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)
 EO_ZOOKEEPER_UNIT

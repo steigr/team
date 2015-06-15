@@ -174,8 +174,8 @@ Requires=docker.service
 After=docker.service
 [Service]
 Restart=always
-ExecStartPre=-$TEAM dokku rm
-ExecStartPre=$TEAM dokku env
+ExecStartPre=-$(_team) dokku rm
+ExecStartPre=$(_team) dokku env
 ExecStart=$(_dokku_docker_command -v $(_dokku_home):$(_dokku_home) --rm ) /start
 EO_DOKKU_UNIT
 }
@@ -189,7 +189,7 @@ Description=Dokku Paas Socket Proxy
 [Service]
 Restart=always
 ExecStartPre=/usr/bin/docker pull steigr/synapse
-ExecStartPre=$TEAM dokku synapse-config
+ExecStartPre=$(_team) dokku synapse-config
 ExecStart=/usr/bin/docker run --rm -v $(_dokku_synapse_config):/etc/synapse/synapse.json -p $(public_ipv4_address):22:22 steigr/synapse
 EO_DOKKU_NERVE_UNIT
   _coreos_start dokku-nerve

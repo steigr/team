@@ -32,7 +32,7 @@ swarm_create-token() {
 }
 
 swarm_local-token() {
-  test -f $(_swarm_token_file) && echo "$(cat $(_swarm_token_file))"
+  _serf_get swarm-token
 }
 
 swarm_environment() {
@@ -74,7 +74,7 @@ After=early-docker.service
 Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-$(_docker) rm swarm
-ExecStartPre=$TEAM swarm environment $(_swarm_environment_file)
+ExecStartPre=$(_team) swarm environment $(_swarm_environment_file)
 ExecStart=$(_docker) run --name=swarm --env-file=$(_swarm_environment_file) --net=host swarm manage
 ExecStop=-$(_docker) stop swarm
 EO_SWARM_UNIT
@@ -85,7 +85,7 @@ _swarm_token_var() {
 }
 
 _swarm_write_token() {
-  echo "token://$1" | tee $(_swarm_token_file) >/dev/null
+  echo "token://$1" | _serf_set swarm-token >/dev/null
   _serf_check "swarm local-token" swarm-token
   cat $(_swarm_token_file)
 }

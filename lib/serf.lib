@@ -39,7 +39,7 @@ serf_loglevel() {
 }
 
 serf_handler() {
-  echo "$TEAM"
+  _team
 }
 
 serf_bin() {
@@ -127,7 +127,7 @@ _serf_write_unit() {
 Description=Serf Cluster Discovery and Event Processing
 [Service]
 Restart=always
-ExecStartPre=$TEAM serf config
+ExecStartPre=$(_team) serf config
 ExecStart=$(_serf) agent -config-file=$(_serf_config_file)
 EO_SERF_UNIT
 }
@@ -197,7 +197,7 @@ _serf_snapshot_file() {
 }
 
 _serf_check() {
-  result=$(/bin/sh -c "$TEAM $1" )
+  result=$(/bin/sh -c "$(_team) $1" )
   ( [[ "x" = "x$result" ]] && serf_untag $2 || serf_tag $2=true )>/dev/null 2>/dev/null
 }
 

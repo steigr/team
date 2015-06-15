@@ -74,10 +74,10 @@ _registry_write_unit() {
 [Unit]
 Description=Docker Distribution Registry
 [Service]
-ExecStartPre=-$TEAM registry remove
-ExecStartPre=$TEAM registry env
+ExecStartPre=-$(_team) registry remove
+ExecStartPre=$(_team) registry env
 ExecStart=$(_docker) run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) $(_registry_image)
-ExecStop=-$TEAM registry halt
+ExecStop=-$(_team) registry halt
 EO_REGISTRY_UNIT
 }
 
