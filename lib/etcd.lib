@@ -48,7 +48,7 @@ etcd_is-proxy() {
 }
 
 etcd_cluster-resize() {
-  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-members | _serf_query_json_values
+  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-election | _serf_query_json_values
 }
 
 etcd_name() {
@@ -85,7 +85,7 @@ _etcd_election_standing() {
   name=$(etcd_name)
   rating=$(cat /proc/uptime | awk '{print $2}')
   peer_url=$(etcd_peer-url)
-  echo -n "{\"rating\":\"${rating}_${name}\",\"name\":\"$name\",\"peerURL\":\"$peer_url\"}" 
+  echo -n "rating=${rating}_${name},name=$name,peerURL=$peer_url" 
 }
 
 _etcd_write_unit_dropin() {
