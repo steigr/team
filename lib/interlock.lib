@@ -109,6 +109,6 @@ _interlock_https_binding() {
 
 _interlock_public_address() {
   address=$(public_ipv4_address)
-  [[ -z "$address" ]] || address=$(private_ipv4_address)
+  [[ -z "$address" ]] && address=$(private_ipv4_address)
   echo $address
 }
