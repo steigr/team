@@ -3,6 +3,7 @@
 . $TEAM_LIB/dependency.lib
 require team
 require serf-event
+require log
 
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 
