@@ -67,6 +67,10 @@ dokku_mask() {
   _docker_ids_by_image "steigr/synapse"
 }
 
+dokku_clean() {
+  _coreos_remove_unit $(_coreos unit dokku)
+}
+
 _dokku_image_present() {
   docker images | grep ^dokku >/dev/null 2>/dev/null
 }
