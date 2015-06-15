@@ -32,7 +32,7 @@ swarm_create-token() {
 }
 
 swarm_local-token() {
-  echo "$(_swarm_token_var)$(cat $(_swarm_token_file))"
+  test -f $(_swarm_token_file) && echo "$(cat $(_swarm_token_file))"
 }
 
 swarm_environment() {
