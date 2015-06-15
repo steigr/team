@@ -85,7 +85,7 @@ _etcd_election_standing() {
   name=$(etcd_name)
   rating=$(cat /proc/uptime | awk '{print $2}')_$name
   peer_url=$(etcd_peer-url)
-  echo -n "stand@$rating@$name@$peer_url@"
+  echo -n "stand@$rating@$name@$peer_url"
 }
 
 _etcd_write_unit_dropin() {
