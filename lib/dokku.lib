@@ -71,7 +71,7 @@ _dokku_image_present() {
   docker images | grep ^dokku >/dev/null 2>/dev/null
 }
 _dokku_container_name() {
-  _docker_name_by_id $(dokku_id)
+  _docker_name_by_id $(dokku_id) 2>/dev/null
 }
 
 _dokku_image_name() {
@@ -304,7 +304,7 @@ dokku_backend-name() {
 }
 
 dokku_backend-ip() {
-  dokku-ip
+  dokku_ip
 }
 
 dokku_backend-port() {
