@@ -112,7 +112,7 @@ _serf_download() {
   r=$(_serf_default_bin)
   test -z $r && return
   _serf_zip=$(_http_get $(_serf_url) $(mktemp /tmp/XXXX.zip).zip)
-  unzip -d $(dirname $r) $_serf_zip >/dev/null
+  unzip -o -d $(dirname $r) $_serf_zip >/dev/null
   rm $_serf_zip
   chmod +x $r
 }
