@@ -28,13 +28,13 @@ router_prepare() {
 }
 
 _router_unit() {
-  _coreos_write_unit router@ <<EO_ROUTER_UNIT
+  _coreos_write_unit $(_coreos_unit router@) <<EO_ROUTER_UNIT
 [Unit]
 Description=Service Router for %i
 After=docker.service flanneld.service
 Requires=docker.service flanneld.service
 [Servie]
-ExecStartPre=-$(_team) router prepare %i
+ExecStartPre=$(_team) router prepare %i
 ExecStart=$(_team) router start %i
 ExecStop=$(_team) router stop %i
 EO_ROUTER_UNIT
