@@ -14,7 +14,6 @@ router_start() {
 
 router_stop() {
   $(_docker) kill $(router_id $1)
-  _coreos_stop router@$1 
 }
 
 router_id() {
