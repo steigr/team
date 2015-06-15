@@ -34,7 +34,7 @@ _flanneld_write_docker_network_clean() {
   mkdir -p $(dirname $(_flanneld_drocker_dropin)) >/dev/null
   _coreos_write_unit $(_flanneld_drocker_dropin) << EO_FLANNEL_DOCKER_DROPIN
 [Service]
-ExecStartPre=/usr/bin/ifconfig docker0 0.0.0.0
+ExecStartPre=$(_team) flanneld install
 EO_FLANNEL_DOCKER_DROPIN
 }
 
