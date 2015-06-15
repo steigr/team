@@ -48,7 +48,7 @@ etcd_is-proxy() {
 }
 
 etcd_cluster-resize() {
-  serf_count-nodes -tag etcd=true
+  TIMEOUT=$(_etcd_election_timeout) _serf_query_json -tag etcd=true etcd-members 
 }
 
 etcd_name() {
@@ -124,4 +124,8 @@ _etcd_get() {
 
 _etcd_token_discovery_timeout() {
   _defaults serf_query_timeout
+}
+
+_etcd_election_timeout() {
+  echo "5s"
 }
