@@ -9,6 +9,7 @@ router_install() {
 }
 
 router_start() {
+  _router_config_write $1
   $(_docker) run --rm -l $(router_label $1) -v $(_router_config_file $1):/etc/synapse/synapse.json $(_router_binding $1) $(_router_image)
 }
 
@@ -26,7 +27,6 @@ router_label() {
 
 router_prepare() {
   _router_unit_present || _router_unit
-  _router_config_write $1
   $(_docker) pull $(_router_image) >/dev/null 2>/dev/null
 }
 
