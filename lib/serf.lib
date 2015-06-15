@@ -216,5 +216,5 @@ _serf_query_json() {
 }
 
 _serf_query_json_first() {
-  _jq '.Responses | to_entries | .[0].value' | xargs echo -e | head -1
+  _jq '.Responses | to_entries | .[0].value' | xargs echo -e | head -1 | grep -v "^null$"
 }
