@@ -89,7 +89,7 @@ _etcd_set() {
 }
 
 _etcd_get() {
-  etcdctl get $1
+  etcdctl get $1 2>/dev/null || false
 }
 
 _etcd_token_discovery_timeout() {
