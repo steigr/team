@@ -48,7 +48,17 @@ etcd_is-proxy() {
 }
 
 etcd_cluster-resize() {
-  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-election | _serf_query_json_values
+  etcd_is-master || exit
+  _etcd_receive_new_members | while read member; do
+    name=$(echo $member | awk -F@ '{print $3}')
+    peerURL=$(echo $member | awk -F@ '{print $4}')
+    _etcd_add-member $name $peerURL
+  done
+}
+
+etcd_master-election() {
+  test -z "$(etcd_master)" || exit
+  serf_query etcd-master-election
 }
 
 etcd_name() {
@@ -72,13 +82,47 @@ etcd_proxy-name() {
   etcd_is-proxy && etcd_name
 }
 
-etcd_stand-for-election() {
-  # etcd_is-member || \
+etcd_stand-for-member-election() {
+  etcd_is-member || \
+  _etcd_election_standing
+}
+
+etcd_stand-for-master-election() {
+  etcd_is-master || \
   _etcd_election_standing
 }
 
 etcd_peer-url() {
   echo -n "http://$(private_ipv4_address):2379"
+}
+
+etcd_master() {
+  serf_nodes -tag etcd-master=true | grep -v "^$" | sort -n | head -1
+}
+
+etcd_is-master() {
+  [[ "$(serf_tags | grep 'etcd-master' 2>/dev/null)" ]] && true || false
+}
+
+_etcd_add-member() {
+  etcdctl member add $1 $2
+}
+
+_etcd_ballot() {
+  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-${1}-election \
+  | _jq ' .Responses | to_entries | map(.value) | join("\n") ' \
+  | xargs echo -e \
+  | awk -F"^stand@" '{print $2}' \
+  | sort -n \
+  | tail -$2    
+}
+
+_etcd_receive_new_master() {
+  _etcd_ballot master 1
+}
+
+_etcd_receive_new_members() {
+  _etcd_ballot member 2
 }
 
 _etcd_election_standing() {
