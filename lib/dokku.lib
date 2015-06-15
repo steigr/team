@@ -29,7 +29,6 @@ dokku_env() {
 }
 
 dokku_run() {
-  _dokku_nerve_json
   $(_docker) run --rm --env-file=$(_dokku_env_file) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_docker_socket):$(_dokku_docker_socket) -v $(_dokku_home):$(_dokku_home) $(_dokku_image_name) /start
 }
 
@@ -167,11 +166,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
- && echo "nerve: \$(which nerve) -c $(_dokku_nerve_config)" >> /app/Procfile \
+ && echo "nerve: \$(which nerve) -c /etc/nerve/nerve.json" >> /app/Procfile \
  && cp /app/Procfile /app/.release
 RUN echo '#!/bin/sh\nip -4 -o route get 8.8.8.8 | awk "{print \\\$7}"' > /bin/default-ip \
  && chmod +x /bin/default-ip
-RUN echo '#!/bin/bash\necho {"instance_id":"\\\$(hostname)","services":{"ssh":{"host": "\\\$(default-ip)","port":22,"reporter_type":"zookeeper","zk_hosts": ["\\\${ZK_SERVER}:2181"],"zk_path": "$(_dokku_nerve_ssh_path)","check_interval":2,"checks": [{"type":"tcp","timeout":0.2,"rise":3,"fall":2}]}}}' > /bin/nerve-config \
+RUN echo '#!/bin/bash\ncat<<EO_NERVE_CONFIG > /etc/nerve/nerve.json\n{\n\t"instance_id":"\\$(hostname)",\n\t"services":{\n\t\t"ssh":{\n\t\t\t"host": "\\$(default-ip)",\n\t\t\t"port":22,\n\t\t\t"reporter_type":"zookeeper",\n\t\t\t"zk_hosts":[\n\t\t\t\t"\\${ZK_SERVER}:2181"\n\t\t\t],\n\t\t\t"zk_path":"$(_dokku_nerve_ssh_path)",\n\t\t\t"check_interval":2,\n\t\t\t"checks":[\n\t\t\t\t{\n\t\t\t\t\t"type":"tcp",\n\t\t\t\t\t"timeout":0.2,\n\t\t\t\t\t"rise":3,\n\t\t\t\t\t"fall":2\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t}\n}\EO_NERVE_CONFIG' \
  && chmod +x /bin/nerve-config
 RUN echo '#!/bin/bash\nmkdir -p /root/.ssh /var/run/sshd 2>/dev/null\n[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F'\'' ssh-'\'' '\''{ print "ssh-"  }'\'' >> /root/.ssh/authorized_keys' > /bin/prepare-sshd \
  && chmod +x /bin/prepare-sshd
@@ -264,19 +263,6 @@ _dokku_env_file() {
 
 _dokku_nerve_ssh_path() {
   echo "/team/dokku/ssh/services"
-}
-
-_dokku_nerve_json() {
-  echo "{'instance_id':'$(serf_node-name)','services':{'ssh':{'host': '$(dokku_ip)','port':22,'reporter_type':'zookeeper','zk_hosts': ['$(zookeeper_ip):2181'],'zk_path': '$(_dokku_nerve_ssh_path)','check_interval': 2,'checks': [{'type': 'tcp','timeout': 0.2,'rise': 3,'fall': 2}]}}}" \
-  | sed -e "s:':\":g" > $(_dokku_nerve_config)
-}
-
-_dokku_nerve_config() {
-  _volatile_file dokku/nerve nerve.json
-}
-
-_dokku_nerve_runtime_config() {
-  echo "/etc/nerve/nerve.json"
 }
 
 _dokku_public_address() {
