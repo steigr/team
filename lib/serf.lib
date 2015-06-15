@@ -202,3 +202,11 @@ _serf_kv_dir() {
   mkdir -p $result >/dev/null 2>/dev/null
   echo $result
 }
+
+_serf_query_json() {
+  _serf_query -format=json $*
+}
+
+_serf_query_json_first() {
+   cat | $(_jq) '.Responses | to_entries | .[0].value ' | xargs echo -e | head -1
+}
