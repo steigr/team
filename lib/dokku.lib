@@ -143,7 +143,13 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && mkdir /app /root/.ssh \
  && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
  && echo "nerve: \$(which nerve) -c $(_dokku_nerve_config)" >> /app/Procfile \
- && cp /app/Procfile /app/.release
+ && cp /app/Procfile /app/.release \
+ && echo -e '#!/bin/sh\nip -4 -o route get 8.8.8.8 | awk "{print \$7}"' > /bin/default_ip \
+ && chmod +x /bin/default-ip \
+ && echo -e '#!/bin/bash\necho {"instance_id":"\$(hostname)","services":{"ssh":{"host": "\$(default-ip)","port":22,"reporter_type":"zookeeper","zk_hosts": ["\${ZK_SERVER}:2181"],"zk_path": "$(_dokku_nerve_ssh_path)","check_interval":2,"checks": [{"type":"tcp","timeout":0.2,"rise":3,"fall":2}]}}}' > /bin/nerve-config \
+ && chmod +x /bin/nerve-config \
+ && echo -e '#!/bin/bash\nmkdir -p /root/.ssh /var/run/sshd 2>/dev/null\n[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F" ssh-" "{ print "ssh-" $2 }" >> /root/.ssh/authorized_keys' > /bin/prepare-sshd
+ && chmod +x /bin/prepare-sshd
 ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
 EXPOSE 22
 ENTRYPOINT ["/start"]
@@ -199,43 +205,8 @@ _dokku_entrypoint_write() {
 export HOME=/app
 cd /app
 
-if test -f /root/.ssh/authorized_keys; then
-  echo "SSH-Keys for root present"
-else
-  mkdir /root/.ssh
-  echo -n "ssh-"> /root/.ssh/authorized_keys
-  head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{print $2}' >> /root/.ssh/authorized_keys
-fi
-
-nerve_ip() { ip -4 -o route get 8.8.8.8 | awk '{print $7}'; }
-
-cat<<EO_NERVE_CONFIG > $(_dokku_nerve_config)
-{
-  "instance_id":"$(hostname)",
-  "services":{
-    "ssh":{
-      "host": "\$(nerve_ip)",
-      "port":22,
-      "reporter_type":"zookeeper",
-      "zk_hosts": [
-        "\$ZK_SERVER:2181"
-      ],
-      "zk_path": "$(_dokku_nerve_ssh_path)",
-      "check_interval":2,
-      "checks": [
-        {
-          "type":"tcp",
-          "timeout":0.2,
-          "rise":3,
-          "fall": 2
-        }
-      ]
-    }
-  }
-}
-EO_NERVE_CONFIG
-
-mkdir -p /var/run/sshd 2>/dev/null || true
+nerve-config
+prepare-sshd
 
 case "$(basename $0)" in
   start)
@@ -304,7 +275,18 @@ _dokku_ip_var() {
 }
 
 _dokku_synapse_json() {
-  echo "{'services':{'dokku':{'default_servers':[{'name':'local-node','host':'$(dokku_ip)','port':2220}],'discovery':{'method':'zookeeper','path':'/team/dokku/ssh/services','hosts':['$(zookeeper_ip):2181']},'haproxy':{'port':22,'server_options':'check inter 2s rise 3 fall 2','listen':['mode tcp']}}},'haproxy':{'reload_command':'service haproxy reload','config_file_path':'/etc/haproxy/haproxy.cfg','socket_file_path':'/tmp/haproxy.sock','do_writes':true,'do_reloads':true,'do_socket':true,'bind_address':'0.0.0.0','global':['daemon','user root','group root','maxconn 4096','log 127.0.0.1 local0','log 127.0.0.1 local1 notice','stats socket /tmp/haproxy.sock mode 666 level admin'],'defaults':['log global','option dontlognull','maxconn 2000','retries 3','timeout server 1m','option redispatch','balance roundrobin']}}" \
-  | sed -e "s:':\":g" \
-  | tee $(_dokku_synapse_config)
+  cat <<EO_DOKKU_SYNAPSE_CONFIG | sed -e "s:':\":g" | tee $(_dokku_synapse_config)
+{"services":
+  {"dokku":
+    {"default_servers":
+      [
+        {
+          "name":"local-node",
+          "host":"$(dokku_ip)",
+          "port":2220
+        }
+      ],
+      "discovery":{
+        "method":"zookeeper","path":"/team/dokku/ssh/services","hosts":["$(zookeeper_ip):2181"]},"haproxy":{"port":22,"server_options":"check inter 2s rise 3 fall 2","listen":["mode tcp"]}}},"haproxy":{"reload_command":"service haproxy reload","config_file_path":"/etc/haproxy/haproxy.cfg","socket_file_path":"/tmp/haproxy.sock","do_writes":true,"do_reloads":true,"do_socket":true,"bind_address":"0.0.0.0","global":["daemon","user root","group root","maxconn 4096","log 127.0.0.1 local0","log 127.0.0.1 local1 notice","stats socket /tmp/haproxy.sock mode 666 level admin"],"defaults":["log global","option dontlognull","maxconn 2000","retries 3","timeout server 1m","option redispatch","balance roundrobin"]}}
+EO_DOKKU_SYNAPSE_CONFIG
 }
