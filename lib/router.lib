@@ -24,7 +24,7 @@ router_id() {
 router_prepare() {
   _router_unit_present || _router_unit
   _router_config_write $1
-  $(_docker) pull $(_router_image)
+  $(_docker) pull $(_router_image) >/dev/null 2>/dev/null
 }
 
 router_clean() {
