@@ -1,4 +1,5 @@
 require coreos
+require team
 
 journald_update() {
   journald_stop
