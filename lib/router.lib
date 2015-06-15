@@ -37,6 +37,7 @@ Description=Service Router for %i
 After=docker.service flanneld.service
 Requires=docker.service flanneld.service
 [Service]
+Restart=always
 ExecStartPre=$(_team) router prepare %i
 ExecStart=$(_team) router start %i
 ExecStop=$(_team) router stop %i
