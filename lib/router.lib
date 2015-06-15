@@ -9,7 +9,7 @@ router_install() {
 }
 
 router_start() {
-  $(_docker) --rm -l "router=$1" -v $(_router_config_file $1):/etc/synapse/synapse.json $(_router_binding $1) $(_router_image)
+  $(_docker) run --rm -l "router=$1" -v $(_router_config_file $1):/etc/synapse/synapse.json $(_router_binding $1) $(_router_image)
   _coreos_start router@$1
 }
 
