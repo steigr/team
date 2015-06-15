@@ -1,41 +1,19 @@
-#!/bin/sh
+#!/bin/bash
+MODULE=boot
 
 . $TEAM_LIB/dependency.lib
-require team
+require $MODULE
 
-echo "Make Journald Logs volatile"
-$TEAM journald  update
-
-echo "Install jq Tool"
-$TEAM jq        install
-
-echo "Rebind SSHd"
-$TEAM ssh       update
-
-echo "Add Docker TCP Socket"
-$TEAM docker    update
-
-echo "Provide Serf"
-$TEAM serf      install
-
-echo "Provide etcd2"
-$TEAM etcd      install
-echo "Provide flanneld"
-$TEAM flanneld  install
-
-echo "Provide swarm/join"
-$TEAM bee       install
-echo "Provide swarm/manage"
-$TEAM swarm     install
-echo "Provide Interlock"
-$TEAM interlock install
-echo "Provide Docker Distribution"
-$TEAM registry  install
-
-echo "Provide Zookeeper"
-$TEAM zookeeper install
-
-echo "Provide Dokku"
-$TEAM dokku     install
-echo "Provide Dokku SOA Router"
-$TEAM dokku     router
+_boot journald   update
+_boot jq         install
+_boot ssh        update
+_boot docker     update
+_boot serf       install
+_boot etcd       install
+_boot flanneld   install
+_boot bee        install
+_boot swarm      install
+_boot interlock  install
+_boot zookeeper  install
+_boot dokku      install
+_boot dokku      router
