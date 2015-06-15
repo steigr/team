@@ -2,6 +2,7 @@
 
 . $TEAM_LIB/serf-event.lib
 require serf
+require zookeeper
 
-serf_event_is query zookeeper-ip && serf_get zookeeper-ip
+serf_event_is query zookeeper-ip && zookeeper_local-ip
 serf_event_is user  zookeeper-ip && serf_set zookeeper-ip

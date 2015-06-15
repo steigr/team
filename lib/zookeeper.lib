@@ -27,11 +27,11 @@ zookeeper_id() {
 }
 
 zookeeper_ip() {
-  serf_query zookeeper-ip | _serf_query_filter $(_zookeeper_ip_var) | head -n1
+  TIMEOUT=$(_zookeeper_discovery_timeout) _serf_query_json zookeeper-ip | _serf_query_json_first
 }
 
 zookeeper_local-ip() {
-  echo "$(_zookeeper_ip_var)$(_docker_ip $(zookeeper_id))"
+  _coreos_active docker && echo "$(_docker_ip $(zookeeper_id))"
 }
 
 zookeeper_config() {
@@ -80,4 +80,8 @@ _zookeeper_image() {
 
 _zookeeper_ip_var() {
   echo "ZK_SERVER="
+}
+
+_zookeeper_discovery_timeout() {
+  echo "3s"
 }
