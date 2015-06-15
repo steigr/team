@@ -48,7 +48,7 @@ etcd_is-proxy() {
 }
 
 etcd_cluster-resize() {
-  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-members 
+  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-members | _serf_query_json_values
 }
 
 etcd_name() {
@@ -72,6 +72,21 @@ etcd_proxy-name() {
   etcd_is-proxy && etcd_name
 }
 
+etcd_stand-for-election() {
+  etcd_is-member || _etcd_election_standing
+}
+
+etcd_peer-url() {
+  echo -n "http://$(private_ipv4_address):2379"
+}
+
+_etcd_election_standing() {
+  name=$(etcd_name)
+  rating=$(cat /proc/uptime | awk '{print $2}'})
+  peer_url=$(etcd_peer-url)
+  echo -n "{\"rating\":\"${rating}_${name}\",\"name\":\"$name\",\"peerURL\":\"$peer_url\"}" 
+}
+
 _etcd_write_unit_dropin() {
   dropin_file=$(_etcd_unit_dropin_file)
   mkdir -p $(dirname $dropin_file)
@@ -81,7 +96,7 @@ Environment="ETCD_NAME=$(_etcd_nodename)"
 Environment="ETCD_DISCOVERY=$(_etcd_token)"
 Environment="ETCD_ADVERTISE_CLIENT_URLS=http://$(private_ipv4_address):2379"
 Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$(private_ipv4_address):2380"
-Environment="ETCD_LISTEN_CLIENT_URLS=http://$(private_ipv4_address):2379,http://127.0.0.1:2379,http://$(private_ipv4_address):4001,http://127.0.0.1:4001"
+Environment="ETCD_LISTEN_CLIENT_URLS=$(etcd_peer-url),http://127.0.0.1:2379,http://$(private_ipv4_address):4001,http://127.0.0.1:4001"
 Environment="ETCD_LISTEN_PEERS_URLS=http://$(private_ipv4_address):2380,http://127.0.0.1:2380,http://127.0.0.1:7001"
 EO_ETCD_UNIT_DROPIN
 }
