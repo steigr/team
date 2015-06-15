@@ -8,7 +8,7 @@ journald_update() {
 
 journald_install() {
   _journald_write_dropin
-  journald_install
+  journald_start
 }
 
 journald_start() {
