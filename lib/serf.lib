@@ -112,7 +112,7 @@ serf_clean() {
   _coreos_remove_unit $(_coreos_unit serf)
 }
 
-serf_local-tags() {
+serf_tags() {
   $(_serf) info -format=json | _jq '.tags | to_entries | map(.key) | join ("\n")' | xargs echo -e
 }
 
