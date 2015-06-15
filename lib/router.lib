@@ -2,7 +2,7 @@ require config
 require coreos
 require zookeeper
 require network
-require jp
+require jq
 
 router_install() {
   _router_unit
