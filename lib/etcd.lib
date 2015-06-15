@@ -40,7 +40,7 @@ etcd_clean() {
 }
 
 etcd_is-single() {
-  [[ "$(etcdctl member list | wc -l)" = "0" ]] && true || false
+  [[ "$(etcdctl member list | wc -l)" = "1" ]] && true || false
 }
 
 etcd_is-master() {
