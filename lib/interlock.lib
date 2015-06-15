@@ -9,7 +9,6 @@ interlock_update() {
 }
 
 interlock_install() {
-  _interlockable
   _interlock_write_unit
   interlock_start
 }
