@@ -3,6 +3,10 @@
 . $TEAM_LIB/dependency.lib
 require team
 
+echo "Install jq Tool"
+
+$TEAM jq        install
+
 echo "Rebind SSHd"
 $TEAM ssh       update
 
