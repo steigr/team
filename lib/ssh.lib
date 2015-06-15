@@ -27,6 +27,10 @@ ssh_unit() {
   _ssh_unit
 }
 
+ssh_clean() {
+  _coreos_remove_unit $(_coreos_unit socket sshd)
+}
+
 _ssh_unit() {
   _coreos_write_unit $(coreos_unit socket sshd) <<EO_SSH_SOCKET_UNIT
 [Socket]

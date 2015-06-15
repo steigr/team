@@ -1,4 +1,8 @@
 coreos_unit() {
+  _coreos_unit $*
+}
+
+_coreos_unit() {
   if [[ $# -ge 2 ]]; then
     unit="${2}.${1}"
     case "$1" in
@@ -71,4 +75,8 @@ _coreos_start() {
 
 _coreos_stop() {
   systemctl stop $1
+}
+
+_coreos_remove_unit() {
+  rm $1 2>/dev/null && systemctl daemon-reload || true
 }
