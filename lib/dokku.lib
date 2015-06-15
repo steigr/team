@@ -30,7 +30,7 @@ dokku_env() {
 
 dokku_run() {
   _dokku_nerve_json
-  $(_docker) run --rm -v $(dirname $(_dokku_nerve_config)):$(dirname $(_dokku_nerve_runtime_config)) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_docker_socket):$(_dokku_docker_socket) -v $(_dokku_home):$(_dokku_home) $(_dokku_image_name) /start
+  $(_docker) run --rm --env-file=$(_dokku_env_file) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_docker_socket):$(_dokku_docker_socket) -v $(_dokku_home):$(_dokku_home) $(_dokku_image_name) /start
 }
 
 dokku_ip() {
