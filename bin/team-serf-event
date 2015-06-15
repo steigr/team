@@ -6,17 +6,12 @@ require serf-event
 
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 
-# echo "Got Payload $SERF_PAYLOAD" >> /tmp/serf-event.log
 SERF_EVENT=user && PAYLOAD=$(cat)
 
 serf_event_handlers | while read handler; do
   SERF_EVENT=user \
   && echo $PAYLOAD | /bin/bash -i $handler $* \
   || /bin/bash -i $handler $*
-  # PAYLOAD=$(cat) 
-  # echo $PAYLOAD | 
-  # SERF_EVENT_ENVIRONMENT=$(serf_event_environment)
-  # /bin/bash -ci "TEAM=$TEAM TEAM_LIB=$TEAM_LIB $SERF_EVENT_ENVIRONMENT DEBUG=$DEBUG $handler $*"
 done
 
 exit 0
