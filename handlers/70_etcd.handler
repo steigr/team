@@ -10,3 +10,4 @@ serf_event_is member-join        && etcd_cluster-resize
 serf_event_is member-leave       && etcd_cluster-resize
 serf_event_is member-fail        && etcd_cluster-resize
 serf_event_is query etcd-members && etcd_member-name
+serf_event_is query etcd-proxies && etcd_proxy-name

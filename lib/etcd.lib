@@ -48,7 +48,7 @@ etcd_is-proxy() {
 }
 
 etcd_cluster-resize() {
-  TIMEOUT=$(_etcd_election_timeout) _serf_query_json -tag etcd=true etcd-members 
+  TIMEOUT=$(_etcd_election_timeout) _serf_query_json etcd-members 
 }
 
 etcd_name() {
@@ -66,6 +66,10 @@ etcd_name() {
 
 etcd_member-name() {
   etcd_is-member && etcd_name
+}
+
+etcd_proxy-name() {
+  etcd_is-proxy && etcd_name
 }
 
 _etcd_write_unit_dropin() {
