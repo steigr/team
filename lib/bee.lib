@@ -33,7 +33,7 @@ bee_environment() {
   echo "SWARM_DISCOVERY=$token" >> $env_file
 }
 
-swarm_clean() {
+bee_clean() {
   _coreos_remove_unit $(_coreos_unit bee)
 }
 

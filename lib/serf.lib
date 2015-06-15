@@ -108,6 +108,10 @@ serf_node-name() {
   _hostname
 }
 
+serf_clean() {
+  _coreos_remove_unit $(_coreos_unit serf)
+}
+
 _serf_download() {
   r=$(_serf_default_bin)
   test -z $r && return
