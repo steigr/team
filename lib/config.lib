@@ -1,7 +1,12 @@
+require serf
+
 _defaults() {
   local serf_query_timeout="3s"
   local ssh_port="2220"
   local dokku_max_instances=3
+  local zookeeper_max_instances=7
+  local etcd_max_member_instances=7
+  local registry_max_instances=1
   echo ${!1}
 }
 
@@ -9,4 +14,10 @@ _volatile_file() {
   p="/run/$1/$2"
   mkdir -p $(dirname $p) 2>/dev/null
   echo $p
+}
+
+_startable() {
+  [[ $(serf_count-nodes -tag $1=true) -lt $(_defaults $1_max_instances) ]] || return 1 
+  [[ $(serf_count-nodes -tag $2=true) -ge 1 ]] || return 1
+  return 0
 }
