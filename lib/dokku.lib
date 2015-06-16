@@ -126,9 +126,7 @@ _dokku_docker_command() {
 _dokku_build_image() {
   set -x
   set -e
-  temp_dir=$(mktemp -d /tmp/XXXXXX)
-  _dokku_entrypoint_write $temp_dir
-  _dokku_write_dockerfile $temp_dir
+  temp_dir=$(_dokku_image_build_dir)
   docker build -t $(_dokku_image_name) $temp_dir
   rm -r $temp_dir
   _dokku_bootstrap_commands | while read cmd; do
@@ -141,8 +139,24 @@ _dokku_build_image() {
   set +e
 }
 
-_dokku_write_dockerfile() {
-  cat <<EO_DOKKU_DOCKERFILE | tee $1/Dockerfile >/dev/null
+_dokku_image_build_dir() {
+  temp_dir=$(mktemp -d /tmp/XXXXXX)
+  echo $temp_dir
+  _dokku_image_write_file $temp_dir Dockerfile
+  _dokku_image_write_file $temp_dir files/$(_dokku_entrypoint_file)
+  _dokku_image_write_file $temp_dir files/app/Procfile
+  _dokku_image_write_file $temp_dir files/bin/default-ip
+  _dokku_image_write_file $temp_dir files/bin/nerve-config
+  _dokku_image_write_file $temp_dir files/bin/prepare-sshd
+  echo $temp_dir
+}
+
+_dokku_image_write_file() {
+  target="$1/$2"
+  mkdir -p "$(dirname $target)"
+  case "$2" in
+    Dockerfile)
+      cat <<EO_DOKKU_IMAGE_Dockerfile | tee $target >/dev/null
 FROM ubuntu:latest
 MAINTAINER Mathias Kaufmann <me@stei.gr>
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -165,19 +179,100 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo debconf debconf/frontend noninteractive | debconf-set-selections \
  && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
- && echo "ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config" > /app/Procfile \
- && echo "nerve: \$(which nerve) -c /etc/nerve/nerve.json" >> /app/Procfile \
- && cp /app/Procfile /app/.release
-RUN echo '#!/bin/sh\nip -4 -o route get 8.8.8.8 | awk "{print \\\$7}"' > /bin/default-ip \
- && chmod +x /bin/default-ip
-RUN echo '#!/bin/bash\ncat<<EO_NERVE_CONFIG > /etc/nerve/nerve.json\n{\n\t"instance_id":"\\$(hostname)",\n\t"services":{\n\t\t"ssh":{\n\t\t\t"host": "\\$(default-ip)",\n\t\t\t"port":22,\n\t\t\t"reporter_type":"zookeeper",\n\t\t\t"zk_hosts":[\n\t\t\t\t"\\${ZK_SERVER}:2181"\n\t\t\t],\n\t\t\t"zk_path":"$(_dokku_nerve_ssh_path)",\n\t\t\t"check_interval":2,\n\t\t\t"checks":[\n\t\t\t\t{\n\t\t\t\t\t"type":"tcp",\n\t\t\t\t\t"timeout":0.2,\n\t\t\t\t\t"rise":3,\n\t\t\t\t\t"fall":2\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t}\n}\EO_NERVE_CONFIG' \
- && chmod +x /bin/nerve-config
-RUN echo '#!/bin/bash\nmkdir -p /root/.ssh /var/run/sshd 2>/dev/null\n[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F'\'' ssh-'\'' '\''{ print "ssh-"  }'\'' >> /root/.ssh/authorized_keys' > /bin/prepare-sshd \
- && chmod +x /bin/prepare-sshd
-ADD $(_dokku_entrypoint_file) /$(_dokku_entrypoint_file)
+ && ln -s /app/Procfile /app/.release
+ADD files /$(_dokku_entrypoint_file) /
 EXPOSE 22
-ENTRYPOINT ["/start"]
-EO_DOKKU_DOCKERFILE
+ENTRYPOINT ["$(_dokku_entrypoint_file)"]
+EO_DOKKU_IMAGE_Dockerfile
+    ;;
+    files/start)
+      cat <<'EO_DOKKU_IMAGE_files_start' | tee $target >/dev/null
+#!/bin/bash
+export HOME=/app
+cd /app
+
+nerve-config
+prepare-sshd
+
+case "$(basename $0)" in
+  start)
+    if test ! -f Procfile; then
+      ruby -e "require 'yaml';File.write('Procfile', (YAML.load_file('.release')['default_process_types'] || {}).to_yaml)"
+    fi
+    command="foreman start --procfile=Procfile $@"
+    ;;
+  *)
+    command="$@"
+    ;;
+esac
+
+if test -z "$command"; then
+  echo "Missing command ($@)"
+  exit 1
+fi
+
+exec $(eval echo ${command})
+EO_DOKKU_IMAGE_files_start
+      chmod +x $target
+    ;;
+    files/app/Procfile)
+      cat <<EO_DOKKU_IMAGE_files_app_Procfile | tee $target >/dev/null
+ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+nerve: nerve -c /etc/nerve/nerve.json
+EO_DOKKU_IMAGE_files_app_Procfile
+    ;;
+    files/bin/default-ip)
+      cat <<'EO_DOKKU_IMAGE_files_bin_default_ip' | tee $target >/dev/null
+#!/bin/sh
+ip -4 -o route get 8.8.8.8 | awk '{print $7}'
+EO_DOKKU_IMAGE_files_bin_default_ip
+      chmod +x $target
+    ;;
+    files/bin/nerve-config)
+      cat <<'EO_DOKKU_IMAGE_files_bin_nerve_config' | tee $target >/dev/null
+#!/bin/bash
+mkdir -p /etc/nerve 2>/dev/null >/dev/null || true
+host=$(default-ip)
+zk_host=$ZK_HOST
+zk_path=$ZK_PATH
+instance_id=$(hostname)
+cat<<EO_NERVE_CONFIG > /etc/nerve/nerve.json
+{
+  "instance_id":"$instance_id",
+  "services":{
+    "ssh":{
+      "host": "$host",
+      "port":22,
+      "reporter_type":"zookeeper",
+      "zk_hosts":[
+        "$zk_host:2181"
+      ],
+      "zk_path":"$zk_path",
+      "check_interval":2,
+      "checks":[
+        {
+          "type":"tcp",
+          "timeout":0.2,
+          "rise":3,
+          "fall":2
+        }
+      ]
+    }
+  }
+}
+EO_NERVE_CONFIG
+EO_DOKKU_IMAGE_files_bin_nerve_config
+      chmod +x $target
+    ;;
+    files/bin/prepare-sshd)
+      cat <<'EO_DOKKU_IMAGE_files_bin_prepare_sshd' | tee $target >/dev/null]
+#!/bin/bash
+mkdir -p /root/.ssh /var/run/sshd 2>/dev/null >/dev/null || true
+[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{ print "ssh-" $2  } >> /root/.ssh/authorized_keys
+EO_DOKKU_IMAGE_files_bin_prepare_sshd
+      chmod +x $target
+    ;;
+  esac
 }
 
 _dokku_bootstrap_commands() {
@@ -209,37 +304,6 @@ _dokku_entrypoint_file() {
   echo "start"
 }
 
-_dokku_entrypoint_write() {
-  cat <<'EO_DOKKU_ENTRYPOINT' | tee $1/$(_dokku_entrypoint_file) >/dev/null
-#!/bin/bash
-export HOME=/app
-cd /app
-
-nerve-config
-prepare-sshd
-
-case "$(basename $0)" in
-  start)
-    if test ! -f Procfile; then
-      ruby -e "require 'yaml';File.write('Procfile', (YAML.load_file('.release')['default_process_types'] || {}).to_yaml)"
-    fi
-    command="foreman start --procfile=Procfile $@"
-    ;;
-  *)
-    command="$@"
-    ;;
-esac
-
-if test -z "$command"; then
-  echo "Missing command ($@)"
-  exit 1
-fi
-
-exec $(eval echo ${command})
-EO_DOKKU_ENTRYPOINT
-  chmod +x $1/$(_dokku_entrypoint_file)
-}
-
 _dokku_home() {
   echo "/home/dokku"
 }
@@ -252,8 +316,8 @@ _dokku_env() {
   env_file=$(_dokku_env_file)
   mkdir -p $(dirname $env_file)
   cat <<EO_DOKKU_ENV > $env_file
-ZK_SERVER=$(zookeeper_ip)
-NERVE_PATH=$(_dokku_nerve_ssh_path)
+ZK_HOST=$(zookeeper_ip)
+ZK_PATH=$(_dokku_nerve_ssh_path)
 EO_DOKKU_ENV
 }
 
