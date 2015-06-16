@@ -84,6 +84,9 @@ dokku_running() {
   [[ "$(dokku_id 2>/dev/null)" ]] && true || false
 }
 
+dokku_shell() {
+  $(_docker) exec -ti $(dokku_id) /bin/bash -l
+}
 _dokku_image_present() {
   docker images | grep ^dokku >/dev/null 2>/dev/null
 }
@@ -281,7 +284,7 @@ tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
 DOKKU_BRANCH=master bash bootstrap.sh || true
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arv $(_dokku_home)/ $(_dokku_home)_host
-rm /root/dokku_id.pub /root/.ssh/authorized_keys || true
+rm /root/dokku_id.pub || true
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
