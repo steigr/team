@@ -34,7 +34,7 @@ flanneld_startable() {
 
 flanneld_id() {
   sid=$($(_docker early) ps 2>/dev/null | _docker_get_id_by_image_name "quay.io/coreos/flannel")
-  [[ "$sid" ]] && $(_docker early) inspect --format '{{ .Id }}' $sid
+  [[ "$sid" ]] && $(_docker early) inspect --format '{{ .Id }}' $sid 2>/dev/null
 }
 
 _flanneld_write_dropin() {
