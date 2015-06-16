@@ -262,8 +262,8 @@ _serf_query_json_values() {
 }
 
 _serf_diff_tags() {
-  local g1="$1"
-  local g2="$2"
+  local g1="$(echo $1 | xargs)"
+  local g2="$(echo $2 | xargs)"
   local tags=""
   for tag in $g1; do
     [[ "$(echo " $g2 "   | grep " $tag ")" ]] && continue
