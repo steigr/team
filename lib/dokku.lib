@@ -92,6 +92,12 @@ dokku_() {
   $(_docker) exec -ti $(dokku_id) /bin/bash -l $arg $*
 }
 
+dokku_kill() {
+  id=$(dokku_id)
+  $(_docker) kill $id
+  $(_docker) rm $id 2>/dev/null
+}
+
 _dokku_image_present() {
   docker images | grep ^dokku >/dev/null 2>/dev/null
 }
