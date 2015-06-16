@@ -48,6 +48,7 @@ EO_ROUTER_UNIT
 }
 
 _router_config_file() {
+  rm -rf "/run/router/$1.json"
   _volatile_file router $1.json
 }
 
