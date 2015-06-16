@@ -108,8 +108,8 @@ serf_check() {
   _serf_check "zookeeper id"      zookeeper 
   _serf_check "registry id"       registry
   _serf_check "dokku id"          dokku
-  _serf_emit-update "$pre_tags" "$(serf_tags)"
   rm /run/serf-check.lock
+  _serf_emit-update $(_serf_diff_tags "$pre_tags" "$(serf_tags)" )
 }
 
 serf_cluster() {
@@ -142,10 +142,8 @@ serf_pid() {
 
 _serf_emit-update() {
   for tag in $1; do
-    if [[ "$(echo "$2" | grep $tag 2>/dev/null)" ]]; then
-      echo "Emit ${tag}-update"
-      serf_event ${tag}-update
-    fi
+    echo "Emit ${tag}-update"
+    serf_event ${tag}-update
   done
 }
 
@@ -261,4 +259,15 @@ _serf_query_json_values() {
 
 _serf_query_json_values() {
   _jq '.Responses | to_entries | .[0].value' | xargs echo -e | head -1 | grep -v "^null$"
+}
+
+_serf_diff_tags() {
+  tags=""
+  for tag in $1; do
+    [[ -z "$(echo $2 | grep $tag)" ]]; then tags="$tags $tag"
+  done
+  for tag in $2; do
+    [[ -z "$(echo $1 | grep $tag)" ]]; then tags="$tags $tag"
+  done
+  echo $tags
 }
