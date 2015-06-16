@@ -1,0 +1,3 @@
+path_update() {
+  echo 'export PATH=$PATH:/opt/bin' >> /etc/profile.env
+}

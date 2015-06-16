@@ -4,7 +4,7 @@
 require serf
 
 serf_event_is member-join          && serf_check
+serf_event_is member-update        && serf_check
 
 serf_event_is query elected-master && serf_get elected-master
 serf_event_is user  elected-master && serf_set elected-master
-serf_event_is user  update-tags    && serf_check

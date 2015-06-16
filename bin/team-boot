@@ -5,6 +5,7 @@ MODULE=boot
 require $MODULE
 
 #_boot journald   update
+_boot path       update
 _boot jq         install
 _boot ssh        update
 _boot ssh        stop
