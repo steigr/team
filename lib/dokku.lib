@@ -97,7 +97,7 @@ dokku_kill() {
   fi
 }
 
-dokku_statable() {
+dokku_startable() {
   [[ $(serf_count-nodes -tag zookeeper=true) -ge 1 ]] && true || false
 }
 
