@@ -180,7 +180,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
  && mkdir /app /root/.ssh \
  && ln -s /app/Procfile /app/.release
-ENTRYPOINT ["$(_dokku_entrypoint_file)"]
+ENTRYPOINT ["/$(_dokku_entrypoint_file)"]
 ADD files /
 EO_DOKKU_IMAGE_Dockerfile
     ;;
