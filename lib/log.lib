@@ -12,5 +12,5 @@ _log() {
 }
 
 _logpipe() {
-  systemd-cat -t team
+  systemd-cat -t ${1:-team}
 }
