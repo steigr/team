@@ -22,12 +22,12 @@ etcd_stop() {
 }
 
 etcd_local-token() {
-  echo "$(_etcd_token_var)$(_etcd_local_token)"
+  serf_get etcd-token
 }
 
 etcd_create-token() {
   token=$(curl -fS "https://discovery.etcd.io/new?size=1")
-  _etcd_write_token $token
+  echo $token | serf_set etcd-token
   echo $token
 }
 
@@ -129,6 +129,7 @@ etcd_startable() {
 etcd_pid() {
   pidof etcd2
 }
+
 _etcd_add-member() {
   etcdctl member add $1 $2
 }
