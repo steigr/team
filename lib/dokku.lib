@@ -7,7 +7,7 @@ require zookeeper
 require ssh
 
 dokku_update() {
-  _dokku_image_present || _dokku_build_image
+  _dokku_build_image
   dokku_stop
   dokku_install
 }
