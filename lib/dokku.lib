@@ -140,12 +140,12 @@ _dokku_build_base_image() {
   if [[ -z "$($(_docker) images 2>/dev/null | grep "^dokku-base ")" ]]; then
     temp_dir=$(_dokku_image_build_dir)
     docker build -t $(_dokku_image_name)-base $temp_dir
-    docker tag -f $(_dokku_image_name)-base $(_dokku_image_name)
     rm -r $temp_dir
   fi
 }
 
 _dokku_build_runtime_image() {
+  docker tag -f $(_dokku_image_name)-base $(_dokku_image_name)
   set -x
   set -e
   _dokku_bootstrap_commands | while read cmd; do
