@@ -246,7 +246,7 @@ EO_DOKKU_IMAGE_files_start
     ;;
     files/app/Procfile)
       cat <<EO_DOKKU_IMAGE_files_app_Procfile | tee $target >/dev/null
-ssh: /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config
+ssh: while : ; do /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config; done
 nerve: nerve -c /etc/nerve/nerve.json
 EO_DOKKU_IMAGE_files_app_Procfile
     ;;
