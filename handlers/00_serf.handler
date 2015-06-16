@@ -7,7 +7,7 @@ serf_event_is member-join          && serf_event serf-check &>/dev/null &
 serf_event_is member-update        && serf_event serf-check &>/dev/null &
 serf_event_is member-leave         && serf_event serf-check &>/dev/null &
 
-serf_event_is user  serf_check     && serf-check
+serf_event_is user  serf-check     && serf_check
 
 serf_event_is query elected-master && serf_get elected-master
 serf_event_is user  elected-master && serf_set elected-master
