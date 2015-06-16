@@ -91,6 +91,7 @@ dokku_logs() {
 dokku_() {
   $(_docker) exec -ti $(dokku_id) /bin/bash -l $arg $*
 }
+
 _dokku_image_present() {
   docker images | grep ^dokku >/dev/null 2>/dev/null
 }
@@ -309,7 +310,6 @@ Restart=always
 ExecStartPre=-$(_team) dokku rm
 ExecStartPre=$(_team) dokku env
 ExecStart=$(_team) dokku run
-ExecStop=$(_team) dokku halt
 EO_DOKKU_UNIT
 }
 
