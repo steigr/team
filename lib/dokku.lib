@@ -5,6 +5,7 @@ require docker
 require random
 require zookeeper
 require ssh
+require config
 
 dokku_update() {
   _dokku_build_image
@@ -98,7 +99,9 @@ dokku_kill() {
 }
 
 dokku_startable() {
-  [[ $(serf_count-nodes -tag zookeeper=true) -ge 1 ]] && true || false
+  [[ $(serf_count-nodes -tag dokku=true) -lt $(_default dokku_max_instances) ]] || return false
+  [[ $(serf_count-nodes -tag zookeeper=true) -ge 1 ]] || return false
+  true
 }
 
 dokku_() {
