@@ -2,18 +2,34 @@
 
 . $TEAM_LIB/dependency.lib
 require team
+require random
 require serf-event
+require config
 
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 
 test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
-
+r=$(_random 16)
+f=$(_volatile_file serf-event/$r $SERF_EVENT)
+echo 0 > $f
+d=$(dirname $f)
 serf_event_handlers | while read handler; do
   if [[ "$SERF_EVENT" = "user" ]]; then
     echo $PAYLOAD | /bin/bash -i $handler $* &>/dev/null &
   else
-    /bin/bash -i $handler $* 2>/dev/null &
+    ( $((( $(cat $f) + 1 ))) > $f; /bin/bash -i $handler $* 2>/dev/null >$d/$(basename $handler); $((( $(cat $f) - 1 ))) > $f )&
   fi
 done
+
+if [[ "$SERF_EVENT" = "user" ]]; then
+  while : ; do
+    [[ "$(cat $f)" = "0" ]] && break
+    sleep 0.05
+  done
+  rm $f
+  cat $d/*
+  rm -r $d
+fi
+
 
 exit 0
