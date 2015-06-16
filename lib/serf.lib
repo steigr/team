@@ -274,7 +274,7 @@ _serf_diff_tags() {
     tags="$tags $tag"
   done
   for tag in $g2; do
-    [[ "$(echo " $g2 "  | grep " $tag ")" ]] && continue
+    [[ "$(echo " $g1 "  | grep " $tag ")" ]] && continue
     [[ "$(echo " $tags " | grep " $tag ")" ]] && continue
     tags="$tags $tag"
   done
