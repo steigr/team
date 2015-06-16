@@ -6,6 +6,7 @@ require etcd
 
 serf_event_is query etcd-token           && serf_get etcd-token
 serf_event_is user  etcd-token           && serf_set etcd-token
+serf_event_is user  serf-update          && etcd_install
 
 serf_event_is member-join                && etcd_cluster-resize
 serf_event_is member-leave               && etcd_cluster-resize

@@ -9,6 +9,7 @@ etcd_update() {
 }
 
 etcd_install() {
+  etcd_startable || exit 1
   _etcd_write_unit_dropin
   etcd_start
 }
