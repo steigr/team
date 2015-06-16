@@ -84,8 +84,8 @@ dokku_running() {
   [[ "$(dokku_id 2>/dev/null)" ]] && true || false
 }
 
-dokku_shell() {
-  $(_docker) exec -ti $(dokku_id) /bin/bash -l
+dokku_() {
+  $(_docker) exec -ti $(dokku_id) /bin/bash -l $arg $*
 }
 _dokku_image_present() {
   docker images | grep ^dokku >/dev/null 2>/dev/null
