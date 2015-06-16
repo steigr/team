@@ -93,6 +93,8 @@ serf_timeout() {
 }
 
 serf_check() {
+  test -f /run/serf-check.lock && exit 0
+  touch /run/serf-check.lock
   pre_tags=$(serf_tags)
   _serf_check "serf pid"          serf
   _serf_check "etcd pid"          etcd
@@ -107,6 +109,7 @@ serf_check() {
   _serf_check "registry id"       registry
   _serf_check "dokku id"          dokku
   _serf_emit-update "$pre_tags" "$(serf_tags)"
+  rm /run/serf-check.lock
 }
 
 serf_cluster() {
