@@ -8,5 +8,9 @@ _log() {
       level=debug
     ;;
   esac
-  echo "[$level] $*" | systemd-cat -t team
+  echo "[$level] $*" | _logpipe
+}
+
+_logpipe() {
+  systemd-cat -t team
 }

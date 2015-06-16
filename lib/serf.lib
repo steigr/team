@@ -6,6 +6,7 @@ require network
 require jq
 require docker
 require config
+require log
 
 serf_version() {
   version=$(_serf_bin_version)
@@ -144,7 +145,8 @@ serf_pid() {
 
 _serf_emit-update() {
   for tag in $1; do
-    serf_event ${tag}-update
+    _log "Adding $tag to serf"
+    serf_event ${tag}-update | _logpipe
   done
 }
 
