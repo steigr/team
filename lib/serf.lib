@@ -266,10 +266,10 @@ _serf_diff_tags() {
   g2="$2"
   tags=""
   for tag in $(echo $g1); do
-    [[ -z "$(echo $2 | grep $tag)" ]] && tags="$tags $tag"
+    [[ -z "$(echo $g2 | grep $tag)" ]] && tags="$tags $tag"
   done
   for tag in $(echo $g2); do
-    [[ -z "$(echo $1 | grep $tag)" ]] && tags="$tags $tag"
+    [[ -z "$(echo $g1 | grep $tag)" ]] && tags="$tags $tag"
   done
   echo $tags
 }
