@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. $TEAM_LIB/serf-event.lib
+require serf
+require router
+
+serf_event_is event start-router && router_start $(cat)

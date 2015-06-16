@@ -17,4 +17,3 @@ _boot router     install
 _boot interlock  install
 _boot zookeeper  install
 _boot dokku      update
-_boot router     start dokku

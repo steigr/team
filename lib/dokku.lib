@@ -19,6 +19,7 @@ dokku_install() {
 
 dokku_start() {
   _coreos_start dokku
+  serf_event start-router dokku
 }
 
 dokku_stop() {
