@@ -132,11 +132,19 @@ _dokku_docker_command() {
 }
 
 _dokku_build_image() {
-  set -x
-  set -e
+  _dokku_build_base_image
+  _dokku_build_runtime_image
+}
+
+_dokku_build_base_image() {
   temp_dir=$(_dokku_image_build_dir)
   docker build -t $(_dokku_image_name) $temp_dir
-  rm -r $temp_dir
+  rm -r $temp_dir 
+}
+
+_dokku_build_runtime_image() {
+  set -x
+  set -e
   _dokku_bootstrap_commands | while read cmd; do
     name=$(_random 8)
     $(_dokku_docker_command -t --name=$name --entrypoint=/bin/sh -v $(_dokku_home):$(_dokku_home)_host) -c "$cmd"
