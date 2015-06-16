@@ -4,4 +4,4 @@
 require serf
 require router
 
-serf_event_is event start-router && router_start $(cat)
+serf_event_is user  start-router && router_start $(cat)
