@@ -163,6 +163,7 @@ _etcd_write_unit_dropin() {
   dropin_file=$(_etcd_unit_dropin_file)
   mkdir -p $(dirname $dropin_file)
   _coreos_write_unit $dropin_file <<EO_ETCD_UNIT_DROPIN
+
 [Service]
 Environment="ETCD_NAME=$(_etcd_nodename)"
 Environment="ETCD_DISCOVERY=$(_etcd_token)"
@@ -170,6 +171,7 @@ Environment="ETCD_ADVERTISE_CLIENT_URLS=http://$(private_ipv4_address):2379"
 Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$(private_ipv4_address):2380"
 Environment="ETCD_LISTEN_CLIENT_URLS=$(etcd_peer-url),http://127.0.0.1:2379,http://$(private_ipv4_address):4001,http://127.0.0.1:4001"
 Environment="ETCD_LISTEN_PEERS_URLS=http://$(private_ipv4_address):2380,http://127.0.0.1:2380,http://127.0.0.1:7001"
+ExecStartPre=$(_team) serf event serf-check
 EO_ETCD_UNIT_DROPIN
 }
 
