@@ -39,6 +39,10 @@ docker_bound() {
   esac 
 }
 
+docker_tcp-socket() {
+  coreos_unit_enabled docker-tcp.socket && echo $(docker_tcp-port)
+}
+
 docker_bind() {
   case "$1" in
     tcp)
