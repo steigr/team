@@ -15,7 +15,7 @@ require registry
 require dokku
 require router
 
-serf_event_is user serf-update          && etcd_installs
+serf_event_is user serf-update          && etcd_install
 serf_event_is user etcd-update          && flanneld_install
 serf_event_is user flanneld-update      && docker_update
 serf_event_is user flanneld-update      && ssh_start
