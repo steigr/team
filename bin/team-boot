@@ -10,11 +10,11 @@ _boot ssh        update
 _boot ssh        stop
 _boot docker     update
 _boot serf       install
-_boot etcd       install
-_boot flanneld   install
-_boot ssh        start
-_boot bee        install
-_boot swarm      install
-_boot router     install
-_boot interlock  install
-_boot zookeeper  install
+# _boot etcd       install
+# _boot flanneld   install
+# _boot ssh        start
+# _boot bee        install
+# _boot swarm      install
+# _boot router     install
+# _boot interlock  install
+# _boot zookeeper  install
