@@ -146,11 +146,10 @@ _dokku_build_image() {
 }
 
 _dokku_build_base_image() {
-  if [[ -z "$($(_docker) images 2>/dev/null | grep "^dokku-base ")" ]]; then
-    temp_dir=$(_dokku_image_build_dir)
-    docker build -t $(_dokku_image_name) $temp_dir
-    rm -r $temp_dir
-  fi
+  [[ "$($(_docker) images 2>/dev/null | grep "^dokku ")" ]] && [[ "x$1" = "x" ]] && return
+  temp_dir=$(_dokku_image_build_dir)
+  docker build -t $(_dokku_image_name) $temp_dir
+  rm -r $temp_dir
 }
 
 _dokku_build_runtime_image() {
@@ -248,7 +247,7 @@ EO_DOKKU_IMAGE_files_start
     ;;
     files/app/Procfile)
       cat <<EO_DOKKU_IMAGE_files_app_Procfile | tee $target >/dev/null
-ssh: /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+ssh: /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config
 nerve: nerve -c /etc/nerve/nerve.json
 EO_DOKKU_IMAGE_files_app_Procfile
     ;;
