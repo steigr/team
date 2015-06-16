@@ -289,10 +289,10 @@ DOKKU_BRANCH=master bash bootstrap.sh || true
 cat $(_dokku_home)/.ssh/authorized_keys
 groupmod -g $(stat -c %g /run/docker.sock) docker
 rsync -arv $(_dokku_home)/ $(_dokku_home)_host
-rm /root/dokku_id.pub bootstrap.sh || true
-rm -rf /root/dokku || true
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
+# rm /root/dokku_id.pub bootstrap.sh || true
+# rm -rf /root/dokku /tmp/* || true
 
 _dokku_unit_write() {
   _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
