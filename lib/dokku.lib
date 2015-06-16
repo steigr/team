@@ -4,6 +4,7 @@ require serf
 require docker
 require random
 require zookeeper
+require ssh
 
 dokku_update() {
   _dokku_image_present || _dokku_build_image
@@ -29,7 +30,7 @@ dokku_env() {
 }
 
 dokku_run() {
-  $(_docker) run --rm --env-file=$(_dokku_env_file) -v $(_dokku_authorized_keys):$(_dokku_authorized_keys) -v $(_dokku_docker_socket):$(_dokku_docker_socket) -v $(_dokku_home):$(_dokku_home) $(_dokku_image_name) /start
+  $(_docker) run --rm --env-file=$(_dokku_env_file) -v $(_dokku_docker_socket):$(_dokku_docker_socket) -v $(_dokku_home):$(_dokku_home) $(_dokku_image_name) /start
 }
 
 dokku_ip() {
@@ -267,7 +268,8 @@ EO_DOKKU_IMAGE_files_bin_nerve_config
       cat <<'EO_DOKKU_IMAGE_files_bin_prepare_sshd' | tee $target >/dev/null]
 #!/bin/bash
 mkdir -p /root/.ssh /var/run/sshd 2>/dev/null >/dev/null || true
-[[ -f /root/.ssh/authorized_keys ]] || head -1 /home/dokku/.ssh/authorized_keys | awk -F' ssh-' '{ print "ssh-" $2  } >> /root/.ssh/authorized_keys
+touch /root/.ssh/authorized_keys
+grep "$DOKKU_ROOT_KEY" /root/.ssh/authorized_keys >/dev/null || echo "$DOKKU_ROOT_KEY" >> /root/.ssh/authorized_keys
 EO_DOKKU_IMAGE_files_bin_prepare_sshd
       chmod +x $target
     ;;
@@ -317,6 +319,7 @@ _dokku_env() {
   cat <<EO_DOKKU_ENV > $env_file
 ZK_HOST=$(zookeeper_ip)
 ZK_PATH=$(_dokku_nerve_ssh_path)
+DOKKU_ROOT_KEY=$(ssh_authorized-keys | head -1)
 EO_DOKKU_ENV
 }
 

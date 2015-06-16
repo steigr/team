@@ -34,6 +34,10 @@ ssh_clean() {
   _coreos_remove_unit $(_coreos_unit socket sshd)
 }
 
+ssh_authorized-keys() {
+  cat "/home/core/.ssh/authorized_keys"
+}
+
 _ssh_write_unit() {
   _coreos_write_unit $(coreos_unit socket sshd) <<EO_SSH_SOCKET_UNIT
 [Socket]
