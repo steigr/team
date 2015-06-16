@@ -7,10 +7,12 @@ require $MODULE
 #_boot journald   update
 _boot jq         install
 _boot ssh        update
+_boot ssh        stop
 _boot docker     update
 _boot serf       install
 _boot etcd       install
 _boot flanneld   install
+_boot ssh        start
 _boot bee        install
 _boot swarm      install
 _boot router     install
