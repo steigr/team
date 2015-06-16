@@ -204,7 +204,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && apt-get autoremove -y \
  && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates ruby ruby-dev devscripts haproxy -y \
  && apt-get clean \
- && gem install nerve foreman --no-ri --no-rdoc \
+ && gem install nerve --no-ri --no-rdoc \
  && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
  && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
  && echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
@@ -222,33 +222,10 @@ EO_DOKKU_IMAGE_Dockerfile
 
 /bin/nerve-config
 /bin/prepare-sshd
-
-export HOME=/app
-cd /app
-
-case "$(basename $0)" in
-  start)
-    command="foreman start --procfile=Procfile $@"
-    ;;
-  *)
-    command="$@"
-    ;;
-esac
-
-if test -z "$command"; then
-  echo "Missing command ($@)"
-  exit 1
-fi
-
-exec $(eval echo ${command})
+nerve -c /etc/nerve/nerve.json&
+/usr/sbin/sshd -e -f /etc/ssh/sshd_config
 EO_DOKKU_IMAGE_files_start
       chmod +x $target
-    ;;
-    files/app/Procfile)
-      cat <<EO_DOKKU_IMAGE_files_app_Procfile | tee $target >/dev/null
-ssh: while : ; do /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config; done
-nerve: nerve -c /etc/nerve/nerve.json
-EO_DOKKU_IMAGE_files_app_Procfile
     ;;
     files/bin/default-ip)
       cat <<'EO_DOKKU_IMAGE_files_bin_default_ip' | tee $target >/dev/null
