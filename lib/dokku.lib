@@ -188,13 +188,17 @@ rm -rf /root/dokku /tmp/* || true
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
+_dokku_base_image() {
+  [[ -z "$($(_docker) images | grep "^dokku " 2>/dev/null)" ]] && echo "ubuntu:latest" || echo "dokku"
+}
+
 _dokku_image_write_file() {
   target="$1/$2"
   mkdir -p "$(dirname $target)"
   case "$2" in
     Dockerfile)
       cat <<EO_DOKKU_IMAGE_Dockerfile | tee $target >/dev/null
-FROM ubuntu:latest
+FROM $(_dokku_base_image)
 MAINTAINER Mathias Kaufmann <me@stei.gr>
 RUN export DEBIAN_FRONTEND=noninteractive \
  && ping -c1 de.archive.ubuntu.com \
