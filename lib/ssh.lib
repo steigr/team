@@ -35,7 +35,7 @@ ssh_clean() {
 }
 
 ssh_authorized-keys() {
-  cat "/home/core/.ssh/authorized_keys"
+  cat "/home/core/.ssh/authorized_keys | grep -v -e '^#' -e '^$'"
 }
 
 _ssh_write_unit() {
