@@ -113,6 +113,7 @@ serf_check() {
   _serf_check "dokku id"          dokku
   rm /run/serf-check.lock
   updateable_tags=$(_serf_diff_tags "$pre_tags" "$(serf_tags)" )
+  [[ "$(echo $updateable_tags | grep serf)" ]] && [[ -z "$(echo $updateable_tags | grep etcd)" ]] && _serf_emit-update serf
   _serf_emit-update $updateable_tags
 }
 
