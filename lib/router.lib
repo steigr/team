@@ -10,7 +10,7 @@ router_install() {
 
 router_start() {
   _router_config_write $1
-  $(_docker) run --rm -l $(router_label $1) -v $(_router_config_file $1):/etc/synapse/synapse.json $(_router_binding $1) $(_router_image)
+  $(_docker) run --rm -l $(router_label $1) -v $(_router_config_dir $1):/etc/synapse $(_router_binding $1) $(_router_image)
 }
 
 router_stop() {
@@ -48,8 +48,11 @@ EO_ROUTER_UNIT
 }
 
 _router_config_file() {
-  rm -rf "/run/router/$1.json"
-  _volatile_file router $1.json
+  _volatile_file router/$1 synapse.json
+}
+
+_router_config_dir() {
+  $(dirname $(_router_config_file $1))
 }
 
 _router_unit_present() {
