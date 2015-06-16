@@ -12,6 +12,7 @@ require log
 _log debug "Handling $SERF_EVENT  evt: $SERF_USER_EVENT, qry: $SERF_QUERY_NAME, pyl: $PAYLOAD"
 
 serf_event_handlers | while read handler; do
+  _log info "running $handler"
   echo $PAYLOAD | /bin/bash -i $handler $*
 done
 
