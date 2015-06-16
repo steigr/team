@@ -3,7 +3,7 @@
 . $TEAM_LIB/dependency.lib
 require team
 
-for module in ssh docker serf bee swarm flanneld etcd interlock registry zookeeper dokku router; do
+for module in journald ssh docker serf bee swarm flanneld etcd interlock registry zookeeper dokku router; do
   echo -n "Shutdown $module ... "
   $TEAM $module clean 2>/dev/null && echo "ok" || echo "failed"
 done

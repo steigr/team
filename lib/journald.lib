@@ -24,7 +24,7 @@ journald_stop() {
 }
 
 journald_clean() {
-
+  _coreos_remove_unit $(_journald_dropin_file)
 }
 
 _journald_write_dropin() {
