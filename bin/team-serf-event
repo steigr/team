@@ -11,22 +11,21 @@ require config
 test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
 r=$(_random 16)
 f=$(_volatile_file serf-event/$r $SERF_EVENT)
-echo 0 > $f
 d=$(dirname $f)
+rm $f
 serf_event_handlers | while read handler; do
   if [[ "$SERF_EVENT" = "user" ]]; then
     echo $PAYLOAD | /bin/bash -i $handler $* &>/dev/null &
   else
-    ( echo $((( $(cat $f) + 1 ))) > $f; /bin/bash -i $handler $* 2>/dev/null >$d/$(basename $handler); echo $((( $(cat $f) - 1 ))) > $f )&
+    /bin/bash -i $handler $* 2>/dev/null >$d/$(basename $handler)&
   fi
 done
 
 if [[ "$SERF_EVENT" = "query" ]]; then
   while : ; do
-    [[ "$(cat $f)" = "0" ]] && break
-    sleep 0.05
+    [[ "$(jobs | wc -l)" ]] && break
+    sleep 0.1
   done
-  rm $f
   cat $d/*
   rm -r $d
 fi
