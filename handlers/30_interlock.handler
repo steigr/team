@@ -1,6 +1,0 @@
-#!/bin/bash
-
-. $TEAM_LIB/serf-event.lib
-require interlock
-
-serf_event_is user interlock-update && interlock_update

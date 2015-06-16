@@ -6,5 +6,3 @@ require registry
 
 serf_event_is query registry-ip && serf_get registry-ip
 serf_event_is user  registry-ip && serf_set registry-ip
-
-serf_event_is query registry-run && registry_install
