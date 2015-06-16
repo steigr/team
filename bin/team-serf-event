@@ -21,7 +21,7 @@ serf_event_handlers | while read handler; do
   fi
 done
 
-if [[ "$SERF_EVENT" = "user" ]]; then
+if [[ "$SERF_EVENT" = "query" ]]; then
   while : ; do
     [[ "$(cat $f)" = "0" ]] && break
     sleep 0.05
