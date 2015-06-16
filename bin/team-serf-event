@@ -12,7 +12,6 @@ test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
 r=$(_random 16)
 f=$(_volatile_file serf-event/$r $SERF_EVENT)
 d=$(dirname $f)
-rm $f
 serf_event_handlers | while read handler; do
   if [[ "$SERF_EVENT" = "user" ]]; then
     echo $PAYLOAD | /bin/bash -i $handler $* &>/dev/null &
