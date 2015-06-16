@@ -266,12 +266,14 @@ _serf_diff_tags() {
   g2="$2"
   tags=""
   for tag in $g1; do
-    echo "Checking $tag"
-    [[ -z "$(echo $g2 | grep " $tag ")" ]] && tags="$tags $tag"
+    [[ "$(echo $g2 | grep " $tag ")" ]] && continue
+    [[ "$(echo $tags | grep " $tag ")" ]] && continue
+    tags="$tags $tag"
   done
   for tag in $g2; do
-    echo "Checking $tag"
-    [[ -z "$(echo $g1 | grep " $tag ")" ]] && tags="$tags $tag"
+    [[ "$(echo $g1 | grep " $tag ")" ]] && continue
+    [[ "$(echo $tags | grep " $tag ")" ]] && continue
+    tags="$tags $tag"
   done
-  echo $tags | sort | uniq
+  echo $tags
 }
