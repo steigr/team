@@ -3,6 +3,7 @@ require coreos
 require zookeeper
 require network
 require jq
+require ssh
 
 router_install() {
   _router_unit
@@ -80,6 +81,7 @@ _router_exposed_ports() {
 _router_config_write() {
   service_path=$($(_team) $1 service-path)
   frontend_port=$($(_team) $1 frontend-port)
+  [[ "$frontend_port" = "22" ]] && _ssh_cleanup_port_22 
   zookeeper_ip=$(zookeeper_ip)
   zookeeper_port=$(zookeeper_port)
   # if $(_team) $1 running; then
