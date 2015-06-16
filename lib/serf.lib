@@ -93,12 +93,17 @@ serf_timeout() {
 
 serf_check() {
   pre_tags=$(serf_tags)
+  _serf_check "serf pid"          serf &
+  _serf_check "etcd pid"          etcd &
+  _serf_check "etcd local-token"  etcd-token &
+  _serf_check "flanneld id"       flanneld &
+  _serf_check "swarm id"          swarm & 
   _serf_check "swarm local-token" swarm-token &
-  _serf_check "swarm id" swarm &
-  _serf_check "interlock id" interlock &
-  _serf_check "zookeeper id" zookeeper & 
-  _serf_check "registry id" registry &
-  _serf_check "dokku id" dokku &
+  _serf_check "bee id"            bee & 
+  _serf_check "interlock id"      interlock &
+  _serf_check "zookeeper id"      zookeeper & 
+  _serf_check "registry id"       registry &
+  _serf_check "dokku id"          dokku &
   _serf_emit-update $pre_tags $(serf_tags)
 }
 
@@ -124,6 +129,10 @@ serf_has-tag() {
 
 serf_startable() {
   true
+}
+
+serf_pid() {
+  pidof serf
 }
 
 _serf_emit-update() {

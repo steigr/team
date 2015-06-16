@@ -98,5 +98,11 @@ _docker_ip() {
 }
 
 _docker() {
-  which docker
+  r=$(which docker)
+  [[ "$1" ]] && r="DOCKER_HOST=unix:///run/${1}-docker.sock $r"
+  echo $r
+}
+
+_docker_get_id_by_image_name() {
+  cat | awk '{print $1 " " $2 }' | grep $1 | awk '{print $1}'
 }

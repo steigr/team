@@ -37,6 +37,9 @@ bee_clean() {
   _coreos_remove_unit $(_coreos_unit bee)
 }
 
+bee_id() {
+  DOCKER_HOST=unix:///run/early-docker.sock docker inspect --format '{{ .Id }}' bee
+}
 _bee_write_unit() {
   _coreos_write_unit $(coreos_unit bee) <<EO_BEE_UNIT
 [Unit]

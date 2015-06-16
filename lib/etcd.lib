@@ -126,6 +126,9 @@ etcd_startable() {
   _startable etcd serf
 }
 
+etcd_pid() {
+  pidof etcd2
+}
 _etcd_add-member() {
   etcdctl member add $1 $2
 }
