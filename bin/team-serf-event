@@ -11,9 +11,9 @@ require config
 test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
 serf_event_handlers | while read handler; do
   if [[ "$SERF_EVENT" = "user" ]]; then
-    echo $PAYLOAD | /bin/bash -i $handler $* &>/dev/null &
+    echo $PAYLOAD | /bin/bash -i $handler $*
   else
-    /bin/bash -i $handler $* 2>/dev/null
+    /bin/bash -i $handler $*
   fi
 done
 
