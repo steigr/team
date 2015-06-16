@@ -2,9 +2,7 @@
 
 . $TEAM_LIB/dependency.lib
 require team
-require random
 require serf-event
-require config
 require log
 
 [[ -z "$SERF_EVENT" ]] && exit 0

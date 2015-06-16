@@ -8,10 +8,5 @@ _log() {
       level=debug
     ;;
   esac
-  echo "[$level] $*" > $(_logfile)
-}
-
-_logfile() {
-  mkdir -p /run/team 2>/dev/null || true
-  echo "/run/team/log"
+  echo "[$level] $*" | systemd-cat -t team
 }
