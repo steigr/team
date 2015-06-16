@@ -73,6 +73,10 @@ _coreos_start() {
   systemctl start $1
 }
 
+_coreos_restart() {
+  systemctl restart $1
+}
+
 _coreos_stop() {
   systemctl stop $1
 }

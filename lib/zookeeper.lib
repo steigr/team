@@ -39,6 +39,11 @@ zookeeper_local-ip() {
   _coreos_active docker && echo -n "$(_docker_ip $(zookeeper_id))"
 }
 
+zookeeper_prepare() {
+  $(_docker) pull $(_zookeeper_image)
+  zookeeper_config
+}
+
 zookeeper_config() {
   cat <<EO_ZOOKEEPER_CONFIG | tee $(_zookeeper_config_file) >/dev/null
 tickTime=2000
@@ -66,8 +71,7 @@ Requires=flanneld.service
 After=flanneld.service
 [Service]
 Restart=always
-ExecStartPre=$(_team) zookeeper config
-ExecStartPre=$(_docker) pull $(_zookeeper_image)
+ExecStartPre=$(_team) zookeeper prepare
 ExecStart=$(_docker) run --rm -v $(dirname $(_zookeeper_config_file)):/app/conf -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)
 EO_ZOOKEEPER_UNIT
 }

@@ -8,7 +8,11 @@ journald_update() {
 
 journald_install() {
   _journald_write_dropin
-  journald_start
+  journald_restart
+}
+
+journald_restart() {
+  _coreos_restart systemd-journald
 }
 
 journald_start() {
@@ -19,8 +23,12 @@ journald_stop() {
   _coreos_stop systemd-journald
 }
 
+journald_clean() {
+
+}
+
 _journald_write_dropin() {
-  mkdir -p $(dirname $(_journald_dropin_file))
+  mkdir -p $(dirname $(_journald_dropin_file)) 2>/dev/null
   _coreos_write_unit $(_journald_dropin_file) <<EO_JOURNALD_DROPIN
 [Journal]
 Storage=volatile
@@ -28,5 +36,5 @@ EO_JOURNALD_DROPIN
 }
 
 _journald_dropin_file() {
-  echo "/run/systemd/journald.conf.d/00-volatile.conf"
+  echo "/etc/systemd/journald.conf"
 }

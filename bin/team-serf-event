@@ -9,9 +9,11 @@ require serf-event
 test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
 
 serf_event_handlers | while read handler; do
-  test "x$SERF_EVENT" = "xuser" \
-  && echo $PAYLOAD | /bin/bash -i $handler $* 2>/dev/null \
-  || /bin/bash -i $handler $* 2>/dev/null 
+  if [[ "$SERF_EVENT" = "user" ]]; then
+    echo $PAYLOAD | /bin/bash -i $handler $* &>/dev/null &
+  else
+    /bin/bash -i $handler $* 2>/dev/null
+  fi
 done
 
 exit 0

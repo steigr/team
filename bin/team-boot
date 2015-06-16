@@ -4,9 +4,9 @@ MODULE=boot
 . $TEAM_LIB/dependency.lib
 require $MODULE
 
-#_boot journald   update
-_boot jq         install
-_boot ssh        update
-_boot ssh        stop
-_boot docker     update
-# _boot serf       install
+_boot journald install
+_boot jq       install
+_boot ssh      update
+_boot ssh      stop
+_boot docker   update
+_boot serf     install
