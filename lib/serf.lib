@@ -113,6 +113,7 @@ serf_check() {
   rm /run/serf-check.lock
   updateable_tags=$(_serf_diff_tags "$pre_tags" "$(serf_tags)" )
   _serf_emit-update $updateable_tags
+  serf_has-tag recheck && ( sleep 5; serf_event serf-check ) &>/dev/null &
 }
 
 serf_cluster() {
@@ -176,7 +177,8 @@ _serf_write_config() {
 {
   "discover":"$(serf_cluster)",
   "tags":{
-    "coreos":"true"
+    "coreos":"true",
+    "recheck":"true"
   },
   "node_name":"$(serf_node-name)",
   "snapshot_path":"$(_serf_snapshot_file)",
