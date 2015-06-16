@@ -84,6 +84,10 @@ dokku_running() {
   [[ "$(dokku_id 2>/dev/null)" ]] && true || false
 }
 
+dokku_logs() {
+  $(_docker) logs $(dokku_id) $*
+}
+
 dokku_() {
   $(_docker) exec -ti $(dokku_id) /bin/bash -l $arg $*
 }
