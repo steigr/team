@@ -9,4 +9,4 @@ _boot jq         install
 _boot ssh        update
 _boot ssh        stop
 _boot docker     update
-_boot serf       install
+# _boot serf       install
