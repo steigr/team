@@ -222,8 +222,8 @@ EO_DOKKU_IMAGE_Dockerfile
 
 /bin/nerve-config
 /bin/prepare-sshd
-nerve -c /etc/nerve/nerve.json&
-/usr/sbin/sshd -e -f /etc/ssh/sshd_config
+/usr/sbin/sshd -f /etc/ssh/sshd_config
+nerve -c /etc/nerve/nerve.json
 EO_DOKKU_IMAGE_files_start
       chmod +x $target
     ;;
