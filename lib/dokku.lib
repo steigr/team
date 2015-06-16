@@ -207,9 +207,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && apt-get autoremove -y \
  && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates ruby ruby-dev devscripts haproxy -y \
  && apt-get clean \
- && gem install nerve --no-ri --no-rdoc \
- && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
- && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
+ && ( test -x $(which nerve ) || gem install nerve --no-ri --no-rdoc ) \
+ && ( test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real ) \
+ && ( test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe ) \
  && echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
  && echo dokku dokku/web_config boolean false | debconf-set-selections \
  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
