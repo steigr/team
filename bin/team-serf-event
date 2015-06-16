@@ -9,25 +9,12 @@ require config
 [[ "x" = "x$SERF_EVENT" ]] && exit 0
 
 test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
-r=$(_random 16)
-f=$(_volatile_file serf-event/$r $SERF_EVENT)
-d=$(dirname $f)
 serf_event_handlers | while read handler; do
   if [[ "$SERF_EVENT" = "user" ]]; then
     echo $PAYLOAD | /bin/bash -i $handler $* &>/dev/null &
   else
-    /bin/bash -i $handler $* 2>/dev/null >$d/$(basename $handler)&
+    /bin/bash -i $handler $* 2>/dev/null
   fi
 done
-
-if [[ "$SERF_EVENT" = "query" ]]; then
-  while : ; do
-    [[ "$(jobs | wc -l)" ]] && break
-    sleep 0.1
-  done
-  cat $d/*
-  rm -r $d
-fi
-
 
 exit 0
