@@ -72,6 +72,7 @@ After=flanneld.service
 [Service]
 Restart=always
 ExecStartPre=$(_team) zookeeper prepare
+ExecStartPre=$(_team) serf event serf-check
 ExecStart=$(_docker) run --rm -v $(dirname $(_zookeeper_config_file)):/app/conf -v $(_zookeeper_data_dir):$(_zookeeper_data_dir) $(_zookeeper_image)
 EO_ZOOKEEPER_UNIT
 }

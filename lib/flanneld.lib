@@ -39,9 +39,10 @@ flanneld_id() {
 
 _flanneld_write_dropin() {
   mkdir -p $(dirname $(_flanneld_dropin_file)) >/dev/null
-  _coreos_write_unit $(_flanneld_dropin_file) << EO_FLANNELD_DROPIN
+  _coreos_write_unit $(_flanneld_dropin_file) <<EO_FLANNELD_DROPIN
 [Service]
 Environment="FLANNELD_INTERFACE=$(_flanneld_interface)"
+ExecStartPre=$(_team) serf event serf-check
 EO_FLANNELD_DROPIN
 }
 

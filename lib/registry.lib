@@ -84,6 +84,7 @@ After=flanneld.service
 Restart=always
 ExecStartPre=-$(_team) registry remove
 ExecStartPre=$(_team) registry env
+ExecStartPre=$(_team) serf event serf-check
 ExecStart=$(_docker) run --rm -P --env-file=$(_registry_env_file) -v $(_registry_store):$(_registry_store) --hostname=$(_registry_hostname) $(_registry_image)
 ExecStop=-$(_team) registry halt
 EO_REGISTRY_UNIT

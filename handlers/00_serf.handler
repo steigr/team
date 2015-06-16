@@ -3,9 +3,9 @@
 . $TEAM_LIB/serf-event.lib
 require serf
 
-serf_event_is member-join          && serf_event serf-check &>/dev/null &
-serf_event_is member-update        && serf_event serf-check &>/dev/null &
-serf_event_is member-leave         && serf_event serf-check &>/dev/null &
+serf_event_is member-join          && serf_event serf-check
+serf_event_is member-update        && serf_event serf-check
+serf_event_is member-leave         && serf_event serf-check
 
 serf_event_is user  serf-check     && serf_check
 

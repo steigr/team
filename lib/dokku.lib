@@ -301,6 +301,7 @@ After=flanneld.service
 Restart=always
 ExecStartPre=-$(_team) dokku kill
 ExecStartPre=$(_team) dokku env
+ExecStartPre=$(_team) serf event serf-check
 ExecStart=$(_team) dokku run
 EO_DOKKU_UNIT
 }

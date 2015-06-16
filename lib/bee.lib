@@ -52,6 +52,7 @@ After=early-docker.service
 Restart=always
 Environment=$(coreos_early_docker_env)
 ExecStartPre=-$(_docker) rm bee
+ExecStartPre=$(_team) serf event serf-check
 ExecStartPre=$(_team) bee environment $(_bee_environment_file)
 ExecStart=$(_docker) run --name=bee --env-file=$(_bee_environment_file) --net=host swarm join
 ExecStop=-$(_docker) stop bee

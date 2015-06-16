@@ -44,6 +44,7 @@ ExecStartPre=-$(_docker) rm $(_interlock_container_name)
 ExecStartPre=-/usr/bin/mkdir -p $(_interlock_ssl_dir)
 ExecStartPre=$(_team) interlock environment $(_interlock_environment_file)
 ExecStartPre=$(_team) ssl populate-interlock
+ExecStartPre=$(_team) serf event serf-check
 ExecStart=$(_team) interlock docker
 ExecStop=-$(_docker) stop $(_interlock_container_name)
 EO_INTERLOCK_UNIT

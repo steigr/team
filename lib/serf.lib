@@ -96,6 +96,7 @@ serf_timeout() {
 
 serf_check() {
   test -f /run/serf-check.lock && exit 0
+  sleep 5
   touch /run/serf-check.lock
   pre_tags=$(serf_tags)
   _serf_check "serf pid"          serf
@@ -113,7 +114,6 @@ serf_check() {
   rm /run/serf-check.lock
   updateable_tags=$(_serf_diff_tags "$pre_tags" "$(serf_tags)" )
   _serf_emit-update $updateable_tags
-  serf_has-tag recheck && ( sleep 5; serf_event serf-check ) &>/dev/null &
 }
 
 serf_cluster() {
@@ -146,8 +146,7 @@ serf_pid() {
 
 _serf_emit-update() {
   for tag in $1; do
-    echo "Adding $tag to serf" | _logpipe serf
-    serf_event ${tag}-update | _logpipe serf
+    serf_event ${tag}-update >/dev/null
   done
 }
 
@@ -177,8 +176,7 @@ _serf_write_config() {
 {
   "discover":"$(serf_cluster)",
   "tags":{
-    "coreos":"true",
-    "recheck":"true"
+    "coreos":"true"
   },
   "node_name":"$(serf_node-name)",
   "snapshot_path":"$(_serf_snapshot_file)",
