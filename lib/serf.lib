@@ -96,7 +96,7 @@ serf_check() {
   test -f /run/serf-check.lock && exit 0
   touch /run/serf-check.lock
   pre_tags=$(serf_tags)
-  _serf_check "serf pid"          serf
+  _serf_check "serf pid"          serf)
   _serf_check "etcd pid"          etcd
   _serf_check "etcd local-token"  etcd-token
   _serf_check "docker tcp-socket" docker
@@ -109,7 +109,8 @@ serf_check() {
   _serf_check "registry id"       registry
   _serf_check "dokku id"          dokku
   rm /run/serf-check.lock
-  _serf_emit-update $(_serf_diff_tags "$pre_tags" "$(serf_tags)" )
+  updateable_tags=$(_serf_diff_tags "$pre_tags" "$(serf_tags)" )
+  _serf_emit-update $updateable_tags
 }
 
 serf_cluster() {
