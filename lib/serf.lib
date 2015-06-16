@@ -263,10 +263,10 @@ _serf_query_json_values() {
 
 _serf_diff_tags() {
   tags=""
-  for tag in $1; do
+  for tag in $(echo $1); do
     [[ -z "$(echo $2 | grep $tag)" ]] && tags="$tags $tag"
   done
-  for tag in $2; do
+  for tag in $(echo $2); do
     [[ -z "$(echo $1 | grep $tag)" ]] && tags="$tags $tag"
   done
   echo $tags
