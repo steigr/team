@@ -38,7 +38,7 @@ bee_clean() {
 }
 
 bee_id() {
-  sid=$($(_docker early) ps 2>/dev/null | _docker_get_id_by_image_name "quay.io/coreos/flannel")
+  sid=$($(_docker early) ps 2>/dev/null | _docker_get_id_by_image_name "swarm")
   [[ "$sid" ]] && $(_docker early) inspect --format '{{ .Id }}' $sid 2>/dev/null
 }
 
