@@ -137,7 +137,7 @@ serf_pid() {
 
 _serf_emit-update() {
   for tag in $1; do
-    echo "$2" | grep $tag 2>/dev/null || serf_event ${tag}-update
+    [[ "$(echo "$2" | grep $tag 2>/dev/null)" ]] || serf_event ${tag}-update
   done
 }
 
