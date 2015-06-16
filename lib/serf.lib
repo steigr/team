@@ -5,6 +5,7 @@ require team
 require network
 require jq
 require docker
+require config
 
 serf_version() {
   version=$(_serf_bin_version)
@@ -89,7 +90,7 @@ serf_query() {
 }
 
 serf_timeout() {
-  echo "1s"
+  _defaults serf_query_timeout
 }
 
 serf_check() {
