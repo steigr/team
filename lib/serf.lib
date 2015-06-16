@@ -55,7 +55,7 @@ serf_nodes() {
 }
 
 serf_count-nodes() {
-  serf_nodes | grep -v "^$" | wc -l
+  serf_nodes $* | grep -v "^$" | wc -l
 }
 
 serf_tag() {

@@ -54,10 +54,6 @@ zookeeper_clean() {
   _coreos_remove_unit $(_coreos_unit zookeeper)
 }
 
-zookeeper_emit() {
-  serf_has-tag zookeeper && serf_event zooekeeper-update
-}
-
 _zookeeper_write_unit() {
   _coreos_write_unit $1 <<EO_ZOOKEEPER_UNIT
 [Unit]

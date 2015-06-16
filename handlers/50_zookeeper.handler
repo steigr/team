@@ -6,4 +6,3 @@ require zookeeper
 
 serf_event_is query zookeeper-ip && zookeeper_local-ip
 serf_event_is user  zookeeper-ip && serf_set zookeeper-ip
-serf_event_is member-update      && zookeeper_emit
