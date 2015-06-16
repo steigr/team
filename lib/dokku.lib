@@ -141,7 +141,6 @@ _dokku_build_image() {
 
 _dokku_image_build_dir() {
   temp_dir=$(mktemp -d /tmp/XXXXXX)
-  echo $temp_dir
   _dokku_image_write_file $temp_dir Dockerfile
   _dokku_image_write_file $temp_dir files/$(_dokku_entrypoint_file)
   _dokku_image_write_file $temp_dir files/app/Procfile
