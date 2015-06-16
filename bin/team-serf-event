@@ -5,16 +5,16 @@ require team
 require random
 require serf-event
 require config
+require log
 
-[[ "x" = "x$SERF_EVENT" ]] && exit 0
+[[ -z "$SERF_EVENT" ]] && exit 0
 
-test "x$SERF_EVENT" = "xuser" && PAYLOAD=$(cat)
+[[ "$SERF_EVENT" = "user" ]] && PAYLOAD=$(cat)
+
+_log debug "Handling $SERF_EVENT  evt: $SERF_USER_EVENT, qry: $SERF_QUERY_NAME, pyl: $PAYLOAD"
+
 serf_event_handlers | while read handler; do
-  if [[ "$SERF_EVENT" = "user" ]]; then
-    echo $PAYLOAD | /bin/bash -i $handler $*
-  else
-    /bin/bash -i $handler $*
-  fi
+  echo $PAYLOAD | /bin/bash -i $handler $*
 done
 
 exit 0
