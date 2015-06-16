@@ -67,6 +67,7 @@ registry_id() {
 }
 
 registry_clean() {
+  registry_stop
   _coreos_remove_unit $(_coreos_unit registry)
 }
 

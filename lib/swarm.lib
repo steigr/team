@@ -51,6 +51,7 @@ swarm_id() {
 }
 
 swarm_clean() {
+  swarm_stop
   _coreos_remove_unit $(_coreos_unit swarm)
 }
 

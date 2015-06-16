@@ -58,6 +58,7 @@ docker_tcp-port() {
 }
 
 docker_clean() {
+  docker_stop
   _coreos_socket disable docker-tcp
   _coreos_remove_unit $(_coreos_unit docker-tcp.socket)
 }
