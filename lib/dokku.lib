@@ -99,9 +99,9 @@ dokku_kill() {
 }
 
 dokku_startable() {
-  [[ $(serf_count-nodes -tag dokku=true) -lt $(_defaults dokku_max_instances) ]] || exit false
-  [[ $(serf_count-nodes -tag zookeeper=true) -ge 1 ]] || exit false
-  true
+  [[ $(serf_count-nodes -tag dokku=true) -lt $(_defaults dokku_max_instances) ]] || exit 1
+  [[ $(serf_count-nodes -tag zookeeper=true) -ge 1 ]] || exit 1
+  exit 0
 }
 
 dokku_() {
