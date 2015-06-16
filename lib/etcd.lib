@@ -122,6 +122,10 @@ etcd_master() {
   serf_nodes -tag etcd-master=true | grep -v "^$" | sort -n | head -1
 }
 
+etcd_startable() {
+  _startable etcd serf
+}
+
 _etcd_add-member() {
   etcdctl member add $1 $2
 }

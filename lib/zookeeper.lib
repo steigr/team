@@ -54,6 +54,10 @@ zookeeper_clean() {
   _coreos_remove_unit $(_coreos_unit zookeeper)
 }
 
+zookeeper_startable() {
+  _startable zookeeper flanneld
+}
+
 _zookeeper_write_unit() {
   _coreos_write_unit $1 <<EO_ZOOKEEPER_UNIT
 [Unit]

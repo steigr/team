@@ -27,6 +27,10 @@ flanneld_clean() {
   _coreos_remove_unit $(_flanneld_drocker_dropin)
 }
 
+flanneld_startable() {
+  _startable flanneld etcd
+}
+
 _flanneld_write_dropin() {
   mkdir -p $(dirname $(_flanneld_dropin_file)) >/dev/null
   _coreos_write_unit $(_flanneld_dropin_file) << EO_FLANNELD_DROPIN

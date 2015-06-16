@@ -16,8 +16,12 @@ _volatile_file() {
   echo $p
 }
 
+_startable_with-max-limit() {
+  [[ "$(_defaults $1_max_instances)" ]] && true || false
+}
+
 _startable() {
-  [[ $(serf_count-nodes -tag $1=true) -lt $(_defaults $1_max_instances) ]] || return 1 
+  _startable_with-max-limit && ( [[ $(serf_count-nodes -tag $1=true) -lt $(_defaults $1_max_instances) ]] || return 1 )
   [[ $(serf_count-nodes -tag $2=true) -ge 1 ]] || return 1
   return 0
 }

@@ -122,6 +122,10 @@ serf_has-tag() {
   [[ "$(serf_tags | grep $1 2>/dev/null)" ]] && true || false
 }
 
+serf_startable() {
+  true
+}
+
 _serf_emit-update() {
   for tag in $1; do
     echo $2 | grep $tag 2>/dev/null || serf_event ${tag}-update
