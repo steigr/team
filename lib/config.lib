@@ -1,7 +1,7 @@
 require serf
 
 _defaults() {
-  local serf_query_timeout="3s"
+  local serf_query_timeout="5s"
   local ssh_port="2220"
   local dokku_max_instances=3
   local zookeeper_max_instances=7
