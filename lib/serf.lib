@@ -97,7 +97,7 @@ serf_check() {
   _serf_check "serf pid"          serf
   _serf_check "etcd pid"          etcd
   _serf_check "etcd local-token"  etcd-token
-  _serf_check "docker bound tcp"  docker
+  _serf_check "docker tcp-socket" docker
   _serf_check "flanneld id"       flanneld
   _serf_check "swarm id"          swarm 
   _serf_check "swarm local-token" swarm-token

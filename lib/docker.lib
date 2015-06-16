@@ -1,5 +1,6 @@
 require team
 require coreos
+require network
 
 docker_update() {
   docker_stop
@@ -40,7 +41,7 @@ docker_bound() {
 }
 
 docker_tcp-socket() {
-  coreos_unit_enabled docker-tcp.socket && echo $(docker_tcp-port)
+  coreos_unit_enabled docker-tcp.socket && echo tcp://$(private_ipv4_address):$(docker_tcp-port)
 }
 
 docker_bind() {
