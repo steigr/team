@@ -273,5 +273,5 @@ _serf_diff_tags() {
     echo "Checking $tag"
     [[ -z "$(echo $g1 | grep " $tag ")" ]] && tags="$tags $tag"
   done
-  echo $tags
+  echo $tags | sort | uniq
 }
