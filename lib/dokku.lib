@@ -137,9 +137,12 @@ _dokku_build_image() {
 }
 
 _dokku_build_base_image() {
-  temp_dir=$(_dokku_image_build_dir)
-  docker build -t $(_dokku_image_name) $temp_dir
-  rm -r $temp_dir 
+  if [[ -z "$($(_docker) images | grep "^dokku-base ")" ]]; then
+    temp_dir=$(_dokku_image_build_dir)
+    docker build -t $(_dokku_image_name)-base $temp_dir
+    docker tag $(_dokku_image_name)-base $(_dokku_image_name)
+    rm -r $temp_dir
+  fi
 }
 
 _dokku_build_runtime_image() {
@@ -166,6 +169,20 @@ _dokku_image_build_dir() {
   echo $temp_dir
 }
 
+_dokku_bootstrap_commands() {
+  cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
+curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/master/bootstrap.sh
+sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh
+tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
+DOKKU_BRANCH=master bash bootstrap.sh || true
+cat $(_dokku_home)/.ssh/authorized_keys
+groupmod -g $(stat -c %g /run/docker.sock) docker
+rsync -arv $(_dokku_home)/ $(_dokku_home)_host
+EO_DOKKU_BOOTSTRAP_COMMANDS
+}
+# rm /root/dokku_id.pub bootstrap.sh || true
+# rm -rf /root/dokku /tmp/* || true
+
 _dokku_image_write_file() {
   target="$1/$2"
   mkdir -p "$(dirname $target)"
@@ -183,8 +200,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && apt-get install curl openssh-server openssh-client apt-transport-https ca-certificates ruby ruby-dev devscripts haproxy -y \
  && apt-get clean \
  && gem install nerve foreman --no-ri --no-rdoc \
- && curl -fLo bootstrap.sh https://raw.github.com/progrium/dokku/v0.3.18/bootstrap.sh \
- && sed -i -e 's:"linux-image-extra-\$(uname -r)"::' bootstrap.sh \
  && test -f /sbin/modprobe.real || mv /sbin/modprobe /sbin/modprobe.real \
  && test -f /sbin/modprobe      || ln /bin/true /sbin/modprobe \
  && echo dokku dokku/vhost_enable boolean false | debconf-set-selections \
@@ -192,9 +207,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && echo dokku dokku/hostname string dokku.me | debconf-set-selections \
  && echo dokku dokku/key_file string /root/dokku_id.pub | debconf-set-selections \
  && echo debconf debconf/frontend noninteractive | debconf-set-selections \
- && echo debconf debconf/frontend string noninteractive | debconf-set-selections \
- && mkdir /app /root/.ssh \
- && ln -s /app/Procfile /app/.release
+ && echo debconf debconf/frontend string noninteractive | debconf-set-selections
 ENTRYPOINT ["/$(_dokku_entrypoint_file)"]
 ADD files /
 EO_DOKKU_IMAGE_Dockerfile
@@ -202,17 +215,15 @@ EO_DOKKU_IMAGE_Dockerfile
     files/start)
       cat <<'EO_DOKKU_IMAGE_files_start' | tee $target >/dev/null
 #!/bin/bash
+
+/bin/nerve-config
+/bin/prepare-sshd
+
 export HOME=/app
 cd /app
 
-nerve-config
-prepare-sshd
-
 case "$(basename $0)" in
   start)
-    if test ! -f Procfile; then
-      ruby -e "require 'yaml';File.write('Procfile', (YAML.load_file('.release')['default_process_types'] || {}).to_yaml)"
-    fi
     command="foreman start --procfile=Procfile $@"
     ;;
   *)
@@ -289,18 +300,6 @@ EO_DOKKU_IMAGE_files_bin_prepare_sshd
     ;;
   esac
 }
-
-_dokku_bootstrap_commands() {
-  cat<<EO_DOKKU_BOOTSTRAP_COMMANDS
-tail -1 $(_dokku_authorized_keys) > /root/dokku_id.pub
-DOKKU_BRANCH=master bash bootstrap.sh || true
-cat $(_dokku_home)/.ssh/authorized_keys
-groupmod -g $(stat -c %g /run/docker.sock) docker
-rsync -arv $(_dokku_home)/ $(_dokku_home)_host
-EO_DOKKU_BOOTSTRAP_COMMANDS
-}
-# rm /root/dokku_id.pub bootstrap.sh || true
-# rm -rf /root/dokku /tmp/* || true
 
 _dokku_unit_write() {
   _coreos_write_unit $(coreos_unit dokku) <<EO_DOKKU_UNIT
