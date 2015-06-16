@@ -4,4 +4,5 @@
 require serf
 require dokku
 
-serf_event_is query dokku-ip && dokku_local-ip
+serf_event_is query dokku-ip     && dokku_local-ip
+serf_event_is user  zookeeper-up && dokku_install

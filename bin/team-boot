@@ -18,4 +18,3 @@ _boot swarm      install
 _boot router     install
 _boot interlock  install
 _boot zookeeper  install
-_boot dokku      update

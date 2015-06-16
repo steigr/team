@@ -92,12 +92,14 @@ serf_timeout() {
 }
 
 serf_check() {
+  pre_tags=$(serf_tags)
   _serf_check "swarm local-token" swarm-token &
   _serf_check "swarm id" swarm &
   _serf_check "interlock id" interlock &
   _serf_check "zookeeper id" zookeeper & 
   _serf_check "registry id" registry &
   _serf_check "dokku id" dokku &
+  _serf_emit-update $pre_tags $(serf_tags)
 }
 
 serf_cluster() {
@@ -114,6 +116,16 @@ serf_clean() {
 
 serf_tags() {
   $(_serf) info -format=json | _jq '.tags | to_entries | map(.key) | join ("\n")' | xargs echo -e
+}
+
+serf_has-tag() {
+  [[ "$(serf_tags | grep $1 2>/dev/null)" ]] && true || false
+}
+
+_serf_emit-update() {
+  for tag in $1; do
+    echo $2 | grep $tag 2>/dev/null || serf_event ${tag}-update
+  done
 }
 
 _serf_download() {
@@ -201,8 +213,11 @@ _serf_snapshot_file() {
 }
 
 _serf_check() {
-  result=$(/bin/sh -c "$(_team) $1" )
-  ( [[ "x" = "x$result" ]] && serf_untag $2 || serf_tag $2=true )>/dev/null 2>/dev/null
+  if [[ "$(/bin/sh -c "$(_team) $1" )" ]]; then
+    serf_has-tag $2 || serf_tag $2=true >/dev/null
+  else
+    serf_has-tag $2 && serf_untag $2 >/dev/null
+  fi
 }
 
 _serf_query_filter() {
