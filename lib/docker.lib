@@ -99,7 +99,7 @@ _docker_ip() {
 
 _docker() {
   r=$(which docker)
-  [[ "$1" ]] && r="DOCKER_HOST=unix:///run/${1}-docker.sock $r"
+  [[ "$1" ]] && r="$r -Hunix:///run/${1}-docker.sock"
   echo $r
 }
 
