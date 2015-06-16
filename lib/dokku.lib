@@ -168,7 +168,6 @@ _dokku_image_build_dir() {
   temp_dir=$(mktemp -d /tmp/XXXXXX)
   _dokku_image_write_file $temp_dir Dockerfile
   _dokku_image_write_file $temp_dir files/$(_dokku_entrypoint_file)
-  _dokku_image_write_file $temp_dir files/app/Procfile
   _dokku_image_write_file $temp_dir files/bin/default-ip
   _dokku_image_write_file $temp_dir files/bin/nerve-config
   _dokku_image_write_file $temp_dir files/bin/prepare-sshd
@@ -184,7 +183,7 @@ groupmod -g $(stat -c %g /run/docker.sock) docker
 tail -1 $(_dokku_authorized_keys) | sshcommand acl-add dokku team
 rsync -arv $(_dokku_home) $(_dokku_home)_host
 rm bootstrap.sh || true
-rm -rf /root/dokku /tmp/* || true
+rm -rf /root/dokku /tmp/* /app || true
 EO_DOKKU_BOOTSTRAP_COMMANDS
 }
 
