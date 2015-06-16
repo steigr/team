@@ -52,7 +52,7 @@ _router_config_file() {
 }
 
 _router_config_dir() {
-  $(dirname $(_router_config_file $1))
+  dirname $(_router_config_file $1)
 }
 
 _router_unit_present() {
