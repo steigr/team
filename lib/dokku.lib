@@ -94,8 +94,10 @@ dokku_() {
 
 dokku_kill() {
   id=$(dokku_id)
-  $(_docker) kill $id >/dev/null
-  $(_docker) rm $id 2>/dev/null >/dev/null
+  if [[ "$id" ]]; then
+    $(_docker) kill $id >/dev/null
+    $(_docker) rm $id 2>/dev/null >/dev/null
+  fi
 }
 
 _dokku_image_present() {
