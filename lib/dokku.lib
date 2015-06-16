@@ -85,7 +85,7 @@ dokku_running() {
 }
 
 dokku_logs() {
-  $(_docker) logs $(dokku_id) $*
+  $(_docker) logs $1 $(dokku_id)
 }
 
 dokku_() {
