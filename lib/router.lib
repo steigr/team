@@ -52,7 +52,7 @@ _router_config_file() {
 }
 
 _router_unit_present() {
-  systemctl cat router@ >dev/null 2>/dev/null
+  systemctl cat router@ >/dev/null 2>/dev/null
 }
 
 _router_image() {
