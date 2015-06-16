@@ -126,7 +126,7 @@ serf_tags() {
 }
 
 serf_has-tag() {
-  [[ "$(serf_tags | grep $1 2>/dev/null)" ]] && true || false
+  [[ "$(serf_tags | grep "$1=" 2>/dev/null)" ]] && true || false
 }
 
 serf_startable() {
