@@ -1,28 +1,28 @@
-# #!/bin/bash
+#!/bin/bash
 
-# . $TEAM_LIB/serf-event.lib
-# require serf
+. $TEAM_LIB/serf-event.lib
+require serf
 
-# require etcd
-# require flanneld
-# require docker
-# require ssh
-# require zookeeper
-# require bee
-# require swarm
-# require interlock
-# require registry
-# require dokku
-# require router
+require etcd
+require flanneld
+require docker
+require ssh
+require zookeeper
+require bee
+require swarm
+require interlock
+require registry
+require dokku
+require router
 
-# serf_event_is user serf-update          && etcd_installs
-# serf_event_is user etcd-update          && flanneld_install
-# serf_event_is user flanneld-update      && docker_update
-# serf_event_is user flanneld-update      && ssh_start
-# serf_event_is user docker-update        && zookeeper_install
-# serf_event_is user docker-update        && bee_install
-# serf_event_is user bee-update           && swarm_install
-# serf_event_is user swarm-update         && interlock_install
-# serf_event_is user interlock-update     && registry_install
-# serf_event_is user registry-update      && dokku_install
-# serf_event_is user dokku-update         && router_start dokku
+serf_event_is user serf-update          && etcd_installs
+serf_event_is user etcd-update          && flanneld_install
+serf_event_is user flanneld-update      && docker_update
+serf_event_is user flanneld-update      && ssh_start
+serf_event_is user docker-update        && zookeeper_install
+serf_event_is user docker-update        && bee_install
+serf_event_is user bee-update           && swarm_install
+serf_event_is user swarm-update         && interlock_install
+serf_event_is user interlock-update     && registry_install
+serf_event_is user registry-update      && dokku_install
+serf_event_is user dokku-update         && router_start dokku
