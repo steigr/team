@@ -138,7 +138,7 @@ serf_pid() {
 _serf_emit-update() {
   for tag in $1; do
     if [[ "$(echo "$2" | grep $tag 2>/dev/null)" ]]; then
-      echo "Emit ${tag}-event"
+      echo "Emit ${tag}-update"
       serf_event ${tag}-update
     fi
   done
