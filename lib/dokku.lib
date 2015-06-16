@@ -294,7 +294,7 @@ Requires=flanneld.service
 After=flanneld.service
 [Service]
 Restart=always
-ExecStartPre=-$(_team) dokku rm
+ExecStartPre=-$(_team) dokku kill
 ExecStartPre=$(_team) dokku env
 ExecStart=$(_team) dokku run
 EO_DOKKU_UNIT
