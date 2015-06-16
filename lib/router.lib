@@ -82,7 +82,7 @@ _router_config_write() {
     container_name=$($(_team) $1 backend-name)
     container_ip=$($(_team) $1 backend-ip)
     container_port=$($(_team) $1 backend-port)
-    default_server_entry="\"default_servers\":[{\"name\":\"$container_name\",\"host\":\"$container_ip\":\"port\":$container_port}],"
+    default_server_entry="\"default_servers\":[{\"name\":\"$container_name\",\"host\":\"$container_ip\",\"port\":$container_port}],"
   fi
   cat <<EO_ROUTER_CONFIG | tee $(_router_config_file $1) >/dev/null
 {
