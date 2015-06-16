@@ -146,7 +146,6 @@ _dokku_build_image() {
 }
 
 _dokku_build_base_image() {
-  [[ "$($(_docker) images 2>/dev/null | grep "^dokku ")" ]] && [[ "x$1" = "x" ]] && return
   temp_dir=$(_dokku_image_build_dir)
   docker build -t $(_dokku_image_name) $temp_dir
   rm -r $temp_dir
